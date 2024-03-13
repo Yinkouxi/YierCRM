@@ -1,7 +1,6 @@
 <template>
-  <div class="app">
-    <h2>app</h2>
-    <router-view></router-view>
+  <div class="home">
+    <h2>home</h2>
   </div>
 </template>
 
@@ -9,8 +8,8 @@
 
 </script>
 
-<style scoped>
-.app{
+<style  scoped>
+.home{
     color: blueviolet;
 }
 </style>
