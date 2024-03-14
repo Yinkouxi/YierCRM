@@ -4,6 +4,12 @@
     <button @click="changeToken">change token</button>
     <p>{{ userStore.token }}</p>
     <button @click="login">点击登录</button>
+    <el-button type="success" plain>Success</el-button>
+
+    <div class="slider-demo-block">
+    <span class="demonstration">Default value</span>
+    <el-slider v-model="value1" />
+  </div>
   </div>
 </template>
 
@@ -11,12 +17,13 @@
 import { useStore } from '@renderer/store'
 import { useUserStore } from '@renderer/store/useUserStore'
 import { loginByJson } from '@api/login.ts'
+import { ref } from 'vue';
 const userStore = useUserStore()
 const store = useStore()
 console.log(userStore.userName, 'home')
 console.log(userStore.token, 'home')
 console.log(store.user.userName, 'main')
-
+const value1 = ref(0)
 const changeToken = () => {
   userStore.token = 'hhhhhhhpinkMan'
 }
