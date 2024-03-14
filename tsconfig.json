@@ -1,4 +1,12 @@
 {
   "files": [],
-  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }, { "path": "./tsconfig.web.json" }],
+  "compilerOptions": {
+    // 配置baseUrl后，使用别名时才会有路径代码提示 ...
+      "baseUrl": ".",
+      "paths": {
+        // "@/*": ["/src/renderer/src"],
+        "@store/*": ["/src/renderer/src/store"],
+      }
+    }
 }

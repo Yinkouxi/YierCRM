@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { useStore } from '@renderer/store'
-import { useUserStore } from '@renderer/store/useUserStore';
+import { useUserStore } from '@renderer/store/useUserStore'
 const userStore = useUserStore()
 const store = useStore()
 console.log(userStore.userName,'home')

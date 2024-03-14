@@ -5,11 +5,16 @@
 </template>
 
 <script setup lang="ts">
-console.log('about')
+import { useUserStore } from '@renderer/store/useUserStore'
+import { useStore } from '@renderer/store'
+const userStore = useUserStore()
+const store  = useStore()
+console.log(store,'store')
+console.log(userStore, 'about----')
 </script>
 
-<style  scoped>
-.about{
-    color: blueviolet;
+<style scoped>
+.about {
+  color: blueviolet;
 }
 </style>
