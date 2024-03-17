@@ -18,9 +18,9 @@ export default defineConfig({
     resolve: {
       alias: {
         '@renderer': resolve('src/renderer/src'),
-        // '@store': path.resolve(__dirname, '/src/renderer/src/store')
         '@utils': resolve('src/renderer/src/utils'),
-        '@api': resolve('src/renderer/src/api')
+        '@api': resolve('src/renderer/src/api'),
+        '@store':resolve('src/renderer/src/store')
       }
     },
     server: {

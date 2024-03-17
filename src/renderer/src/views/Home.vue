@@ -14,15 +14,13 @@
 </template>
 
 <script setup lang="ts">
-import { useStore } from '@renderer/store'
-import { useUserStore } from '@renderer/store/useUserStore'
-import { loginByJson } from '@api/login.ts'
+// import { loginByJson } from '@api/login'
+import { loginByJson } from '@api/login';
+import { useUserStore } from '@store/useUserStore';
 import { ref } from 'vue';
 const userStore = useUserStore()
-const store = useStore()
 console.log(userStore.userName, 'home')
 console.log(userStore.token, 'home')
-console.log(store.user.userName, 'main')
 const value1 = ref(0)
 const changeToken = () => {
   userStore.token = 'hhhhhhhpinkMan'
