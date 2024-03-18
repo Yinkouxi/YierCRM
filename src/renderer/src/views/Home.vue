@@ -48,8 +48,8 @@
 X
 
 <script setup lang="ts">
-// import PasswordForm from './login/component/PasswordForm.vue';
 import PasswordForm from '@views/login/component/PasswordForm.vue'
+
 </script>
 
 <style scoped lang="less">

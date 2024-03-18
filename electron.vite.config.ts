@@ -20,9 +20,10 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src'),
         '@utils': resolve('src/renderer/src/utils'),
         '@api': resolve('src/renderer/src/api'),
-        '@store':resolve('src/renderer/src/store'),
-        '@assets':resolve('src/renderer/src/assets'),
-        '@views':resolve('src/renderer/src/views')
+        '@store': resolve('src/renderer/src/store'),
+        '@assets': resolve('src/renderer/src/assets'),
+        '@views': resolve('src/renderer/src/views'),
+        '@interface': resolve('src/renderer/src/interface')
       }
     },
     server: {
@@ -37,10 +38,10 @@ export default defineConfig({
     plugins: [
       vue(),
       AutoImport({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [ElementPlusResolver()]
       }),
       Components({
-        resolvers: [ElementPlusResolver()],
+        resolvers: [ElementPlusResolver()]
       })
     ]
   }

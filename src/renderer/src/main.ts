@@ -12,6 +12,8 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+import 'element-plus/theme-chalk/index.css'
+
 
 // 状态管理-持久化存储
 const store = createPinia()
