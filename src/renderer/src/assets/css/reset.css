@@ -1,0 +1,27 @@
+/* Reset 样式 */
+
+/* 重置元素默认的外边距和内边距 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; /* 使用 border-box 盒模型 */
+}
+
+/* 重置列表的样式 */
+ul,
+ol {
+  list-style: none; /* 移除列表的默认样式 */
+}
+
+/* 重置链接的默认样式 */
+a {
+  text-decoration: none; /* 移除下划线 */
+  color: inherit; /* 继承父元素的颜色 */
+}
+
+/* 重置文本样式 */
+p {
+  margin: 0; /* 移除段落的默认外边距 */
+}
+
+/* 可选项：添加其他重置样式 */

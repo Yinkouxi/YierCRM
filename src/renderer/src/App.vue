@@ -8,6 +8,5 @@
 
 <style scoped>
 .app {
-  color: blueviolet;
 }
 </style>

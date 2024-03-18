@@ -1,43 +1,156 @@
 <template>
-  <div class="home">
-    <h2>home</h2>
-    <button @click="changeToken">change token</button>
-    <p>{{ userStore.token }}</p>
-    <button @click="login">点击登录</button>
-    <el-button type="success" plain>Success</el-button>
-
-    <div class="slider-demo-block">
-    <span class="demonstration">Default value</span>
-    <el-slider v-model="value1" />
-  </div>
+  <div class="login">
+    <!-- 左侧 -->
+    <div class="login-adv">
+      <div class="login-adv-title">
+        <h2>YierCRM</h2>
+        <h4>客户关系管理系统</h4>
+        <p>基于Electron + Vue3 + Element-Plus 的中后台前端解决方案。</p>
+      </div>
+      <div class="login-adv-mask"></div>
+      <div class="login-adv-imgage">
+        <img src="@assets/images/data.png" width="100%" />
+      </div>
+      <div class="login-adv-bottom">© YierCRM客户管理系统 1.0</div>
+    </div>
+    <!-- 右侧 -->
+    <div class="login-main">
+      <div class="login-form">
+        <!-- header -->
+        <div class="login-header">
+          <div class="login-img">
+            <img src="../assets/images/logo.png" alt="" />
+            <label>Yier客户管理系统</label>
+          </div>
+        </div>
+        <!-- form-main -->
+        <el-tabs>
+          <el-tab-pane label="账号登录">
+            <PasswordForm></PasswordForm>
+          </el-tab-pane>
+          <el-tab-pane label="手机号登录">手机号登录</el-tab-pane>
+        </el-tabs>
+        <template v-if="true">
+          <el-divider>其他登录方式</el-divider>
+          <div class="login-oauth">
+            <!--微信按钮-->
+            <el-button type="success" circle size="large">
+              <el-icon size="large">
+                <ChatDotRound />
+              </el-icon>
+            </el-button>
+          </div>
+        </template>
+      </div>
+    </div>
   </div>
 </template>
+X
 
 <script setup lang="ts">
-// import { loginByJson } from '@api/login'
-import { loginByJson } from '@api/login';
-import { useUserStore } from '@store/useUserStore';
-import { ref } from 'vue';
-const userStore = useUserStore()
-console.log(userStore.userName, 'home')
-console.log(userStore.token, 'home')
-const value1 = ref(0)
-const changeToken = () => {
-  userStore.token = 'hhhhhhhpinkMan'
-}
-const login = async () => {
-  let res = await loginByJson({
-    password: 'asdfasd',
-    username: '416',
-    key: 'fsdfa',
-    captcha: '6416'
-  })
-  console.log(res.data)
-}
+// import PasswordForm from './login/component/PasswordForm.vue';
+import PasswordForm from '@views/login/component/PasswordForm.vue'
 </script>
 
-<style scoped>
-.home {
-  color: blueviolet;
+<style scoped lang="less">
+.login {
+  width: 100vw;
+  height: 100vh;
+  background-color: #fff;
+  display: flex;
+
+  .login-adv {
+    width: 40vw;
+    position: relative;
+    background: url('../assets/images/auth_banner.jpg') no-repeat;
+
+    .login-adv-imgage {
+      position: absolute;
+      left: 0px;
+      right: 0px;
+      bottom: 80px;
+      padding: 40px;
+      z-index: 1;
+
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .login-adv-mask {
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      right: 0px;
+      bottom: 0px;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+    .login-adv-title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 40px;
+      z-index: 2;
+      color: #fff;
+
+      h2 {
+        font-size: 40px;
+      }
+      h4 {
+        margin-top: 10px;
+        font-size: 18px;
+      }
+      p {
+        font-size: 14px;
+        margin-top: 10px;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.6);
+      }
+    }
+    .login-adv-bottom {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      color: #fff;
+      padding: 0 40px 40px 40px;
+    }
+  }
+}
+.login-main {
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  .login-form {
+    width: 400px;
+    margin: auto;
+    padding: 80px 0 0 0;
+
+    .login-header {
+      margin-bottom: 40px;
+
+      .login-img {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .login-img img {
+        width: 40px;
+        height: 40px;
+        vertical-align: bottom;
+        margin-right: 10px;
+      }
+      .login-img label {
+        font-size: 26px;
+        font-weight: 900;
+      }
+    }
+
+    .login-oauth {
+      display: flex;
+      justify-content: space-around;
+    }
+  }
 }
 </style>
