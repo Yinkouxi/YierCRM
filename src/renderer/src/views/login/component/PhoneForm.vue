@@ -28,6 +28,10 @@
       </el-form-item>
 
       <el-form-item>
+        <router-link to="" class="forget">忘记密码？</router-link>
+      </el-form-item>
+
+      <el-form-item>
         <el-button
           type="primary"
           style="width: 100%"
@@ -36,10 +40,6 @@
           @click="login(ruleFormRef)"
           >登录</el-button
         >
-      </el-form-item>
-
-      <el-form-item>
-        <router-link to="">忘记密码？ </router-link>
       </el-form-item>
     </el-form>
   </div>
@@ -81,7 +81,7 @@ const validatorCaptcha = (_rule: any, value: string, callback: any) => {
 
 const rules = reactive<FormRules<PhoneRuleForm>>({
   mobile: [{ validator: validatorTel, trigger: 'blur' }],
-  captcha: [{ validator: validatorCaptcha, message: '请输入验证码', trigger: 'blur' }]
+  captcha: [{ validator: validatorCaptcha, trigger: 'blur' }]
 })
 
 // 验证码倒计时

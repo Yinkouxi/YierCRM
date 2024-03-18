@@ -25,10 +25,10 @@
         </div>
         <!-- form-main -->
         <el-tabs>
-          <el-tab-pane label="账号登录">
+          <el-tab-pane label="账号登录" lazy style="height: 300px">
             <PasswordForm></PasswordForm>
           </el-tab-pane>
-          <el-tab-pane label="手机号登录">
+          <el-tab-pane label="手机号登录" lazy style="height: 300px">
             <PhoneForm></PhoneForm>
           </el-tab-pane>
         </el-tabs>
@@ -52,8 +52,6 @@ X
 <script setup lang="ts">
 import PasswordForm from '@views/login/component/PasswordForm.vue'
 import PhoneForm from '@views/login/component/PhoneForm.vue'
-
-
 </script>
 
 <style scoped lang="less">
