@@ -28,7 +28,9 @@
           <el-tab-pane label="账号登录">
             <PasswordForm></PasswordForm>
           </el-tab-pane>
-          <el-tab-pane label="手机号登录">手机号登录</el-tab-pane>
+          <el-tab-pane label="手机号登录">
+            <PhoneForm></PhoneForm>
+          </el-tab-pane>
         </el-tabs>
         <template v-if="true">
           <el-divider>其他登录方式</el-divider>
@@ -49,6 +51,8 @@ X
 
 <script setup lang="ts">
 import PasswordForm from '@views/login/component/PasswordForm.vue'
+import PhoneForm from '@views/login/component/PhoneForm.vue'
+
 
 </script>
 

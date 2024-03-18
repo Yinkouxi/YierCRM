@@ -65,8 +65,8 @@ import { UserRuleForm } from '@interface/login'
 let captchaUrl = ref<string>('')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<UserRuleForm>({
-  username: '',
-  password: '',
+  username: 'admin',
+  password: 'abc123456',
   key: '',
   captcha: ''
 })
@@ -97,19 +97,24 @@ const login = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl?.validate(async (valid) => {
     if (valid) {
+      isLogin.value = true
       let res = await loginByJson({
         username: Encrypt(ruleForm.username),
         password: Encrypt(ruleForm.password),
         key: ruleForm.key,
         captcha: ruleForm.captcha
       })
-      if (res.code != '200') {
+      if (res.code === '200') {
+        isLogin.value = false
+        return ElMessage.success('登录成功')
+      } else {
+        isLogin.value = false
         return ElMessage.error(res.msg)
       }
     } else {
+      isLogin.value = false
       return ElMessage.warning('请填写正确内容')
     }
-    return
   })
 }
 </script>
