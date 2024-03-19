@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="login" @mousedown="mousedown">
     <!-- 左侧 -->
     <div class="login-adv">
       <div class="login-adv-title">
@@ -52,6 +52,36 @@ X
 <script setup lang="ts">
 import PasswordForm from '@views/login/component/PasswordForm.vue'
 import PhoneForm from '@views/login/component/PhoneForm.vue'
+
+import { ref } from 'vue'
+
+let isKeyDown = ref<boolean>(false)
+let dinatesX = ref<number>(0)
+let dinatesY = ref<number>(0)
+
+const mousedown = (event) => {
+  isKeyDown.value = true
+  dinatesX.value = event.x
+  dinatesY.value = event.y
+
+  document.onmousemove = (ev) => {
+    if (isKeyDown.value) {
+      const x = ev.screenX - dinatesX.value
+      const y = ev.screenY - dinatesY.value
+
+      //给主进程传入坐标
+      let data = {
+        appX: x,
+        appY: y
+      }
+      console.log(data, 'data')
+      electron.ipcRenderer.invoke('custom-adsorption', data)
+    }
+  }
+  document.onmouseup = () => {
+    isKeyDown.value = false
+  }
+}
 </script>
 
 <style scoped lang="less">

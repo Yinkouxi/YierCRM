@@ -9,6 +9,9 @@ function createWindow(): void {
     width: 900,
     height: 670,
     show: false,
+    frame: false,
+    resizable: false,
+    // titleBarStyle: 'hidden', //隐藏标题
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -26,6 +29,27 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
+  // const winSize = () => {
+  //   const width = mainWindow.getSize()[0]
+  //   const height = mainWindow.getSize()[1]
+  //   return {width,height}
+  // }
+
+  // 窗口拖拽
+  ipcMain.handle('custom-adsorption', (_event, res) => {
+    let x = res.appX
+    let y = res.appY
+
+    let newBounds = {
+      x,
+      y,
+      width: 900,
+      height: 670
+    }
+    mainWindow.setBounds(newBounds)
+    // 使用setPositon在Windows系统设置缩放不为100%时拖拽会导致窗口放大
+    // mainWindow.setPosition( x , y )
+  })
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
