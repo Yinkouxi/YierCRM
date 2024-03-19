@@ -1,5 +1,11 @@
 <template>
   <div class="login" @mousedown="mousedown">
+    <!-- 按钮 -->
+    <div class="login-config">
+      <div class="login-config-btn">
+        <el-button icon="close" circle type="default" @click="closeWin"></el-button>
+      </div>
+    </div>
     <!-- 左侧 -->
     <div class="login-adv">
       <div class="login-adv-title">
@@ -59,6 +65,12 @@ let isKeyDown = ref<boolean>(false)
 let dinatesX = ref<number>(0)
 let dinatesY = ref<number>(0)
 
+//关闭软件
+const closeWin = (): void => {
+  window.electron.ipcRenderer.invoke('close-login')
+}
+
+// 拖拽
 const mousedown = (event) => {
   isKeyDown.value = true
   dinatesX.value = event.x
@@ -90,6 +102,23 @@ const mousedown = (event) => {
   height: 100vh;
   background-color: #fff;
   display: flex;
+
+  .login-config {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    z-index: 9999;
+
+    .login-config-btn {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 120px;
+      margin: 10px 10px 0 0;
+      float: right;
+    }
+  }
 
   .login-adv {
     width: 40vw;

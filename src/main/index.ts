@@ -50,6 +50,13 @@ function createWindow(): void {
     // 使用setPositon在Windows系统设置缩放不为100%时拖拽会导致窗口放大
     // mainWindow.setPosition( x , y )
   })
+
+  //关闭窗口
+  ipcMain.handle('close-login',() => {
+    mainWindow.close();
+  })
+
+  
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
