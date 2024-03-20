@@ -15,6 +15,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 import 'element-plus/theme-chalk/index.css'
 
+//国际化
+import i18n from './locales'
 
 // 状态管理-持久化存储
 const store = createPinia()
@@ -22,4 +24,5 @@ store.use(piniaPluginPersist)
 
 app.use(router)
 app.use(store)
+app.use(i18n)
 app.mount('#app')

@@ -6,7 +6,7 @@
           v-model="ruleForm.mobile"
           prefix-icon="iphone"
           clearable
-          placeholder="请输入手机号"
+          :placeholder="$t('login.mobileError')"
         >
           <template #prepend>+86</template>
         </el-input>
@@ -18,17 +18,17 @@
             v-model="ruleForm.captcha"
             prefix-icon="unlock"
             clearable
-            placeholder="请输入验证码"
+            :placeholder="$t('login.smsError')"
           ></el-input>
           <el-button :disabled="disabled" @click="getCode">
-            获取验证码
+            {{ $t('login.smsGet') }}
             <span v-if="disabled">({{ time }})</span>
           </el-button>
         </div>
       </el-form-item>
 
       <el-form-item>
-        <router-link to="" class="forget">忘记密码？</router-link>
+        <router-link to="" class="forget">{{ $t('login.forgetPassword') }}</router-link>
       </el-form-item>
 
       <el-form-item>
@@ -38,7 +38,7 @@
           round
           :loading="isLogin"
           @click="login(ruleFormRef)"
-          >登录</el-button
+          >{{ $t('login.signIn') }}</el-button
         >
       </el-form-item>
     </el-form>
@@ -46,11 +46,13 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { ComponentInternalInstance, getCurrentInstance, reactive, ref } from 'vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { PhoneRuleForm } from '@interface/login'
 import { loginCaptcha, loginByMobile } from '@api/login'
 import { Encrypt } from '@utils/aes'
+
+const { proxy } = getCurrentInstance() as ComponentInternalInstance
 
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<PhoneRuleForm>({
@@ -61,9 +63,9 @@ const ruleForm = reactive<PhoneRuleForm>({
 // 校验手机号
 const validatorTel = (_rule: any, value: string, callback: any) => {
   if (value === '') {
-    callback(new Error('请输入手机号'))
+    callback(new Error(proxy?.$t('login.mobileError')))
   } else if (!/^1[3456789]\d{9}$/.test(value)) {
-    callback(new Error('请填写正确手机号'))
+    callback(new Error(proxy?.$t('login.mobileError1')))
   } else {
     callback()
   }
@@ -71,9 +73,9 @@ const validatorTel = (_rule: any, value: string, callback: any) => {
 // 校验验证码
 const validatorCaptcha = (_rule: any, value: string, callback: any) => {
   if (value === '') {
-    callback(new Error('请输入短信验证码'))
+    callback(new Error(proxy?.$t('login.smsError')))
   } else if (!/^\d{6}$/.test(value)) {
-    callback(new Error('短信验证码必须为六位数字'))
+    callback(new Error(proxy?.$t('login.smsError1')))
   } else {
     callback()
   }
