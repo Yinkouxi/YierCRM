@@ -94,6 +94,8 @@ onBeforeMount(() => {
   getCaptcha()
 })
 
+import { useRouter } from 'vue-router'
+const router = useRouter()
 // 登录
 const login = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
@@ -108,6 +110,9 @@ const login = async (formEl: FormInstance | undefined) => {
       })
       if (res.code === '200') {
         isLogin.value = false
+        const token = res.data
+        localStorage.setItem('TOKEN', token || '')
+        router.push('/')
         return ElMessage.success('登录成功')
       } else {
         isLogin.value = false
