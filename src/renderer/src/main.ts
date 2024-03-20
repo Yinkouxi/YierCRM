@@ -1,4 +1,5 @@
 import './assets/css/reset.css'
+import 'element-plus/theme-chalk/dark/css-vars.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'
