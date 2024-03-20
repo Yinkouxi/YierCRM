@@ -3,9 +3,16 @@
     <!-- 按钮 -->
     <div class="login-config">
       <div class="login-config-btn">
+        <!-- 换肤 -->
+        <el-button circle @click="configDark">
+          <el-icon v-if="dark == 'dark'"><Sunny /></el-icon>
+          <el-icon v-else><Moon /></el-icon>
+        </el-button>
+        <!-- 关闭软件 -->
         <el-button icon="close" circle type="default" @click="closeWin"></el-button>
       </div>
     </div>
+
     <!-- 左侧 -->
     <div class="login-adv">
       <div class="login-adv-title">
@@ -70,6 +77,20 @@ const closeWin = (): void => {
   window.electron.ipcRenderer.invoke('close-login')
 }
 
+// 换肤
+const dark = ref<string | null>(localStorage.getItem('dark'))
+const configDark = (): void => {
+  const element = document.querySelector('html') as HTMLElement | null
+  if (element) {
+    if (element.className == 'dark') {
+      element.className = ''
+    } else {
+      element.className = 'dark'
+    }
+    dark.value = element.className
+    localStorage.setItem('dark', element.className)
+  }
+}
 // 拖拽
 const mousedown = (event) => {
   isKeyDown.value = true
@@ -87,7 +108,7 @@ const mousedown = (event) => {
         appY: y
       }
       console.log(data, 'data')
-      electron.ipcRenderer.invoke('custom-adsorption', data)
+      window.electron.ipcRenderer.invoke('custom-adsorption', data)
     }
   }
   document.onmouseup = () => {
