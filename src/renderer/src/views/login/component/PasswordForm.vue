@@ -59,7 +59,9 @@ import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { captchaImage, loginByJson } from '@api/login'
 import { Encrypt } from '@utils/aes'
 import { UserRuleForm } from '@interface/login'
-// import router from '@router'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '@store/useUserStore'
+import { useMenuStore } from '@store/useMenuStore'
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance
 
@@ -94,7 +96,6 @@ onBeforeMount(() => {
   getCaptcha()
 })
 
-import { useRouter } from 'vue-router'
 const router = useRouter()
 // 登录
 const login = async (formEl: FormInstance | undefined) => {
@@ -110,8 +111,14 @@ const login = async (formEl: FormInstance | undefined) => {
       })
       if (res.code === '200') {
         isLogin.value = false
+        // 1.持久化存储token
         const token = res.data
         localStorage.setItem('TOKEN', token || '')
+        // 2.获取用户信息
+        await useUserStore().getUserInfo()
+        // 3.获取路由
+        await useMenuStore().getMenu()
+        // 4.跳转首页
         router.push('/')
         return ElMessage.success('登录成功')
       } else {

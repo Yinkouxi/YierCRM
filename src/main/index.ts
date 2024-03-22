@@ -52,11 +52,23 @@ function createWindow(): void {
   })
 
   //关闭窗口
-  ipcMain.handle('close-login',() => {
-    mainWindow.close();
+  ipcMain.handle('close-login', () => {
+    mainWindow.close()
   })
 
-  
+  ipcMain.handle('resize-window', () => {
+    //窗口大小
+    mainWindow.setSize(1200, 720)
+    //窗口最小值
+    mainWindow.setMinimumSize(1000, 500)
+    //窗口居中
+    mainWindow.center()
+    //窗口大小可以修改
+    mainWindow.setResizable(true)
+  })
+
+  mainWindow.webContents.openDevTools()
+
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
