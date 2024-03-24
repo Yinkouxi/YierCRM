@@ -7,6 +7,7 @@
           prefix-icon="iphone"
           clearable
           :placeholder="$t('login.mobileError')"
+          @keyup.enter="login(ruleFormRef)"
         >
           <template #prepend>+86</template>
         </el-input>
@@ -51,6 +52,7 @@ import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { PhoneRuleForm } from '@interface/login'
 import { loginCaptcha, loginByMobile } from '@api/login'
 import { Encrypt } from '@utils/aes'
+import useLogin from '@hooks/useLogin'
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance
 
@@ -130,10 +132,11 @@ const login = async (formEl: FormInstance | undefined) => {
   await formEl.validate(async (valid) => {
     if (valid) {
       isLogin.value = true
-      await loginByMobile({
+      const res = await loginByMobile({
         mobile: Encrypt(ruleForm.mobile),
         captcha: Encrypt(ruleForm.captcha)
       })
+      useLogin(res)
     } else {
       return ElMessage.warning('请填写正确内容')
     }

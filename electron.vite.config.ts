@@ -23,7 +23,10 @@ export default defineConfig({
         '@store': resolve('src/renderer/src/store'),
         '@assets': resolve('src/renderer/src/assets'),
         '@views': resolve('src/renderer/src/views'),
-        '@interface': resolve('src/renderer/src/interface')
+        '@interface': resolve('src/renderer/src/interface'),
+        '@hooks': resolve('src/renderer/src/hooks'),
+        '@router': resolve('src/renderer/src/router'),
+
       }
     },
     server: {

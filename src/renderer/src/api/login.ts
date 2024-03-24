@@ -1,11 +1,7 @@
 import http from "@utils/request";
-import { UserRuleForm , PhoneCodeForm , PhoneRuleForm } from '@interface/login'
+import { UserRuleForm , PhoneCodeForm , PhoneRuleForm, ILoginRequest } from '@interface/login'
 
-interface ILoginRequest{
-	code:string
-	msg:string
-	data?:string | null
-}
+
 
 //图形验证码
 export const captchaImage = ( data:{

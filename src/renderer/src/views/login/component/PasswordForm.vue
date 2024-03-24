@@ -6,6 +6,7 @@
         prefix-icon="user"
         clearable
         :placeholder="$t('login.mobileError')"
+        @keyup.enter="login(ruleFormRef)"
       ></el-input>
     </el-form-item>
 
@@ -62,6 +63,7 @@ import { UserRuleForm } from '@interface/login'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@store/useUserStore'
 import { useMenuStore } from '@store/useMenuStore'
+import useLogin from '@hooks/useLogin'
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance
 
@@ -109,27 +111,32 @@ const login = async (formEl: FormInstance | undefined) => {
         key: ruleForm.key,
         captcha: ruleForm.captcha
       })
-      if (res.code === '200') {
-        isLogin.value = false
-        // 1.持久化存储token
-        const token = res.data
-        localStorage.setItem('TOKEN', token || '')
-        // 2.获取用户信息
-        await useUserStore().getUserInfo()
-        // 3.获取路由
-        await useMenuStore().getMenu()
-        // 4.跳转首页
-        router.push('/')
-        return ElMessage.success('登录成功')
-      } else {
-        isLogin.value = false
-        return ElMessage.error(res.msg)
-      }
+      // 使用hooks
+      useLogin(res)
+      // if (res.code === '200') {
+      //   isLogin.value = false
+      //   // 1.持久化存储token
+      //   const token = res.data
+      //   localStorage.setItem('TOKEN', token || '')
+      //   // 2.获取用户信息
+      //   await useUserStore().getUserInfo()
+      //   // 3.获取路由
+      //   await useMenuStore().getMenu()
+      //   // 4.跳转首页
+      //   router.push('/')
+      //   return ElMessage.success('登录成功')
+      // } else {
+      //   isLogin.value = false
+      //   return ElMessage.error(res.msg)
+      // }
+      isLogin.value = false
+      return
     } else {
       isLogin.value = false
       return ElMessage.warning('请填写正确内容')
     }
   })
+  return
 }
 </script>
 
