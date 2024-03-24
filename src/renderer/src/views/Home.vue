@@ -34,35 +34,12 @@
     <!--2级菜单-->
     <div class="adminui-side">
       <div class="adminui-side-top">
-        <h2>首页</h2>
+        <h2>{{ pmenu.name }}</h2>
       </div>
       <div class="adminui-side-scroll">
         <el-scrollbar>
           <el-menu>
-            <el-menu-item index="1">
-              <el-icon><ChatRound /></el-icon>
-              <span>仪表盘</span>
-            </el-menu-item>
-            <el-menu-item index="2">
-              <el-icon><ChatRound /></el-icon>
-              <span>仪表盘</span>
-            </el-menu-item>
-            <el-menu-item index="3">
-              <el-icon><ChatRound /></el-icon>
-              <span>仪表盘</span>
-            </el-menu-item>
-            <el-menu-item index="4">
-              <el-icon><ChatRound /></el-icon>
-              <span>仪表盘</span>
-            </el-menu-item>
-            <el-menu-item index="5">
-              <el-icon><ChatRound /></el-icon>
-              <span>仪表盘</span>
-            </el-menu-item>
-            <el-menu-item index="6">
-              <el-icon><ChatRound /></el-icon>
-              <span>仪表盘</span>
-            </el-menu-item>
+            <nav-menu :next-menu="nextMenu"/>
           </el-menu>
         </el-scrollbar>
       </div>
@@ -80,12 +57,14 @@ import { Parent } from '@interface/user'
 import { useMenuStore } from '@store/useMenuStore'
 import { ref } from 'vue'
 import { onBeforeMount } from 'vue'
+import NavMenu from './components/NavMenu.vue'
 
 const menu = ref<Parent[]>([])
 const pmenu = ref<Parent>({})
 const nextMenu = ref<Parent[] | undefined>([])
 
 onBeforeMount(() => {
+  // 渲染进程向主进程通信、重置页面大小
   window.electron.ipcRenderer.invoke('resize-window')
   // 一级菜单数据
   menu.value = useMenuStore().menu
