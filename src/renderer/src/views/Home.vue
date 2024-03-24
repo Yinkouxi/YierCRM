@@ -12,13 +12,20 @@
       <div class="adminui-side-split-scroll">
         <el-scrollbar>
           <ul>
-            <li class="active">
-              <el-icon><ChatRound /></el-icon>
-              <p>信媒体</p>
-            </li>
-            <li>
-              <el-icon><ChatRound /></el-icon>
-              <p>招生</p>
+            <li
+              v-for="item in menu"
+              :key="item.id"
+              :class="item.path == pmenu.path ? 'active' : ''"
+              @click="tabMenu(item)"
+            >
+              <el-icon>
+                <component
+                  :is="
+                    item.meta?.title == '小鹿线' ? 'House' : item.meta?.icon.replace('el-icon-', '')
+                  "
+                />
+              </el-icon>
+              <p>{{ item.name }}</p>
             </li>
           </ul>
         </el-scrollbar>
@@ -69,10 +76,34 @@
 </template>
 
 <script setup lang="ts">
+import { Parent } from '@interface/user'
+import { useMenuStore } from '@store/useMenuStore'
+import { ref } from 'vue'
 import { onBeforeMount } from 'vue'
+
+const menu = ref<Parent[]>([])
+const pmenu = ref<Parent>({})
+const nextMenu = ref<Parent[] | undefined>([])
+
 onBeforeMount(() => {
   window.electron.ipcRenderer.invoke('resize-window')
+  // 一级菜单数据
+  menu.value = useMenuStore().menu
+  // 切换一级数据
+  pmenu.value = menu.value[0]
+  // 二级菜单数据
+  nextMenu.value = pmenu.value.children
+  // console.log(menu.value)
 })
+
+//切换一级菜单
+const tabMenu = (item: Parent) => {
+  //切换一级菜单数据
+  pmenu.value = item
+  //切换二级菜单数据
+  nextMenu.value = item.children
+  console.log(nextMenu.value)
+}
 </script>
 
 <style lang="less" scoped>

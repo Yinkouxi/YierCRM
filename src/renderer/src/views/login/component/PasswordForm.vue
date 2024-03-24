@@ -61,8 +61,6 @@ import { captchaImage, loginByJson } from '@api/login'
 import { Encrypt } from '@utils/aes'
 import { UserRuleForm } from '@interface/login'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@store/useUserStore'
-import { useMenuStore } from '@store/useMenuStore'
 import useLogin from '@hooks/useLogin'
 
 const { proxy } = getCurrentInstance() as ComponentInternalInstance
