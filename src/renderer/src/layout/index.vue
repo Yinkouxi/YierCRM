@@ -38,7 +38,7 @@
       </div>
       <div class="adminui-side-scroll">
         <el-scrollbar>
-          <el-menu>
+          <el-menu router :default-active="route.path">
             <nav-menu :next-menu="nextMenu" />
           </el-menu>
         </el-scrollbar>
@@ -58,7 +58,9 @@ import { useMenuStore } from '@store/useMenuStore'
 import { ref } from 'vue'
 import { onBeforeMount } from 'vue'
 import NavMenu from './components/NavMenu.vue'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const menu = ref<Parent[]>([])
 const pmenu = ref<Parent>({})
 const nextMenu = ref<Parent[] | undefined>([])
@@ -68,11 +70,7 @@ onBeforeMount(() => {
   // window.electron.ipcRenderer.invoke('resize-window')
   // 一级菜单数据
   menu.value = useMenuStore().menu
-  // 切换一级数据
-  pmenu.value = menu.value[0]
-  // 二级菜单数据
-  nextMenu.value = pmenu.value.children
-  // console.log(menu.value)
+  routesPath()
 })
 
 //切换一级菜单
@@ -82,6 +80,14 @@ const tabMenu = (item: Parent) => {
   //切换二级菜单数据
   nextMenu.value = item.children
   console.log(nextMenu.value)
+}
+
+const routesPath = () => {
+  const currentRoute = (route.meta.breadcrumb as Parent[])[0]
+  //切换一级数据
+  pmenu.value = currentRoute
+  //二级菜单数据
+  nextMenu.value = currentRoute.children
 }
 </script>
 
