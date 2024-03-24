@@ -39,7 +39,7 @@
       <div class="adminui-side-scroll">
         <el-scrollbar>
           <el-menu>
-            <nav-menu :next-menu="nextMenu"/>
+            <nav-menu :next-menu="nextMenu" />
           </el-menu>
         </el-scrollbar>
       </div>
@@ -48,7 +48,7 @@
       </div>
     </div>
     <!--右侧组件-->
-    <div class="aminui-body">右侧内容</div>
+    <div class="aminui-body"><router-view /></div>
   </section>
 </template>
 
@@ -65,7 +65,7 @@ const nextMenu = ref<Parent[] | undefined>([])
 
 onBeforeMount(() => {
   // 渲染进程向主进程通信、重置页面大小
-  window.electron.ipcRenderer.invoke('resize-window')
+  // window.electron.ipcRenderer.invoke('resize-window')
   // 一级菜单数据
   menu.value = useMenuStore().menu
   // 切换一级数据

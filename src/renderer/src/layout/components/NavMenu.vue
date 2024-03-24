@@ -1,5 +1,5 @@
 <template>
-  <div v-if="nextMenu.length <= 0">没有子级菜单</div>
+  <div v-if="nextMenu == null">没有子级菜单</div>
   <template v-for="item in nextMenu" :key="item.id">
     <el-menu-item :index="item.path">
       <el-icon>

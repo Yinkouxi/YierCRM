@@ -1,8 +1,10 @@
 export const AppRoutes = [
   {
     path: '/',
-    name: '首页',
-    component: () => import('@views/Home.vue')
+    name: 'layout',
+    component: () => import('@layout/index.vue')
+    // redirect: '/dashboard',
+    // children: [{ path: '/dashboard', component: () => import('@views/home/index.vue') }]
   },
   {
     path: '/login',

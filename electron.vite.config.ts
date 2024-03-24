@@ -26,6 +26,7 @@ export default defineConfig({
         '@interface': resolve('src/renderer/src/interface'),
         '@hooks': resolve('src/renderer/src/hooks'),
         '@router': resolve('src/renderer/src/router'),
+        '@layout': resolve('src/renderer/src/layout')
 
       }
     },
