@@ -34,7 +34,11 @@
 
     <div class="remember">
       <div>
-        <el-checkbox :label="$t('login.rememberMe')"></el-checkbox>
+        <el-checkbox
+          :label="$t('login.rememberMe')"
+          v-model="memoPassWord"
+          @change="onMemoPassWord"
+        ></el-checkbox>
       </div>
       <div>
         <router-link to="">{{ $t('login.forgetPassword') }}</router-link>
@@ -55,10 +59,17 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
+import {
+  reactive,
+  ref,
+  onBeforeMount,
+  getCurrentInstance,
+  ComponentInternalInstance,
+  Ref
+} from 'vue'
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
 import { captchaImage, loginByJson } from '@api/login'
-import { Encrypt } from '@utils/aes'
+import { Decrypt, Encrypt } from '@utils/aes'
 import { UserRuleForm } from '@interface/login'
 import { useRouter } from 'vue-router'
 import useLogin from '@hooks/useLogin'
@@ -70,7 +81,7 @@ let captchaUrl = ref<string>('')
 const ruleFormRef = ref<FormInstance>()
 const ruleForm = reactive<UserRuleForm>({
   username: 'admin',
-  password: 'abc123456',
+  password: '',
   key: '',
   captcha: ''
 })
@@ -89,6 +100,13 @@ const getCaptcha = async () => {
 
 //生命周期
 onBeforeMount(() => {
+  let userPwd: string | null = localStorage.getItem('user-pwd')
+  if (userPwd) {
+    let { username, password }: { username: string; password: string } = JSON.parse(userPwd)
+    ruleForm.username = Decrypt(username)
+    ruleForm.password = Decrypt(password)
+  }
+
   rules = {
     username: [{ required: true, message: proxy?.$t('login.userError'), trigger: 'blur' }],
     password: [{ required: true, message: proxy?.$t('login.PWPlaceholder'), trigger: 'blur' }]
@@ -111,6 +129,8 @@ const login = async (formEl: FormInstance | undefined) => {
       })
       // 使用hooks
       useLogin(res)
+      // 记住密码
+      setMemoPassWord()
       // if (res.code === '200') {
       //   isLogin.value = false
       //   // 1.持久化存储token
@@ -135,6 +155,25 @@ const login = async (formEl: FormInstance | undefined) => {
     }
   })
   return
+}
+
+import useMemoPassWord from '@hooks/useMemoPassWord'
+const { onMemoPassWord, memoVal } = useMemoPassWord()
+const memoPassWord: Ref<boolean> = ref(memoVal)
+
+const setMemoPassWord = () => {
+  if (memoPassWord.value) {
+    const userPwd: {
+      username: string
+      password: string
+    } = {
+      username: Encrypt(ruleForm.username),
+      password: Encrypt(ruleForm.password)
+    }
+    localStorage.setItem('user-pwd', JSON.stringify(userPwd))
+  } else {
+    localStorage.removeItem('user-pwd')
+  }
 }
 </script>
 
