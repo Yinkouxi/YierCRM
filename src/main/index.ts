@@ -67,6 +67,35 @@ function createWindow(): void {
     mainWindow.setResizable(true)
   })
 
+  //退出登录
+  ipcMain.handle('out-login', () => {
+    //窗口大小
+    mainWindow.setSize(900, 670)
+    //窗口居中
+    mainWindow.center()
+    //窗口大小可以修改
+    mainWindow.setResizable(false)
+  })
+
+  //关闭软件
+  ipcMain.handle('win-close', () => {
+    app.exit()
+  })
+
+  //最小化
+  ipcMain.handle('min-win', () => {
+    mainWindow.minimize()
+  })
+
+  //最大化
+  ipcMain.handle('max-win', () => {
+    if (mainWindow.isFullScreen()) {
+      mainWindow.setFullScreen(false)
+    } else {
+      mainWindow.setFullScreen(true)
+    }
+  })
+
   mainWindow.webContents.openDevTools()
 
   // HMR for renderer base on electron-vite cli.

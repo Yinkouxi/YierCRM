@@ -2,8 +2,8 @@ export const AppRoutes = [
   {
     path: '/',
     name: 'layout',
-    component: () => import('@layout/index.vue')
-    // redirect: '/dashboard',
+    component: () => import('@layout/index.vue'),
+    redirect: '/dashboard'
     // children: [{ path: '/dashboard', component: () => import('@views/home/index.vue') }]
   },
   {

@@ -81,7 +81,7 @@ const nextMenu = ref<Parent[] | undefined>([])
 
 onBeforeMount(() => {
   // 渲染进程向主进程通信、重置页面大小
-  window.electron.ipcRenderer.invoke('resize-window')
+  // window.electron.ipcRenderer.invoke('resize-window')
   // 一级菜单数据
   menu.value = useMenuStore().menu
   routesPath()
@@ -101,6 +101,8 @@ const routesPath = () => {
     pmenu.value = currentRoute
     //二级菜单数据
     nextMenu.value = currentRoute.children
+  } else {
+    console.log('no',route.meta.breadcrumb)
   }
 }
 
