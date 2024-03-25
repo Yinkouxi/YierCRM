@@ -32,19 +32,22 @@
       </div>
     </div>
     <!--2级菜单-->
-    <div class="adminui-side">
-      <div class="adminui-side-top">
+    <div :class="menuIsCollapse ? 'aminui-side isCollapse' : 'aminui-side'">
+      <div class="adminui-side-top" v-if="!menuIsCollapse">
         <h2>{{ pmenu.name }}</h2>
       </div>
       <div class="adminui-side-scroll">
         <el-scrollbar>
-          <el-menu router :default-active="route.path">
+          <el-menu router :default-active="route.path" :collapse="menuIsCollapse">
             <nav-menu :next-menu="nextMenu" />
           </el-menu>
         </el-scrollbar>
       </div>
-      <div class="adminui-side-bottom">
-        <el-icon><el-icon-expand /></el-icon>
+      <div class="adminui-side-bottom" @click="toggle_menuIsCollapse">
+        <el-icon>
+          <el-icon-expand v-if="menuIsCollapse" />
+          <Fold v-else />
+        </el-icon>
       </div>
     </div>
     <!--右侧组件-->
@@ -78,7 +81,7 @@ const nextMenu = ref<Parent[] | undefined>([])
 
 onBeforeMount(() => {
   // 渲染进程向主进程通信、重置页面大小
-  // window.electron.ipcRenderer.invoke('resize-window')
+  window.electron.ipcRenderer.invoke('resize-window')
   // 一级菜单数据
   menu.value = useMenuStore().menu
   routesPath()
@@ -104,6 +107,12 @@ const routesPath = () => {
 watch(route, () => {
   routesPath()
 })
+
+//菜单展开收起
+let menuIsCollapse = ref<boolean>(false)
+const toggle_menuIsCollapse = () => {
+  menuIsCollapse.value = !menuIsCollapse.value
+}
 </script>
 
 <style lang="less" scoped>
@@ -113,7 +122,6 @@ watch(route, () => {
   height: 100vh;
   overflow: hidden;
 
-  // 一级菜单
   .aminui-side-split {
     display: flex;
     flex-direction: column;
@@ -121,26 +129,22 @@ watch(route, () => {
     height: 100vh;
     overflow: hidden;
     background: #222b45;
-
     .aminui-side-split-top {
       height: 49px;
       -webkit-app-region: drag;
-
-      a {
-        display: inline-block;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-
-      .logo {
-        height: 30px;
-        vertical-align: bottom;
-      }
     }
-
+    .aminui-side-split-top a {
+      display: inline-block;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .aminui-side-split-top .logo {
+      height: 30px;
+      vertical-align: bottom;
+    }
     .adminui-side-split-scroll {
       overflow: auto;
       overflow-x: hidden;
@@ -172,10 +176,7 @@ watch(route, () => {
       background: #409eff;
     }
   }
-
-  // 二级菜单
-  .adminui-side {
-    background-color: #7a6060;
+  .aminui-side {
     display: flex;
     flex-flow: column;
     width: 210px;
@@ -214,9 +215,14 @@ watch(route, () => {
       color: var(--el-color-primary);
     }
   }
-
+  .aminui-side.isCollapse {
+    width: 65px;
+  }
   .aminui-body {
     flex: 1;
   }
+}
+.el-menu {
+  border-right: 0px;
 }
 </style>
