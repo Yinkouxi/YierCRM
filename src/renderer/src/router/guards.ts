@@ -3,7 +3,7 @@ import router from '@router'
 import { Parent } from '@interface/user'
 import clone from 'rfdc'
 
-export const beforeEach = async (to) => {
+export const beforeEach = (to: any) => {
   if (to.path == '/login') {
     return
   }
@@ -12,7 +12,7 @@ export const beforeEach = async (to) => {
     return '/login'
   }
 
-  // 动态添加路由
+  //动态添加路由
   initRouter()
 
   //当前路由没有匹配到任何路由记录
@@ -35,22 +35,23 @@ interface Child {
   alwaysShow?: boolean | undefined
   query?: string | undefined
 }
+
 interface Child extends Omit<Parent, 'children'> {
   children?: Child[] | null
 }
 
-//1. 动态添加路由
+//1. 动态添加路由 => 整个过程
 const initRouter = () => {
   let menu: Parent[] = useMenuStore().menu
-  let menuRouter = filterRouter(menu)
+  let menuRouter: Child[] = filterRouter(menu)
   menuRouter = flatRoutes(menuRouter)
   menuRouter.forEach((item: any) => {
     router.addRoute(item.parentView == 'layout' ? 'layout' : '', item)
   })
 }
 
-// 2.把component重构为函数
-const filterRouter = (menu: Parent[]) => {
+//2. 把component 重构成 箭头函数的形式
+const filterRouter = (menu: Parent[]): Child[] => {
   let arrRouter: Child[] = []
   menu.forEach((item: any) => {
     var route: Child = {
@@ -67,7 +68,7 @@ const filterRouter = (menu: Parent[]) => {
   return arrRouter
 }
 
-// 3. 对于component的调整
+//3. 对于component的调整
 const modules: Record<string, () => Promise<any>> = import.meta.glob('@renderer/views/**/*.vue')
 const modulesMap: Record<string, () => Promise<any>> = {}
 
@@ -90,6 +91,7 @@ const loadComponent = (component: string | null): (() => Promise<any>) | undefin
   }
   return
 }
+
 //5. 路由扁平化
 const flatRoutes = (routes: Child[], breadcrumb: Child[] = []): Child[] => {
   let res: Child[] = []
@@ -117,8 +119,8 @@ const flatRoutes = (routes: Child[], breadcrumb: Child[] = []): Child[] => {
   })
   return res
 }
-//全局后置导航守卫
+
+//后置
 export const afterEach = () => {
-  //...
-  console.log('afterEach')
+  console.log('后置')
 }

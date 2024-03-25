@@ -48,7 +48,12 @@
       </div>
     </div>
     <!--右侧组件-->
-    <div class="aminui-body"><router-view /></div>
+    <div class="aminui-body">
+      <top-bar>
+        <user-bar></user-bar>
+      </top-bar>
+      <router-view />
+    </div>
   </section>
 </template>
 
@@ -59,6 +64,9 @@ import { ref } from 'vue'
 import { onBeforeMount } from 'vue'
 import NavMenu from './components/NavMenu.vue'
 import { useRoute } from 'vue-router'
+import TopBar from './components/TopBar.vue'
+import UserBar from './components/UserBar.vue'
+import { watch } from 'vue'
 
 const route = useRoute()
 const menu = ref<Parent[]>([])
@@ -79,15 +87,18 @@ const tabMenu = (item: Parent) => {
   pmenu.value = item
   //切换二级菜单数据
   nextMenu.value = item.children
-  console.log(nextMenu.value)
 }
-
+watch(route, () => {
+  console.log(route.meta.breadcrumb, 'meta')
+})
 const routesPath = () => {
-  const currentRoute = (route.meta.breadcrumb as Parent[])[0]
-  //切换一级数据
-  pmenu.value = currentRoute
-  //二级菜单数据
-  nextMenu.value = currentRoute.children
+  if (route.meta.breadcrumb) {
+    const currentRoute = (route.meta.breadcrumb as Parent[])[0] || null
+    //切换一级数据
+    pmenu.value = currentRoute
+    //二级菜单数据
+    nextMenu.value = currentRoute.children
+  }
 }
 </script>
 
@@ -110,19 +121,22 @@ const routesPath = () => {
     .aminui-side-split-top {
       height: 49px;
       -webkit-app-region: drag;
+
+      a {
+        display: inline-block;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .logo {
+        height: 30px;
+        vertical-align: bottom;
+      }
     }
-    .aminui-side-split-top a {
-      display: inline-block;
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .aminui-side-split-top .logo {
-      height: 30px;
-      vertical-align: bottom;
-    }
+
     .adminui-side-split-scroll {
       overflow: auto;
       overflow-x: hidden;
@@ -195,6 +209,10 @@ const routesPath = () => {
     .adminui-side-bottom:hover {
       color: var(--el-color-primary);
     }
+  }
+
+  .aminui-body {
+    flex: 1;
   }
 }
 </style>
