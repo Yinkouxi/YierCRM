@@ -52,6 +52,7 @@
       <top-bar>
         <user-bar></user-bar>
       </top-bar>
+      <tag-bar />
       <router-view />
     </div>
   </section>
@@ -66,6 +67,8 @@ import NavMenu from './components/NavMenu.vue'
 import { useRoute } from 'vue-router'
 import TopBar from './components/TopBar.vue'
 import UserBar from './components/UserBar.vue'
+import TagBar from './components/TagBar.vue'
+
 import { watch } from 'vue'
 
 const route = useRoute()
@@ -88,9 +91,6 @@ const tabMenu = (item: Parent) => {
   //切换二级菜单数据
   nextMenu.value = item.children
 }
-watch(route, () => {
-  console.log(route.meta.breadcrumb, 'meta')
-})
 const routesPath = () => {
   if (route.meta.breadcrumb) {
     const currentRoute = (route.meta.breadcrumb as Parent[])[0] || null
@@ -100,6 +100,10 @@ const routesPath = () => {
     nextMenu.value = currentRoute.children
   }
 }
+
+watch(route, () => {
+  routesPath()
+})
 </script>
 
 <style lang="less" scoped>
