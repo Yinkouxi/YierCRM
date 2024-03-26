@@ -2,13 +2,11 @@
   <section class="aminui-wrapper">
     <!--1级菜单-->
     <div class="aminui-side-split">
-      <!-- logo -->
       <div class="aminui-side-split-top">
         <router-link to="/">
           <img class="logo" src="../assets/images/logo-r.png" />
         </router-link>
       </div>
-      <!-- 1级菜单图标 -->
       <div class="adminui-side-split-scroll">
         <el-scrollbar>
           <ul>
@@ -39,7 +37,7 @@
       <div class="adminui-side-scroll">
         <el-scrollbar>
           <el-menu router :default-active="route.path" :collapse="menuIsCollapse">
-            <nav-menu :next-menu="nextMenu" />
+            <NavMenu :nextMenu="nextMenu"></NavMenu>
           </el-menu>
         </el-scrollbar>
       </div>
@@ -52,27 +50,26 @@
     </div>
     <!--右侧组件-->
     <div class="aminui-body">
-      <top-bar>
-        <user-bar></user-bar>
-      </top-bar>
-      <tag-bar />
-      <router-view />
+      <TopBar>
+        <UserBar></UserBar>
+      </TopBar>
+      <TagBar></TagBar>
+      <div class="aminui-main">
+        <router-view />
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { Parent } from '@interface/user'
+import { onBeforeMount, ref, watch } from 'vue'
 import { useMenuStore } from '@store/useMenuStore'
-import { ref } from 'vue'
-import { onBeforeMount } from 'vue'
+import { Parent } from '@interface/user'
 import NavMenu from './components/NavMenu.vue'
-import { useRoute } from 'vue-router'
 import TopBar from './components/TopBar.vue'
 import UserBar from './components/UserBar.vue'
 import TagBar from './components/TagBar.vue'
-
-import { watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const menu = ref<Parent[]>([])
@@ -80,9 +77,8 @@ const pmenu = ref<Parent>({})
 const nextMenu = ref<Parent[] | undefined>([])
 
 onBeforeMount(() => {
-  // 渲染进程向主进程通信、重置页面大小
   window.electron.ipcRenderer.invoke('resize-window')
-  // 一级菜单数据
+  //一级菜单数据
   menu.value = useMenuStore().menu
   routesPath()
 })
@@ -94,16 +90,13 @@ const tabMenu = (item: Parent) => {
   //切换二级菜单数据
   nextMenu.value = item.children
 }
+
 const routesPath = () => {
-  if (route.meta.breadcrumb) {
-    const currentRoute = (route.meta.breadcrumb as Parent[])[0] || null
-    //切换一级数据
-    pmenu.value = currentRoute
-    //二级菜单数据
-    nextMenu.value = currentRoute.children
-  } else {
-    console.log('no', route.meta.breadcrumb)
-  }
+  const currentRoute = (route.meta.breadcrumb as Parent[])[0]
+  //切换一级数据
+  pmenu.value = currentRoute
+  //二级菜单数据
+  nextMenu.value = currentRoute.children
 }
 
 watch(route, () => {
@@ -117,7 +110,7 @@ const toggle_menuIsCollapse = () => {
 }
 </script>
 
-<style lang="less" scoped>
+<style scoped lang="less">
 .aminui-wrapper {
   display: flex;
   width: 100vw;
@@ -129,7 +122,6 @@ const toggle_menuIsCollapse = () => {
     flex-direction: column;
     width: 65px;
     height: 100vh;
-    overflow: hidden;
     background: #222b45;
     .aminui-side-split-top {
       height: 49px;
@@ -221,10 +213,16 @@ const toggle_menuIsCollapse = () => {
     width: 65px;
   }
   .aminui-body {
+    display: flex;
+    flex-direction: column;
     flex: 1;
   }
 }
 .el-menu {
   border-right: 0px;
+}
+.aminui-main {
+  overflow: auto;
+  flex: 1;
 }
 </style>
