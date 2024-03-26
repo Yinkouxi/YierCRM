@@ -22,7 +22,13 @@ import i18n from './locales'
 const store = createPinia()
 store.use(piniaPluginPersist)
 
+//全局混入
+import useDicts from '@mixins/DIctsPlugin'
+import { dicts } from '@mixins/DIctsPlugin'
+app.config.globalProperties.$dicts = dicts;
+
 app.use(router)
 app.use(store)
 app.use(i18n)
+app.use(useDicts)
 app.mount('#app')

@@ -20,8 +20,12 @@
                   <el-col :span="9">
                     <el-form-item label="状态">
                       <el-select placeholder="请选择启动状态">
-                        <el-option>启用</el-option>
-                        <el-option>禁用</el-option>
+                        <el-option
+                          v-for="item in dicts.system_global_status"
+                          :key="item.id"
+                          :label="item.k"
+                          :value="item.v"
+                        ></el-option>
                       </el-select>
                     </el-form-item>
                   </el-col>
@@ -78,16 +82,22 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount } from 'vue'
+import { getCurrentInstance, onBeforeMount } from 'vue'
 import { ref } from 'vue'
 import { rolePage } from '@api/role'
 import { Role } from '@interface/user'
-import type { TableColumnCtx } from "element-plus";
-import tool from "@utils/tool";
+import type { TableColumnCtx } from 'element-plus'
+import tool from '@utils/tool'
+import { ComponentInternalInstance } from 'vue'
+import { dicts } from '@mixins/DIctsPlugin'
 
 const tableData = ref<Role[]>([])
 
 onBeforeMount(() => {
+  const { proxy } = getCurrentInstance() as ComponentInternalInstance
+  if (proxy) {
+    ;(proxy as any).getDicts(['system_global_status', 'system_global_gender'])
+  }
   getRolePage()
 })
 const getRolePage = async () => {
