@@ -6,20 +6,23 @@
           <el-tab-pane label="角色列表">
             <!--form-->
             <el-card class="card-container">
-              <el-form>
+              <el-form :model="roleForm">
                 <el-row :gutter="15">
                   <el-col :span="8">
                     <el-form-item label="角色名称">
-                      <el-input placeholder="请输入角色编码"></el-input>
+                      <el-input placeholder="请输入角色编码" v-model="roleForm.roleName"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="7">
                     <el-form-item label="角色编码">
-                      <el-input placeholder="请输入角色编码"></el-input> </el-form-item
+                      <el-input
+                        placeholder="请输入角色编码"
+                        v-model="roleForm.rolePerm"
+                      ></el-input> </el-form-item
                   ></el-col>
                   <el-col :span="9">
                     <el-form-item label="状态">
-                      <el-select placeholder="请选择启动状态">
+                      <el-select placeholder="请选择启动状态" v-model="roleForm.enabled">
                         <el-option
                           v-for="item in dicts.system_global_status"
                           :key="item.id"
@@ -31,8 +34,8 @@
                   </el-col>
                   <el-col :span="8">
                     <el-form-item>
-                      <el-button icon="search" type="primary">搜索</el-button>
-                      <el-button icon="refreshLeft">重置</el-button>
+                      <el-button icon="search" type="primary" @click="getRolePage">搜索</el-button>
+                      <el-button icon="refreshLeft" @click="roleReset">重置</el-button>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -92,7 +95,13 @@ import { ComponentInternalInstance } from 'vue'
 import { dicts } from '@mixins/DIctsPlugin'
 
 const tableData = ref<Role[]>([])
-
+const roleForm = ref({
+  current: 1,
+  size: 10,
+  roleName: '',
+  rolePerm: '',
+  enabled: ''
+})
 onBeforeMount(() => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
   if (proxy) {
@@ -101,8 +110,7 @@ onBeforeMount(() => {
   getRolePage()
 })
 const getRolePage = async () => {
-  let res = await rolePage({ current: 1, size: 10 })
-  console.log(res)
+  let res = await rolePage(roleForm.value)
   let { records } = res.data
   tableData.value = records
 }
@@ -111,6 +119,18 @@ const getRolePage = async () => {
 const formatter = (row: Role, column: TableColumnCtx<Role>, timeValue: number) => {
   return tool.dateFormat(timeValue)
 }
+
+//重置
+const roleReset = () => {
+  roleForm.value = {
+    current: 1,
+    size: 10,
+    roleName: "",
+    rolePerm: "",
+    enabled: "",
+  };
+  getRolePage();
+};
 </script>
 
 <style scoped less>
