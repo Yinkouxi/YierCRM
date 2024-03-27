@@ -75,6 +75,18 @@
                   </template>
                 </el-table-column>
               </el-table>
+              <!-- 分页器 -->
+              <div class="pagination">
+                <el-pagination
+                  v-model:current-page="currentPage"
+                  v-model:page-size="pageSize"
+                  :page-sizes="[10, 50, 100, 200]"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total=totals
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                />
+              </div>
             </el-card>
           </el-tab-pane>
           <el-tab-pane label="回收站">回收站</el-tab-pane>
@@ -102,6 +114,7 @@ const roleForm = ref({
   rolePerm: '',
   enabled: ''
 })
+const totals = ref(0)
 onBeforeMount(() => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
   if (proxy) {
@@ -111,7 +124,8 @@ onBeforeMount(() => {
 })
 const getRolePage = async () => {
   let res = await rolePage(roleForm.value)
-  let { records } = res.data
+  let { records,total } = res.data
+  totals.value = total
   tableData.value = records
 }
 
@@ -125,12 +139,25 @@ const roleReset = () => {
   roleForm.value = {
     current: 1,
     size: 10,
-    roleName: "",
-    rolePerm: "",
-    enabled: "",
-  };
-  getRolePage();
-};
+    roleName: '',
+    rolePerm: '',
+    enabled: ''
+  }
+  getRolePage()
+}
+
+// 分页器
+const currentPage = ref(1)
+const pageSize = ref(10)
+
+const handleSizeChange = (size: number) => {
+  roleForm.value.size = size
+  getRolePage()
+}
+const handleCurrentChange = (page: number) => {
+  roleForm.value.current = page
+  getRolePage()
+}
 </script>
 
 <style scoped less>
@@ -140,5 +167,11 @@ const roleReset = () => {
 }
 .el-table {
   font-size: 12px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: end;
+  margin-top: 15px;
 }
 </style>

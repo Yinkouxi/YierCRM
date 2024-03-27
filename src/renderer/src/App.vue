@@ -1,11 +1,26 @@
 <template>
   <div class="app">
-    <router-view></router-view>
+    <el-config-provider :locale="locale">
+      <router-view></router-view>
+    </el-config-provider>
   </div>
 </template>
 
 <script setup lang="ts">
+import { getCurrentInstance } from 'vue'
+import { ComponentInternalInstance } from 'vue'
+import { computed } from 'vue'
 import { ref, onBeforeMount } from 'vue'
+import { VueI18n } from 'vue-i18n'
+
+let { proxy } = getCurrentInstance() as ComponentInternalInstance
+
+let locale = computed(() => {
+  let i18n = proxy?.$i18n as VueI18n
+  return i18n.messages[i18n.locale].el
+  // console.log(proxy?.$i18n.messages, '-', proxy?.$i18n.locale)
+  // proxy?.$i18n.messages=proxy?.$i18n.locale
+})
 
 // 初始化时判断是要切换暗黑模式
 onBeforeMount(() => {

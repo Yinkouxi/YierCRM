@@ -122,5 +122,4 @@ const flatRoutes = (routes: Child[], breadcrumb: Child[] = []): Child[] => {
 
 //后置
 export const afterEach = () => {
-  console.log('后置')
 }
