@@ -25,7 +25,11 @@ store.use(piniaPluginPersist)
 //全局混入
 import useDicts from '@mixins/DIctsPlugin'
 import { dicts } from '@mixins/DIctsPlugin'
-app.config.globalProperties.$dicts = dicts;
+app.config.globalProperties.$dicts = dicts
+
+//全局组件-分页
+import pagination from '@components/pagination/index.vue'
+app.component('pagination', pagination)
 
 app.use(router)
 app.use(store)

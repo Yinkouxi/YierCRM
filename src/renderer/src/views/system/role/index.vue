@@ -76,17 +76,12 @@
                 </el-table-column>
               </el-table>
               <!-- 分页器 -->
-              <div class="pagination">
-                <el-pagination
-                  v-model:current-page="currentPage"
-                  v-model:page-size="pageSize"
-                  :page-sizes="[10, 50, 100, 200]"
-                  layout="total, sizes, prev, pager, next, jumper"
-                  :total=totals
-                  @size-change="handleSizeChange"
-                  @current-change="handleCurrentChange"
-                />
-              </div>
+              <pagination
+                :total="totals"
+                @update:current-page="handleCurrentPageUpdate"
+                @update:page-size="handlePageSizeUpdate"
+              >
+              </pagination>
             </el-card>
           </el-tab-pane>
           <el-tab-pane label="回收站">回收站</el-tab-pane>
@@ -105,6 +100,7 @@ import type { TableColumnCtx } from 'element-plus'
 import tool from '@utils/tool'
 import { ComponentInternalInstance } from 'vue'
 import { dicts } from '@mixins/DIctsPlugin'
+// import pagination from '@components/pagination/index.vue'
 
 const tableData = ref<Role[]>([])
 const roleForm = ref({
@@ -124,7 +120,7 @@ onBeforeMount(() => {
 })
 const getRolePage = async () => {
   let res = await rolePage(roleForm.value)
-  let { records,total } = res.data
+  let { records, total } = res.data
   totals.value = total
   tableData.value = records
 }
@@ -146,16 +142,14 @@ const roleReset = () => {
   getRolePage()
 }
 
-// 分页器
-const currentPage = ref(1)
-const pageSize = ref(10)
-
-const handleSizeChange = (size: number) => {
-  roleForm.value.size = size
+//分页-页码
+const handleCurrentPageUpdate = (page: number) => {
+  roleForm.value.current = page
   getRolePage()
 }
-const handleCurrentChange = (page: number) => {
-  roleForm.value.current = page
+//分页-一页显示多少条
+const handlePageSizeUpdate = (page: number) => {
+  roleForm.value.size = page
   getRolePage()
 }
 </script>
