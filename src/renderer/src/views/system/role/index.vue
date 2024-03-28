@@ -44,7 +44,7 @@
             <!--table-->
             <el-card>
               <div class="toolbar">
-                <el-button icon="plus" type="primary">新增</el-button>
+                <el-button icon="plus" type="primary" @click="btnRoleDialog">新增</el-button>
               </div>
               <el-table :data="tableData" border>
                 <el-table-column type="selection"></el-table-column>
@@ -88,6 +88,13 @@
         </el-tabs>
       </el-main>
     </el-container>
+    <role-dialog
+      v-if="dialogVisible"
+      v-model:dialogVisible="dialogVisible"
+      @roleChange="getRolePage"
+
+    >
+    </role-dialog>
   </div>
 </template>
 
@@ -100,6 +107,7 @@ import type { TableColumnCtx } from 'element-plus'
 import tool from '@utils/tool'
 import { ComponentInternalInstance } from 'vue'
 import { dicts } from '@mixins/DIctsPlugin'
+import RoleDialog from '@views/system/role/RoleDialog.vue'
 // import pagination from '@components/pagination/index.vue'
 
 const tableData = ref<Role[]>([])
@@ -152,6 +160,15 @@ const handlePageSizeUpdate = (page: number) => {
   roleForm.value.size = page
   getRolePage()
 }
+
+// 控制dialog显示
+const dialogVisible = ref<boolean>(false)
+// 新增角色
+const btnRoleDialog = () => {
+  dialogVisible.value = true
+}
+
+
 </script>
 
 <style scoped less>
