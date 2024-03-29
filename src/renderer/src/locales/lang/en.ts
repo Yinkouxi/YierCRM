@@ -18,6 +18,7 @@ export default {
     PWError: 'Please input a password',
     admin: 'Administrator',
     user: 'User',
+    captcha:'please input captcha',
     mobilePlaceholder: 'Mobile',
     mobileError: 'Please input mobile',
     mobileError1: 'Please input right mobile',

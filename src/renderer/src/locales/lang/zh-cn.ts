@@ -18,6 +18,7 @@ export default {
     PWError: '请输入密码',
     admin: '管理员',
     user: '用户',
+    captcha:'请输入验证码',
     mobilePlaceholder: '手机号码',
     mobileError: '请输入手机号码',
     mobileError1:'请输入正确手机号码',

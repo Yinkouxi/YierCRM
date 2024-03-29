@@ -5,7 +5,7 @@
         v-model="ruleForm.username"
         prefix-icon="user"
         clearable
-        :placeholder="$t('login.mobileError')"
+        :placeholder="$t('login.userError')"
         @keyup.enter="login(ruleFormRef)"
       ></el-input>
     </el-form-item>
@@ -26,7 +26,7 @@
           v-model="ruleForm.captcha"
           prefix-icon="CircleCheck"
           clearable
-          :placeholder="$t('login.smsError')"
+          :placeholder="$t('login.captcha')"
         ></el-input>
         <el-image class="code" :src="captchaUrl" @click="getCaptcha"></el-image>
       </div>

@@ -68,7 +68,7 @@
             </el-card>
             <el-card style="margin-top: 15px">
               <div class="toolbar" style="margin-bottom: 15px">
-                <el-button type="primary" icon="plus">新增</el-button>
+                <el-button type="primary" icon="plus" @click="btnUserDialog">新增</el-button>
               </div>
               <el-table :data="userList" border>
                 <el-table-column align="center" type="selection" />
@@ -118,6 +118,13 @@
         </el-tabs>
       </el-main>
     </el-container>
+    <userDialog
+      v-if="dialogVisible"
+      v-model:dialogVisible="dialogVisible"
+      @userChange="getUser"
+      @changeUser="getUser"
+      :userUpdateId="userUpdateId"
+    ></userDialog>
   </div>
 </template>
 
@@ -126,6 +133,8 @@ import { dicts } from '@mixins/DIctsPlugin'
 
 import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
 import { userPage, Record, userDel } from '@api/systemUser'
+import userDialog from './userDialog.vue'
+
 
 let roleForm = reactive({
   current: '1',
@@ -183,6 +192,19 @@ const userReset = () => {
     unitId: ''
   })
   getUser()
+}
+
+//控制dialog显示
+const dialogVisible = ref<boolean>(false)
+const userUpdateId = ref('')
+//新增
+const btnUserDialog = (id: string) => {
+  if (typeof id == 'string') {
+    userUpdateId.value = id
+  } else {
+    userUpdateId.value = ''
+  }
+  dialogVisible.value = true
 }
 </script>
 
