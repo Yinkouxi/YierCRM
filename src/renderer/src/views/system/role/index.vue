@@ -65,9 +65,15 @@
                   <template #default="{ row }">
                     <div class="sys-table-main-actions">
                       <el-link icon="edit" type="primary" :underline="false">编辑</el-link>
-                      <el-link icon="delete" type="danger" :underline="false" style="margin: 0 8px"
-                        >删除</el-link
+                      <el-link
+                        icon="delete"
+                        type="danger"
+                        :underline="false"
+                        style="margin: 0 8px"
+                        @click="roleDel(row.id)"
                       >
+                        删除
+                      </el-link>
                       <router-link class="el-link el-link--error" type="success" to="/"
                         >分配用户</router-link
                       >
@@ -92,7 +98,6 @@
       v-if="dialogVisible"
       v-model:dialogVisible="dialogVisible"
       @roleChange="getRolePage"
-
     >
     </role-dialog>
   </div>
@@ -101,7 +106,7 @@
 <script setup lang="ts">
 import { getCurrentInstance, onBeforeMount } from 'vue'
 import { ref } from 'vue'
-import { rolePage } from '@api/role'
+import { roleDelete, rolePage } from '@api/role'
 import { Role } from '@interface/user'
 import type { TableColumnCtx } from 'element-plus'
 import tool from '@utils/tool'
@@ -168,7 +173,29 @@ const btnRoleDialog = () => {
   dialogVisible.value = true
 }
 
-
+//删除角色
+import { ElMessage, ElMessageBox } from 'element-plus'
+const roleDel = (id: string) => {
+  ElMessageBox.confirm('是否删除角色', {
+    type: 'error',
+    confirmButtonText: '删除'
+  })
+    .then(async () => {
+      let res = await roleDelete(id)
+      if (res.code != '200') return
+      ElMessage({
+        type: 'success',
+        message: '删除成功'
+      })
+      getRolePage()
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消删除'
+      })
+    })
+}
 </script>
 
 <style scoped less>
