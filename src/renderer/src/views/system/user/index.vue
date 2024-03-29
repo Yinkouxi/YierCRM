@@ -60,8 +60,8 @@
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
-                    <el-button type="primary" icon="search">搜索</el-button>
-                    <el-button icon="refresh">重置</el-button>
+                    <el-button type="primary" icon="search" @click="getUser">搜索</el-button>
+                    <el-button icon="refresh" @click="userReset">重置</el-button>
                   </el-col>
                 </el-row>
               </el-form>
@@ -167,10 +167,23 @@ const handlePageSizeUpdate = (page: number) => {
   roleForm.size = page.toString()
   getUser()
 }
+//重置
+const userReset = () => {
+  // 重置roleForm数据，重新请求user列表
+  Object.assign(roleForm, {
+    current: '1',
+    size: '10',
+    total: '0',
+    username: '',
+    realName: '',
+    email: '',
+    phone: '',
+    gender: '',
+    enabled: '',
+    unitId: ''
+  })
+  getUser()
+}
 </script>
 
-<style lang="less" scoped>
-.user {
-  color: blueviolet;
-}
-</style>
+<style lang="less" scoped></style>
