@@ -1,5 +1,10 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="新增角色" width="600px" @close="close">
+  <el-dialog
+    v-model="dialogVisible"
+    :title="roleUpdateId != '' ? '修改角色' : '新增角色'"
+    width="600px"
+    @close="close"
+  >
     <template #default>
       <el-form :model="roleForm">
         <el-form-item label="角色名称">
@@ -61,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { IRoleMenuItem, menuTree, roleAdd } from '@api/role'
+import { IRoleMenuItem, menuTree, roleAdd, roleDetail, roleUpdate } from '@api/role'
 import { dicts } from '@mixins/DIctsPlugin'
 import { getCurrentInstance } from 'vue'
 import { ComponentInternalInstance } from 'vue'
@@ -74,11 +79,15 @@ const props = defineProps({
   dialogVisible: {
     type: Boolean,
     default: false
+  },
+  roleUpdateId: {
+    type: String,
+    default: ''
   }
 })
 
 const dialogVisible = ref(props.dialogVisible)
-
+const roleUpdateId = ref(props.roleUpdateId)
 // 表单数据
 const roleForm: {
   id?: string | undefined
@@ -92,6 +101,8 @@ const roleForm: {
   enabled: '1', //是否启用（0：禁用；1：启用）
   descript: '' //描述
 })
+
+const menuTreeRef = ref<InstanceType<typeof ElTree>>()
 onBeforeMount(async () => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
   if (proxy) {
@@ -106,6 +117,19 @@ onBeforeMount(async () => {
   })
   let { records } = menuData.data
   permission.treeList = normalizeMenuList(records)
+
+  // 编辑获取详情
+  if (roleUpdateId.value != '') {
+    let updateData = await roleDetail(roleUpdateId.value)
+    let data = updateData.data
+    let { roleName, rolePerm, enabled, descript, id } = data.role
+    roleForm.id = id
+    roleForm.roleName = roleName
+    roleForm.rolePerm = rolePerm
+    roleForm.enabled = enabled
+    roleForm.descript = descript?.toString()
+    menuTreeRef.value?.setCheckedKeys(data.permissions)
+  }
 })
 
 // 关闭dialog
@@ -132,8 +156,6 @@ let permission: IPermission = reactive({
   selectAll: false
 })
 
-const menuTreeRef = ref<InstanceType<typeof ElTree>>()
-
 //展开 & 折叠
 const toggleTreeCollapse = (e: boolean) => {
   let nodeMap = menuTreeRef.value!.store.nodesMap
@@ -149,16 +171,32 @@ const toggleTreeChecked = (e: boolean) => {
     nodeMap[key].checked = e
   })
 }
-// 确认
-const onSubmit = async () => {
-  let res = await roleAdd({
+//新增
+const addRole = () => {
+  roleAdd({
     permissionIds: menuTreeRef.value!.getCheckedKeys() as string[],
     ...roleForm
   })
+}
 
-  if (res.code != '200') return
-  close()
+//修改
+const updateRole = () => {
+  roleUpdate({
+    permissionIds: menuTreeRef.value!.getCheckedKeys() as string[],
+    ...roleForm
+  })
+}
+
+//确认
+const onSubmit = async () => {
+  if (roleUpdateId.value != '') {
+    await updateRole()
+  } else {
+    await addRole()
+  }
   emit('roleChange')
+  emit('changeRole')
+  close()
 }
 </script>
 

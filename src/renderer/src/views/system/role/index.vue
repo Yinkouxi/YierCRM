@@ -64,7 +64,13 @@
                 <el-table-column label="操作" align="center" width="220" fixed="right">
                   <template #default="{ row }">
                     <div class="sys-table-main-actions">
-                      <el-link icon="edit" type="primary" :underline="false">编辑</el-link>
+                      <el-link
+                        icon="edit"
+                        type="primary"
+                        :underline="false"
+                        @click="btnRoleDialog(row.id)"
+                        >编辑</el-link
+                      >
                       <el-link
                         icon="delete"
                         type="danger"
@@ -98,6 +104,8 @@
       v-if="dialogVisible"
       v-model:dialogVisible="dialogVisible"
       @roleChange="getRolePage"
+      @changeRole="getRolePage"
+      :roleUpdateId="roleUpdateId"
     >
     </role-dialog>
   </div>
@@ -136,6 +144,8 @@ const getRolePage = async () => {
   let { records, total } = res.data
   totals.value = total
   tableData.value = records
+  // console.log(roleForm,'form')
+  // console.log('roleChaneg')
 }
 
 //时间戳转换为标准时间
@@ -166,10 +176,16 @@ const handlePageSizeUpdate = (page: number) => {
   getRolePage()
 }
 
-// 控制dialog显示
+//控制dialog显示
 const dialogVisible = ref<boolean>(false)
-// 新增角色
-const btnRoleDialog = () => {
+const roleUpdateId = ref('')
+//新增角色-按钮
+const btnRoleDialog = (id: string) => {
+  if (typeof id == 'string') {
+    roleUpdateId.value = id
+  } else {
+    roleUpdateId.value = ''
+  }
   dialogVisible.value = true
 }
 
