@@ -220,13 +220,12 @@ const close = () => {
 
 //添加
 const addUser = () => {
-  let res = userAdd(userForm)
+  return userAdd(userForm)
 }
 
 //修改
 const updateUser = () => {
- let res = userUpdate(userForm)
- console.log(res)
+ return userUpdate(userForm)
 }
 
 //确认

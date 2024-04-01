@@ -104,7 +104,6 @@
       v-if="dialogVisible"
       v-model:dialogVisible="dialogVisible"
       @roleChange="getRolePage"
-      @changeRole="getRolePage"
       :roleUpdateId="roleUpdateId"
     >
     </role-dialog>

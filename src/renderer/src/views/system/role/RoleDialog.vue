@@ -173,7 +173,7 @@ const toggleTreeChecked = (e: boolean) => {
 }
 //新增
 const addRole = () => {
-  roleAdd({
+  return roleAdd({
     permissionIds: menuTreeRef.value!.getCheckedKeys() as string[],
     ...roleForm
   })
@@ -181,7 +181,7 @@ const addRole = () => {
 
 //修改
 const updateRole = () => {
-  roleUpdate({
+  return roleUpdate({
     permissionIds: menuTreeRef.value!.getCheckedKeys() as string[],
     ...roleForm
   })
@@ -195,7 +195,6 @@ const onSubmit = async () => {
     await addRole()
   }
   emit('roleChange')
-  emit('changeRole')
   close()
 }
 </script>

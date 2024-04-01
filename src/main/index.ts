@@ -59,12 +59,16 @@ function createWindow(): void {
   ipcMain.handle('resize-window', () => {
     //窗口大小
     mainWindow.setSize(1200, 720)
-    //窗口最小值
-    mainWindow.setMinimumSize(1000, 500)
     //窗口居中
     mainWindow.center()
     //窗口大小可以修改
     mainWindow.setResizable(true)
+    // 设置窗口是否可以由用户手动最大化
+    mainWindow.setMenu(null)
+    // 设置用户是否可以调节窗口尺寸
+    mainWindow.setMinimizable(false)
+    //窗口最小值
+    mainWindow.setMinimumSize(1000, 500)
   })
 
   //退出登录
