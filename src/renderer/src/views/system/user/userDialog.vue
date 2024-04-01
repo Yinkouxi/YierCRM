@@ -219,7 +219,6 @@ const close = () => {
 //添加
 const addUser = () => {
   let res = userAdd(userForm)
-  console.log(res)
 }
 
 //修改
@@ -230,7 +229,6 @@ const updateUser = () => {
 //确认
 const onSubmit = async () => {
   await addUser()
-  console.log('add')
   emit('userChange')
   emit('changeUser')
   close()

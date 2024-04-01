@@ -31,6 +31,10 @@ app.config.globalProperties.$dicts = dicts
 import pagination from '@components/pagination/index.vue'
 app.component('pagination', pagination)
 
+import { AuthDirectives } from './directives/auths.directives'
+app.directive(AuthDirectives.name,AuthDirectives);
+
+
 app.use(router)
 app.use(store)
 app.use(i18n)

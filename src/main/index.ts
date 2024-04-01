@@ -95,6 +95,7 @@ function createWindow(): void {
       mainWindow.setFullScreen(true)
     }
   })
+  process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
   mainWindow.webContents.openDevTools()
 

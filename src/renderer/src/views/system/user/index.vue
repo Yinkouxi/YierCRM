@@ -133,7 +133,7 @@ import { dicts } from '@mixins/DIctsPlugin'
 
 import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
 import { userPage, Record, userDel } from '@api/systemUser'
-import userDialog from './userDialog.vue'
+import UserDialog from './UserDialog.vue'
 
 
 let roleForm = reactive({
