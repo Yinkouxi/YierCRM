@@ -99,7 +99,12 @@
                   <template #default="{ row }">
                     <div class="sys-table-main-actions">
                       <el-link icon="edit" :underline="false" type="primary">编辑</el-link>
-                      <el-link icon="delete" :underline="false" type="danger" style="margin: 0 15px"
+                      <el-link
+                        icon="delete"
+                        :underline="false"
+                        type="danger"
+                        style="margin: 0 15px"
+                        @click="del(row.id)"
                         >删除</el-link
                       >
                       <el-link icon="Refresh" :underline="false" type="success">重置密码</el-link>
@@ -134,7 +139,6 @@ import { dicts } from '@mixins/DIctsPlugin'
 import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
 import { userPage, Record, userDel } from '@api/systemUser'
 import UserDialog from './UserDialog.vue'
-
 
 let roleForm = reactive({
   current: '1',
@@ -205,6 +209,30 @@ const btnUserDialog = (id: string) => {
     userUpdateId.value = ''
   }
   dialogVisible.value = true
+}
+
+//删除用户
+import { ElMessage, ElMessageBox } from 'element-plus'
+const del = (id: string) => {
+  ElMessageBox.confirm('是否删除角色', {
+    type: 'error',
+    confirmButtonText: '删除'
+  })
+    .then(async () => {
+      let res = await userDel(id)
+      if (res.code != '200') return
+      ElMessage({
+        type: 'success',
+        message: '删除成功'
+      })
+      getUser()
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '删除失败'
+      })
+    })
 }
 </script>
 
