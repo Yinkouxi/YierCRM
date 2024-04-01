@@ -98,7 +98,13 @@
                 <el-table-column label="操作" width="280" fixed="right" align="center">
                   <template #default="{ row }">
                     <div class="sys-table-main-actions">
-                      <el-link icon="edit" :underline="false" type="primary">编辑</el-link>
+                      <el-link
+                        icon="edit"
+                        :underline="false"
+                        type="primary"
+                        @click="btnUserDialog(row.id)"
+                        >编辑</el-link
+                      >
                       <el-link
                         icon="delete"
                         :underline="false"
@@ -201,6 +207,7 @@ const userReset = () => {
 //控制dialog显示
 const dialogVisible = ref<boolean>(false)
 const userUpdateId = ref('')
+
 //新增
 const btnUserDialog = (id: string) => {
   if (typeof id == 'string') {

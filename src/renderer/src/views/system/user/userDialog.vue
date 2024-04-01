@@ -198,7 +198,9 @@ onBeforeMount(async () => {
   if (userUpdateId.value != '') {
     let updateData = await userGet(userUpdateId.value)
     let { postIds, roleIds, user } = updateData.data
+    console.log(updateData)
     Object.assign(userForm, user)
+    console.log(userForm)
     userForm.roleIds = roleIds
     userForm.postIds = postIds
   }
@@ -223,14 +225,18 @@ const addUser = () => {
 
 //修改
 const updateUser = () => {
-  userUpdate(userForm)
+ let res = userUpdate(userForm)
+ console.log(res)
 }
 
 //确认
 const onSubmit = async () => {
-  await addUser()
+  if (userUpdateId.value != '') {
+    await updateUser()
+  } else {
+    await addUser()
+  }
   emit('userChange')
-  emit('changeUser')
   close()
 }
 </script>
