@@ -16,7 +16,7 @@ export interface IsubjectPage {
 	updateBy: string | null;
 	updateTime: number | null;
 }
- 
+
 interface IsubjectPageData {
 	code: string;
 	msg: string;
@@ -25,10 +25,10 @@ interface IsubjectPageData {
 	  total: number;
 	  size: number;
 	  current: number;
-	  orders: any[]; 
+	  orders: any[];
 	  optimizeCountSql: boolean;
 	  searchCount: boolean;
-	  countId: any; 
+	  countId: any;
 	  maxLimit: any;
 	  pages: number;
 	};
@@ -38,7 +38,6 @@ interface IsubjectPageData {
 export const subjectPage = ( data:IsubjectList ):Promise<IsubjectPageData>=>{
 	return http.get<IsubjectPageData>('/crm/teach/subject/page',data)
 }
-
 
 
 export interface IGradeData {
@@ -54,7 +53,7 @@ export interface IGradeData {
 	updateBy: string | null;
 	updateTime: number | null;
 }
-  
+
 interface IGradeAll {
 	code: string;
 	msg: string;

@@ -33,7 +33,7 @@
             </el-card>
             <el-card shadow="never">
               <div class="toolbar" style="margin-bottom: 15px">
-                <el-button type="primary" icon="Plus">添加科目</el-button>
+                <el-button type="primary" icon="Plus" @click="btnSubjectDialog">添加科目</el-button>
                 <el-button type="default" icon="Printer">导出</el-button>
               </div>
               <el-table
@@ -86,8 +86,8 @@
                             style="margin-left: 10px"
                             type="danger"
                             :underline="false"
-                            >删除</el-link
-                          >
+                            >删除
+                          </el-link>
                         </template>
                       </el-table-column>
                     </el-table>
@@ -102,15 +102,22 @@
                   </template>
                 </el-table-column>
                 <el-table-column label="操作" width="150" fixed="right">
-                  <template #default="scope">
+                  <template #default="{ row }">
                     <el-link
                       :underline="false"
                       type="primary"
                       style="margin-right: 10px"
                       icon="Edit"
+                      @click="btnSubjectDialog(row.id)"
                       >编辑</el-link
                     >
-                    <el-link :underline="false" type="danger" icon="Delete">删除</el-link>
+                    <el-link
+                      :underline="false"
+                      type="danger"
+                      icon="Delete"
+                      @click="delSubject(row.id)"
+                      >删除</el-link
+                    >
                   </template>
                 </el-table-column>
               </el-table>
@@ -123,6 +130,12 @@
         </el-tabs>
       </el-main>
     </el-container>
+    <subjectDialog
+      v-if="dialogVisible"
+      v-model:dialogVisible="dialogVisible"
+      @subjectChange="getSubjectPage"
+      :subjectUpdateId="subjectUpdateId"
+    ></subjectDialog>
   </div>
 </template>
 
@@ -137,11 +150,12 @@ import {
   subjectDelete,
   subjectExport
 } from '@api/teachSubject'
+import subjectDialog from './components/subjectDialog.vue'
 
 //搜索
 const searchForm = reactive<IsubjectList>({
   current: 1,
-  size: 10,
+  size: 50,
   subjectName: '',
   enabled: ''
 })
@@ -160,6 +174,7 @@ onBeforeMount(() => {
 //科目列表
 const getSubjectPage = async () => {
   let res = await subjectPage(searchForm)
+  console.log(res, 'kkk')
   let { records } = res.data
   tableData.value = records
 }
@@ -174,6 +189,56 @@ const expandChange = async (row) => {
     subjectId: row.id
   })
   gradeList.value = res.data
+}
+
+//控制dialog显示
+const dialogVisible = ref<boolean>(false)
+const subjectUpdateId = ref('')
+//添加科目 & 编辑科目
+const btnSubjectDialog = (id: string) => {
+  console.log('id:', id)
+  if (typeof id == 'string') {
+    subjectUpdateId.value = id
+  } else {
+    subjectUpdateId.value = ''
+  }
+  dialogVisible.value = true
+}
+
+//删除科目
+import { ElMessage, ElMessageBox } from 'element-plus'
+const delSubject = (id: string) => {
+  ElMessageBox.confirm('是否删除科目', {
+    type: 'error',
+    confirmButtonText: '删除'
+  })
+    .then(async () => {
+      let res = await subjectDelete(id)
+      if (res.code != '200') return
+      ElMessage({
+        type: 'success',
+        message: '删除成功'
+      })
+      getSubjectPage()
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消删除'
+      })
+    })
+}
+
+//新建 & 修改等级
+const diaGradelogVisible = ref<boolean>(false)
+const gradeUpdateId = ref('')
+const btnGradeDialog = (id: string) => {
+  if (typeof id == 'string') {
+    gradeUpdateId.value = id
+  } else {
+    gradeUpdateId.value = ''
+  }
+  diaGradelogVisible.value = true
 }
 </script>
 
