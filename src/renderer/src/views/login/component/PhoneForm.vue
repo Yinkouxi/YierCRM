@@ -97,7 +97,6 @@ const isLogin = ref<boolean>(false)
 
 //获取验证码
 const getCode = async () => {
-  console.log('getCodeing')
   // 手机号通过校验才能发送验证码
   let validate = await ruleFormRef.value?.validateField('mobile', () => null)
   if (!validate) {
@@ -127,7 +126,6 @@ const getCode = async () => {
 
 // 登录
 const login = async (formEl: FormInstance | undefined) => {
-  console.log('login---')
   if (!formEl) return
   await formEl.validate(async (valid) => {
     if (valid) {

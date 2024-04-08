@@ -18,8 +18,6 @@ let { proxy } = getCurrentInstance() as ComponentInternalInstance
 let locale = computed(() => {
   let i18n = proxy?.$i18n as VueI18n
   return i18n.messages[i18n.locale].el
-  // console.log(proxy?.$i18n.messages, '-', proxy?.$i18n.locale)
-  // proxy?.$i18n.messages=proxy?.$i18n.locale
 })
 
 // 初始化时判断是要切换暗黑模式

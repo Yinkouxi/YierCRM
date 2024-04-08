@@ -198,9 +198,7 @@ onBeforeMount(async () => {
   if (userUpdateId.value != '') {
     let updateData = await userGet(userUpdateId.value)
     let { postIds, roleIds, user } = updateData.data
-    console.log(updateData)
     Object.assign(userForm, user)
-    console.log(userForm)
     userForm.roleIds = roleIds
     userForm.postIds = postIds
   }

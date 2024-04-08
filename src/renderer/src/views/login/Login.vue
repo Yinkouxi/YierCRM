@@ -105,7 +105,9 @@ let dinatesY = ref<number>(0)
 const { proxy } = getCurrentInstance() as ComponentInternalInstance
 //关闭软件
 const closeWin = (): void => {
-  window.electron.ipcRenderer.invoke('close-login')
+  window.electron.ipcRenderer.invoke('renderer-to-main', {
+    name: 'close-login'
+  })
 }
 
 // 换肤
@@ -134,7 +136,6 @@ const configLang = (item: { name: string; value: string }) => {
   let $i18n = proxy?.$i18n
   $i18n!.locale = item.value
   localStorage.setItem('lang', item.value)
-  // console.log(item.value)
 }
 // 拖拽
 const mousedown = (event) => {
@@ -152,7 +153,10 @@ const mousedown = (event) => {
         appX: x,
         appY: y
       }
-      window.electron.ipcRenderer.invoke('custom-adsorption', data)
+      window.electron.ipcRenderer.invoke('renderer-to-main', {
+        name: 'custom-adsorption',
+        data: data
+      })
     }
   }
   document.onmouseup = () => {

@@ -143,8 +143,6 @@ const getRolePage = async () => {
   let { records, total } = res.data
   totals.value = total
   tableData.value = records
-  // console.log(roleForm,'form')
-  // console.log('roleChaneg')
 }
 
 //时间戳转换为标准时间

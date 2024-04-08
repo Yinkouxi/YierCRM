@@ -60,7 +60,7 @@ const outLogin = () => {
         type: 'success',
         message: '退出登录'
       })
-      window.electron.ipcRenderer.invoke('out-login')
+      window.electron.ipcRenderer.invoke('renderer-to-main', { name: 'out-login' })
       localStorage.setItem('TOKEN', '')
       router.replace({
         path: '/login'
@@ -81,7 +81,9 @@ const winClose = () => {
     confirmButtonText: '退出'
   })
     .then(() => {
-      window.electron.ipcRenderer.invoke('win-close')
+      window.electron.ipcRenderer.invoke('renderer-to-main', {
+        name: 'win-close'
+      })
     })
     .catch(() => {
       ElMessage({
@@ -93,12 +95,16 @@ const winClose = () => {
 
 //最小化
 const minWin = () => {
-  window.electron.ipcRenderer.invoke('min-win')
+  window.electron.ipcRenderer.invoke('renderer-to-main', {
+    name: 'min-win'
+  })
 }
 
 //最大化
 const maxWin = () => {
-  window.electron.ipcRenderer.invoke('max-win')
+  window.electron.ipcRenderer.invoke('renderer-to-main', {
+    name: 'max-win'
+  })
 }
 </script>
 
