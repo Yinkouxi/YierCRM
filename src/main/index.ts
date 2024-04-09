@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, dialog, ipcMain } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 
 import MainFrame from './frame/MainFrame'
@@ -18,6 +18,7 @@ app.whenReady().then(() => {
   mainWindow.create()
 
   eventRouter.addApi('mainWindow', mainWindow)
+  eventRouter.addApi('dialog',dialog)
   eventRouter.addApi('app', app)
   eventRouter.addRouters(routers)
 
