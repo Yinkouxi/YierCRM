@@ -50,7 +50,7 @@
                   <el-card style="margin: 15px" shadow="never">
                     <el-button
                       type="primary"
-                      icon="el-icon-plus"
+                      icon="plus"
                       style="margin-bottom: 10px"
                       @click="btnGradeDialog"
                       >新建等级</el-button
@@ -79,17 +79,19 @@
                       <el-table-column label="操作" width="200" align="center">
                         <template #default="{ row }">
                           <el-link
-                            icon="el-icon-edit"
+                            icon="edit"
                             type="primary"
                             style="margin-left: 10px"
                             :underline="false"
+                            @click="btnGradeDialog(row.id)"
                             >修改</el-link
                           >
                           <el-link
-                            icon="el-icon-delete"
+                            icon="delete"
                             style="margin-left: 10px"
                             type="danger"
                             :underline="false"
+                            @click="gradeDel(row.id)"
                             >删除
                           </el-link>
                         </template>
@@ -219,6 +221,7 @@ const btnSubjectDialog = (id: string) => {
 
 //删除科目
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { gradeDelete } from '@api/teachSubjectGrade';
 const delSubject = (id: string) => {
   ElMessageBox.confirm('是否删除科目', {
     type: 'error',
@@ -251,6 +254,29 @@ const btnGradeDialog = (id: string) => {
     gradeUpdateId.value = ''
   }
   diaGradelogVisible.value = true
+}
+
+//删除等级
+const gradeDel = (id: string) => {
+  ElMessageBox.confirm('是否删除等级', {
+    type: 'error',
+    confirmButtonText: '删除'
+  })
+    .then(async () => {
+      let res = await gradeDelete(id)
+      if (res.code != '200') return
+      ElMessage({
+        type: 'success',
+        message: '删除成功'
+      })
+      expandChange(currentSubjectRow)
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消删除'
+      })
+    })
 }
 </script>
 
