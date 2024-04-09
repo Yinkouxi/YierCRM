@@ -19,7 +19,7 @@
     </div>
 
     <!--下载-->
-    <div class="panel-item">
+    <div class="panel-item" @click="goTask">
       <el-icon><Download /></el-icon>
     </div>
 
@@ -104,6 +104,22 @@ const minWin = () => {
 const maxWin = () => {
   window.electron.ipcRenderer.invoke('renderer-to-main', {
     name: 'max-win'
+  })
+}
+
+//下载
+/**
+ * 触发打开任务窗口的进程间通信。
+ * 该函数无参数。
+ * 无显式返回值，但会向主进程发送一个包含窗口打开信息的消息。
+ */
+const goTask = () => {
+  // 向主进程发送消息，请求打开一个特定URL的任务列表窗口
+  window.electron.ipcRenderer.invoke('renderer-to-main', {
+    name: 'open-window-frame',
+    data: {
+      url: '/tasklist'
+    }
   })
 }
 </script>

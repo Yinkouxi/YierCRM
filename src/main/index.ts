@@ -21,8 +21,13 @@ app.whenReady().then(() => {
   eventRouter.addApi('app', app)
   eventRouter.addRouters(routers)
 
-  //渲染进程 向 主进程通信
+  //渲染进程 向 主进程通信 : 主窗口
   ipcMain.handle('renderer-to-main', (e, data) => {
+    eventRouter.router(data)
+  })
+
+  //渲染进程 向 主进程通信 : 异步下载窗口
+  ipcMain.handle('renderer-to-task', (e, data) => {
     eventRouter.router(data)
   })
 

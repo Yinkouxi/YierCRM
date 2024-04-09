@@ -34,7 +34,7 @@
             <el-card shadow="never">
               <div class="toolbar" style="margin-bottom: 15px">
                 <el-button type="primary" icon="Plus" @click="btnSubjectDialog">添加科目</el-button>
-                <el-button type="default" icon="Printer">导出</el-button>
+                <el-button type="default" icon="Printer" @click="btnExport">导出</el-button>
               </div>
               <el-table
                 row-key="id"
@@ -299,6 +299,15 @@ const btnContractDialog = (id: string) => {
     contractId.value = ''
   }
   diaContractVisible.value = true
+}
+
+//导出
+const btnExport = async () => {
+  let res = await subjectExport({
+    subjectName: searchForm.subjectName,
+    enabled: searchForm.enabled
+  })
+  ElMessage.success(res.msg)
 }
 </script>
 

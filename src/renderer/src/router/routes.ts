@@ -10,5 +10,10 @@ export const AppRoutes = [
     path: '/login',
     name: '登录',
     component: () => import('@views/login/Login.vue')
+  },
+  {
+    path: '/tasklist',
+    name: '下载',
+    component: () => import('@views/home/task.vue')
   }
 ]
