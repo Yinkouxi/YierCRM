@@ -66,7 +66,12 @@
                       <el-table-column label="价格" prop="amount" align="center" />
                       <el-table-column label="协议" align="center">
                         <template #default="{ row }">
-                          <el-link type="primary" :underline="false">查看协议</el-link>
+                          <el-link
+                            type="primary"
+                            :underline="false"
+                            @click="btnContractDialog(row.id)"
+                            >查看协议</el-link
+                          >
                         </template>
                       </el-table-column>
                       <el-table-column label="启用状态" prop="enabled" align="center">
@@ -149,6 +154,11 @@
       @gradeChange="expandChange"
       :gradeUpdateId="gradeUpdateId"
     ></gradeDialog>
+    <contractDialog
+      v-if="diaContractVisible"
+      v-model:diaContractVisible="diaContractVisible"
+      :contractId="contractId"
+    ></contractDialog>
   </div>
 </template>
 
@@ -165,6 +175,7 @@ import {
 } from '@api/teachSubject'
 import subjectDialog from './components/subjectDialog.vue'
 import gradeDialog from './components/gradeDialog.vue'
+import contractDialog from './components/contractDialog.vue'
 
 //搜索
 const searchForm = reactive<IsubjectList>({
@@ -188,7 +199,6 @@ onBeforeMount(() => {
 //科目列表
 const getSubjectPage = async () => {
   let res = await subjectPage(searchForm)
-  console.log(res, 'kkk')
   let { records } = res.data
   tableData.value = records
 }
@@ -221,7 +231,7 @@ const btnSubjectDialog = (id: string) => {
 
 //删除科目
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { gradeDelete } from '@api/teachSubjectGrade';
+import { gradeDelete } from '@api/teachSubjectGrade'
 const delSubject = (id: string) => {
   ElMessageBox.confirm('是否删除科目', {
     type: 'error',
@@ -277,6 +287,18 @@ const gradeDel = (id: string) => {
         message: '取消删除'
       })
     })
+}
+
+//查看协议
+const diaContractVisible = ref<boolean>(false)
+const contractId = ref('')
+const btnContractDialog = (id: string) => {
+  if (typeof id == 'string') {
+    contractId.value = id
+  } else {
+    contractId.value = ''
+  }
+  diaContractVisible.value = true
 }
 </script>
 
