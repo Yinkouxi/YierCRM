@@ -48,7 +48,11 @@
               >
                 <el-table-column label="等级管理" type="expand" width="100" align="center">
                   <el-card style="margin: 15px" shadow="never">
-                    <el-button type="primary" icon="el-icon-plus" style="margin-bottom: 10px"
+                    <el-button
+                      type="primary"
+                      icon="el-icon-plus"
+                      style="margin-bottom: 10px"
+                      @click="btnGradeDialog"
                       >新建等级</el-button
                     >
                     <el-table :data="gradeList" width="100%" border stripe>
@@ -136,6 +140,13 @@
       @subjectChange="getSubjectPage"
       :subjectUpdateId="subjectUpdateId"
     ></subjectDialog>
+    <gradeDialog
+      v-if="diaGradelogVisible"
+      v-model:diaGradelogVisible="diaGradelogVisible"
+      :currentSubjectRow="currentSubjectRow"
+      @gradeChange="expandChange"
+      :gradeUpdateId="gradeUpdateId"
+    ></gradeDialog>
   </div>
 </template>
 
@@ -151,6 +162,7 @@ import {
   subjectExport
 } from '@api/teachSubject'
 import subjectDialog from './components/subjectDialog.vue'
+import gradeDialog from './components/gradeDialog.vue'
 
 //搜索
 const searchForm = reactive<IsubjectList>({
