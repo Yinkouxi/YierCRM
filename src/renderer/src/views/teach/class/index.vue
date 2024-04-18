@@ -36,8 +36,8 @@
                   ></el-input>
                 </el-form-item>
                 <el-form-item class="inline">
-                  <el-button type="primary">搜索</el-button>
-                  <el-button>重置</el-button>
+                  <el-button type="primary" @click="getClassPage">搜索</el-button>
+                  <el-button @click="reset">重置</el-button>
                 </el-form-item>
               </el-form>
             </el-card>
@@ -46,7 +46,9 @@
                 <el-button type="primary" icon="Plus" v-auths="'crm:teach:class:add'"
                   >新建班级</el-button
                 >
-                <el-button icon="Printer" v-auths="'crm:teach:class:export'">导出</el-button>
+                <el-button icon="Printer" v-auths="'crm:teach:class:export'" @click="btnExport"
+                  >导出</el-button
+                >
               </div>
               <div style="position: relative; height: 400px; overflow: scroll">
                 <el-table
@@ -179,7 +181,7 @@
 </template>
 
 <script setup lang="ts">
-import { ClassRecord, classPage } from '@api/teachClass'
+import { classPage, ClassRecord, classExport, classDelete } from '@api/teachClass'
 import { dicts } from '@mixins/DIctsPlugin'
 import { ElMessage } from 'element-plus'
 import { ComponentInternalInstance, getCurrentInstance, onBeforeMount } from 'vue'
@@ -205,7 +207,6 @@ let stageList = ref([])
 
 const getClassPage = async () => {
   let res = await classPage(searchForm)
-  console.log(res.data, 'class---')
   let { records, total } = res.data
   tableData.value = records
   totals.value = total
@@ -236,6 +237,26 @@ const handlePageSizeUpdate = (page: number) => {
     size: page
   })
   getClassPage()
+}
+
+//重置
+const reset = () => {
+  Object.assign(searchForm, {
+    current: 1,
+    size: 10,
+    className: '',
+    subjectName: '',
+    mainTeacherUsername: '',
+    assistTeacherUsername: '',
+    manageTeacherUsername: ''
+  })
+  getClassPage()
+}
+
+//导出
+const btnExport = async () => {
+  let res = await classExport(searchForm)
+  ElMessage.success(res.msg)
 }
 
 //上课时间
