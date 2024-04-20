@@ -160,6 +160,7 @@
                           type="danger"
                           icon="Delete"
                           v-auths="'crm:teach:class:delete'"
+                          @click="classDel(row.id)"
                           >删除</el-link
                         >
                       </div>
@@ -193,7 +194,7 @@
 <script setup lang="ts">
 import { classPage, ClassRecord, classExport, classDelete } from '@api/teachClass'
 import { dicts } from '@mixins/DIctsPlugin'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { ComponentInternalInstance, getCurrentInstance, onBeforeMount } from 'vue'
 import { reactive, ref } from 'vue'
 import classDialog from './components/classDialog.vue'
@@ -315,6 +316,27 @@ const btnClassDialog = (id: string) => {
     classUpdateId.value = ''
   }
   classVisible.value = true
+}
+
+//删除班级
+const classDel = ( id:string )=>{
+    ElMessageBox.confirm('是否删除班级',{
+        type:'error',
+        confirmButtonText:'删除'
+    }).then(async ()=>{
+        let res = await classDelete( id );
+        if( res.code !='200' ) return;
+        ElMessage({
+            type:'success',
+            message:'删除成功'
+        })
+        getClassPage();
+    }).catch(()=>{
+        ElMessage({
+            type:'info',
+            message:'取消删除'
+        })
+    })
 }
 </script>
 <style scoped lang="less">
