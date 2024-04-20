@@ -153,6 +153,7 @@
                           type="primary"
                           icon="List"
                           v-auths="'crm:teach:class:update'"
+                          @click="btnClassDialog(row.id)"
                           >编辑</el-link
                         >
                         <el-link
