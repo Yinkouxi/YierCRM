@@ -66,7 +66,7 @@
                   :cell-style="{ 'text-align': 'center' }"
                   @expand-change="expandChange"
                 >
-                  <el-table-column label="阶段管理" type="expand" width="100" align="center">
+                  <!-- <el-table-column label="阶段管理" type="expand" width="100" align="center">
                     <el-card style="margin: 15px" shadow="never">
                       <el-button
                         type="primary"
@@ -112,7 +112,7 @@
                         </el-table-column>
                       </el-table>
                     </el-card>
-                  </el-table-column>
+                  </el-table-column> -->
                   <el-table-column label="班级名称" prop="className" />
                   <el-table-column label="关联课程" prop="subjectName" />
                   <el-table-column label="学员人数" prop="fullPeople">
@@ -131,7 +131,7 @@
                   <el-table-column
                     label="上课形式"
                     prop="teachingMethod"
-                    width="150"
+                    width="130"
                     align="center"
                   >
                     <template #default="{ row }">
@@ -140,13 +140,19 @@
                       </template>
                     </template>
                   </el-table-column>
-                  <el-table-column label="上课时间" prop="teachingDay" width="200" />
+                  <el-table-column label="上课时间每周)" prop="teachingDay" width="200" :formatter="transDay"/>
                   <!--操作-->
                   <el-table-column label="操作" width="100" fixed="right" align="left">
                     <template #default="{ row }">
                       <div class="sys-table-main-actions">
                         <!-- <el-link v-if="row.arranged == 1" :underline="false" type="primary" icon="Edit">点名</el-link> -->
-                        <el-link :underline="false" type="primary" icon="List">排课</el-link>
+                        <el-link
+                          :underline="false"
+                          type="primary"
+                          icon="List"
+                          @click="setLesson(row.id)"
+                          >排课</el-link
+                        >
                         <el-link :underline="false" type="primary" icon="List">学员</el-link>
                         <el-link
                           :underline="false"
@@ -189,6 +195,13 @@
       :classUpdateId="classUpdateId"
       @change="getClassPage"
     ></classDialog>
+    <arrangmentDialog
+      v-if="lessonVisible"
+      v-model:lessonVisible="lessonVisible"
+      :lessonId="lessonId"
+      @change="getClassPage"
+    >
+    </arrangmentDialog>
   </div>
 </template>
 
@@ -199,6 +212,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ComponentInternalInstance, getCurrentInstance, onBeforeMount } from 'vue'
 import { reactive, ref } from 'vue'
 import classDialog from './components/classDialog.vue'
+import arrangmentDialog from './components/arrangmentDialog.vue'
 
 // 搜索
 let searchForm = reactive({
@@ -320,24 +334,38 @@ const btnClassDialog = (id: string) => {
 }
 
 //删除班级
-const classDel = ( id:string )=>{
-    ElMessageBox.confirm('是否删除班级',{
-        type:'error',
-        confirmButtonText:'删除'
-    }).then(async ()=>{
-        let res = await classDelete( id );
-        if( res.code !='200' ) return;
-        ElMessage({
-            type:'success',
-            message:'删除成功'
-        })
-        getClassPage();
-    }).catch(()=>{
-        ElMessage({
-            type:'info',
-            message:'取消删除'
-        })
+const classDel = (id: string) => {
+  ElMessageBox.confirm('是否删除班级', {
+    type: 'error',
+    confirmButtonText: '删除'
+  })
+    .then(async () => {
+      let res = await classDelete(id)
+      if (res.code != '200') return
+      ElMessage({
+        type: 'success',
+        message: '删除成功'
+      })
+      getClassPage()
     })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消删除'
+      })
+    })
+}
+
+//排课
+const lessonVisible = ref<boolean>(false)
+const lessonId = ref('')
+const setLesson = (id: string) => {
+  if (typeof id == 'string') {
+    lessonId.value = id
+  } else {
+    lessonId.value = ''
+  }
+  lessonVisible.value = true
 }
 </script>
 <style scoped lang="less">

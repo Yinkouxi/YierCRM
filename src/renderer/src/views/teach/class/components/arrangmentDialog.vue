@@ -68,7 +68,6 @@ let spareDays = ref(0)
 let lessonDate = ref<IRecruitWorkGet[]>([])
 //获取开班时间
 const setData = async (classId: string) => {
-  console.log(classId)
   let res = await recruitWorkGet({ classId })
   lessonDate.value = res.data
 
@@ -107,7 +106,7 @@ const close = () => {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .container {
   display: flex;
   justify-content: space-between;
