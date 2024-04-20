@@ -43,7 +43,11 @@
             </el-card>
             <el-card shadow="never">
               <div class="toolbar">
-                <el-button type="primary" icon="Plus" v-auths="'crm:teach:class:add'"
+                <el-button
+                  type="primary"
+                  icon="Plus"
+                  v-auths="'crm:teach:class:add'"
+                  @click="btnClassDialog"
                   >新建班级</el-button
                 >
                 <el-button icon="Printer" v-auths="'crm:teach:class:export'" @click="btnExport"
@@ -177,6 +181,12 @@
         </el-tabs>
       </el-main>
     </el-container>
+    <classDialog
+      v-if="classVisible"
+      v-model:classVisible="classVisible"
+      :classUpdateId="classUpdateId"
+      @change="getClassPage"
+    ></classDialog>
   </div>
 </template>
 
@@ -186,6 +196,7 @@ import { dicts } from '@mixins/DIctsPlugin'
 import { ElMessage } from 'element-plus'
 import { ComponentInternalInstance, getCurrentInstance, onBeforeMount } from 'vue'
 import { reactive, ref } from 'vue'
+import classDialog from './components/classDialog.vue'
 
 // 搜索
 let searchForm = reactive({
@@ -292,6 +303,18 @@ const transDay = (row, column, cellValue: string) => {
   })
   cellValue = arr.toString() + ' ' + row.teachingTime
   return cellValue
+}
+
+// 新建&修改班级
+const classVisible = ref<boolean>(false)
+const classUpdateId = ref('')
+const btnClassDialog = (id: string) => {
+  if (typeof id == 'string') {
+    classUpdateId.value = id
+  } else {
+    classUpdateId.value = ''
+  }
+  classVisible.value = true
 }
 </script>
 <style scoped lang="less">

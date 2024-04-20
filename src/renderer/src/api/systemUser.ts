@@ -1,6 +1,6 @@
 import http from '@utils/request'
 
-interface IUsersList {
+export interface IUsersList {
   current: string
   size: string
   username?: string

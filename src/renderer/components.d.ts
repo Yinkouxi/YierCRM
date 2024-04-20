@@ -62,6 +62,7 @@ declare module 'vue' {
     Pagination: typeof import('./src/components/pagination/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TeachDialog: typeof import('./src/components/teach/teachDialog.vue')['default']
     Versions: typeof import('./src/components/Versions.vue')['default']
     WangEditor: typeof import('./src/components/wangeditor/wangEditor.vue')['default']
   }

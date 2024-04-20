@@ -13,7 +13,7 @@
 
       <el-form-item label="授课模式">
         <el-radio-group v-model="form.teachingMethod">
-          <el-radio v-for="item in dicts.crm_teaching_method" :key="item.id" :label="item.v">{{
+          <el-radio v-for="item in dicts.crm_teaching_method" :key="item.id" :value="item.v">{{
             item.k
           }}</el-radio>
         </el-radio-group>
@@ -68,7 +68,7 @@
 
       <el-form-item label="授课课时">
         <el-checkbox-group v-model="form.teachingDay" size="small">
-          <el-checkbox-button v-for="item in days" :key="item.key" :label="item.label">
+          <el-checkbox-button v-for="item in days" :key="item.key" :value="item.label">
             {{ item.key }}
           </el-checkbox-button>
         </el-checkbox-group>
@@ -146,13 +146,14 @@ let form = reactive<{
   teachingDay: [], //授课时间
   teachingTime: '' //授课时间（20:00-22:00）
 })
+
 //科目列表
 let subjectData = ref<IsubjectPage[]>([])
 //科目列表
 const getSubjectPage = async () => {
   let res = await subjectPage({
     current: 1,
-    size: 10
+    size: 100
   })
   let { records } = res.data
   subjectData.value = records
@@ -274,6 +275,7 @@ const onSubmit = async () => {
   if (classUpdateId.value != '') {
     await updateClass()
   } else {
+    console.log(form)
     await addClass()
   }
   emit('change')
