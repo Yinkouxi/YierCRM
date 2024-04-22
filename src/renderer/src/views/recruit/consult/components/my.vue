@@ -18,24 +18,29 @@
                   style="width: 200px"
                 />
               </div>
-              <div class="time-box-text">2024-02-25</div>
+              <div class="time-box-text">{{ currentDate.dateStr }}</div>
               <div class="time-box-btn">
-                <el-link :underline="false" type="primary">回到今天</el-link>
+                <el-link :underline="false" type="primary" @click="backToday">回到今天</el-link>
               </div>
             </div>
 
             <div class="time-btn">
-              <div class="time-btn-item">
+              <div class="time-btn-item icon" @click="prevDate">
                 <el-icon><ArrowLeft /></el-icon>
               </div>
 
-              <div class="time-btn-item">周日2.25</div>
-              <div class="time-btn-item">周一2.26</div>
-              <div class="time-btn-item">周二2.27</div>
-              <div class="time-btn-item">周三2.28</div>
-              <div class="time-btn-item">周四2.29</div>
+              <div
+                v-for="item in weekList"
+                :key="item.dayOfMonth"
+                :class="
+                  item.dateStr == currentDate.dateStr ? 'time-btn-item active' : 'time-btn-item'
+                "
+                @click="currentDay(item)"
+              >
+                {{ item.week }}{{ item.month }}.{{ item.dayOfMonth }}
+              </div>
 
-              <div class="time-btn-item">
+              <div class="time-btn-item icon" @click="nextDate">
                 <el-icon><ArrowRight /></el-icon>
               </div>
             </div>
@@ -101,9 +106,116 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-const calendarDate = ref('')
-const selectTime = ref([])
+import tool from '@utils/tool'
+import { onBeforeMount, reactive, ref } from 'vue'
+interface IDate {
+  date: Date
+  dateStr: String
+  year: number
+  month: number
+  week: String
+  dayOfWeek: number
+  dayOfMonth: number
+}
+const currentDate = reactive<IDate>({
+  date: new Date(), //日期对象
+  dateStr: '', //年-月-日
+  year: 0, //年
+  month: 0, //月
+  week: '', //星期
+  dayOfWeek: 0, //之前的星期
+  dayOfMonth: 0 //当前日期
+})
+
+// 星期数据
+const weekDays = ref([
+  { index: 0, week: '周日' },
+  { index: 1, week: '周一' },
+  { index: 2, week: '周二' },
+  { index: 3, week: '周三' },
+  { index: 4, week: '周四' },
+  { index: 5, week: '周五' },
+  { index: 6, week: '周六' }
+])
+
+// 星期遍历数据
+const weekList = ref<IDate[]>([])
+
+onBeforeMount(() => {
+  changeDate()
+})
+
+
+
+//时间修改
+const changeDate = (date = new Date()) => {
+  const dateStr = tool.dateFormat(date, 'yyyy-MM-dd')
+
+  Object.assign(currentDate, {
+    date: date,
+    dateStr,
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+    dayOfWeek: date.getDay(),
+    dayOfMonth: date.getDate()
+  })
+
+  //清空数组
+  weekList.value = []
+
+  weekDays.value.forEach((item) => {
+    const diffDay = currentDate.dayOfWeek - item.index
+
+    const targetDate = new Date()
+    targetDate.setFullYear(currentDate.year)
+    targetDate.setMonth(currentDate.month - 1)
+    targetDate.setDate(currentDate.date.getDate() - diffDay)
+
+    const targetDateStr = tool.dateFormat(targetDate, 'yyyy-MM-dd')
+
+    const dates: IDate = {
+      date: targetDate,
+      dateStr: targetDateStr,
+      year: targetDate.getFullYear(),
+      month: targetDate.getMonth() + 1,
+      week: item.week,
+      dayOfWeek: targetDate.getDay(),
+      dayOfMonth: targetDate.getDate()
+    }
+    weekList.value.push(dates)
+  })
+}
+
+//选择日期
+const currentDay = (item: IDate) => {
+  if (item) {
+    Object.assign(currentDate, item)
+  }
+}
+
+//回到今天
+const backToday = () => {
+  changeDate()
+}
+//切换上周
+const prevDate = () => {
+  // console.log(currentDate)
+  const prevWeekDate = new Date()
+  prevWeekDate.setFullYear(currentDate.year)
+  prevWeekDate.setMonth(currentDate.month - 1)
+  prevWeekDate.setDate(currentDate.dayOfMonth - 7)
+  changeDate(prevWeekDate)
+}
+//切换下周
+const nextDate = () => {
+  const nextWeekDate = new Date()
+  nextWeekDate.setFullYear(currentDate.year)
+  nextWeekDate.setMonth(currentDate.month - 1)
+  nextWeekDate.setDate(currentDate.dayOfMonth + 7)
+  changeDate(nextWeekDate)
+}
+const calendarDate = ref<Date>(new Date())
+const selectTime = ref<Date[]>([new Date(), new Date()])
 </script>
 
 <style lang="less" scoped>
@@ -135,13 +247,21 @@ const selectTime = ref([])
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 90px;
+    width: 100px;
     height: 40px;
     margin-left: 5px;
+    padding: 0 3px;
     cursor: pointer;
     font-size: 12px;
     background: #f2f5f7;
     border-radius: 4px 4px 4px 4px;
+    &.active {
+      background-color: #409eff;
+      color: #fff;
+    }
+    &.icon {
+      width: 60px;
+    }
   }
 }
 
