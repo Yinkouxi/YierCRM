@@ -44,6 +44,39 @@
                 <el-icon><ArrowRight /></el-icon>
               </div>
             </div>
+            <div class="time-table" v-if="clientList.length > 0">
+              <el-table :data="clientList" border>
+                <el-table-column
+                  label="序号"
+                  type="index"
+                  width="55"
+                  align="center"
+                ></el-table-column>
+                <el-table-column label="姓名" prop="name" align="center"></el-table-column>
+                <el-table-column label="手机号" prop="mobile" align="center"></el-table-column>
+                <el-table-column label="微信" prop="wechat" align="center"></el-table-column>
+                <el-table-column label="意向度" width="150" align="center">
+                  <template #default="{ row }">
+                    <el-rate v-model="row.purpose" disabled />
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="140" fixed="right" align="center">
+                  <template #default="{ row }">
+                    <el-link :underline="false" icon="List" type="primary">查询详情</el-link>
+                    <el-link :underline="false" icon="Avatar" type="success">办理报名</el-link>
+                    <el-link :underline="false" icon="Edit" type="danger">跟进信息</el-link>
+                    <el-link :underline="false" icon="Edit" type="warning">编辑信息</el-link>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <pagination></pagination>
+            </div>
+            <div class="time-table-else" v-else>
+              <el-icon size="100px" color="#F2F5F7">
+                <el-icon-folderDelete></el-icon-folderDelete>
+              </el-icon>
+              <p>今天没有任务</p>
+            </div>
           </el-card>
         </el-col>
         <el-col :span="8">
@@ -141,11 +174,12 @@ const weekDays = ref([
 // 星期遍历数据
 const weekList = ref<IDate[]>([])
 
+// 我的任务
+let clientList = ref([])
+
 onBeforeMount(() => {
   changeDate()
 })
-
-
 
 //时间修改
 const changeDate = (date = new Date()) => {
@@ -199,7 +233,6 @@ const backToday = () => {
 }
 //切换上周
 const prevDate = () => {
-  // console.log(currentDate)
   const prevWeekDate = new Date()
   prevWeekDate.setFullYear(currentDate.year)
   prevWeekDate.setMonth(currentDate.month - 1)
@@ -280,6 +313,21 @@ const selectTime = ref<Date[]>([new Date(), new Date()])
       width: 40px;
       height: 40px;
     }
+  }
+}
+
+.time-table {
+  margin-top: 20px;
+}
+.time-table-else {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  p {
+    font-size: 16px;
+    color: rgb(168, 180, 181);
   }
 }
 </style>

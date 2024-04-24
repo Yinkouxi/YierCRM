@@ -139,7 +139,7 @@ const reset = () => {
 </script>
 
 <style scoped>
-::v-deep .el-form-item {
+:v-deep(.el-form-item) {
   margin-bottom: 18px;
 }
 </style>
