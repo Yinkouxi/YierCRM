@@ -55,7 +55,11 @@
       </TopBar>
       <TagBar></TagBar>
       <div class="aminui-main">
-        <router-view />
+        <router-view v-slot="{ Component }">
+          <keep-alive :include="tagStore.keepAlive">
+            <component :is="Component"></component>
+          </keep-alive>
+        </router-view>
       </div>
     </div>
   </section>
@@ -64,6 +68,7 @@
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from 'vue'
 import { useMenuStore } from '@store/useMenuStore'
+import { useTagStore } from '@store/useTagStore'
 import { Parent } from '@interface/user'
 import NavMenu from './components/NavMenu.vue'
 import TopBar from './components/TopBar.vue'
@@ -75,6 +80,7 @@ const route = useRoute()
 const menu = ref<Parent[]>([])
 const pmenu = ref<Parent>({})
 const nextMenu = ref<Parent[] | undefined>([])
+const tagStore = useTagStore()
 
 onBeforeMount(() => {
   window.electron.ipcRenderer.invoke('renderer-to-main', {

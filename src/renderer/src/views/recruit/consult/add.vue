@@ -10,13 +10,13 @@
                   <el-form :model="customer" label-width="100px">
                       <el-row>
                           <el-col :span="8">
-                              <el-form-item label="学员姓名" prop="name">
+                              <el-form-item value="学员姓名" prop="name">
                                   <el-input v-model="customer.name" placeholder="学员姓名"></el-input>
                               </el-form-item>
                           </el-col>
 
                           <el-col :span="8">
-                              <el-form-item label="联系电话" prop="mobile">
+                              <el-form-item value="联系电话" prop="mobile">
                                   <el-input v-model="customer.mobile" placeholder="联系电话"></el-input>
                               </el-form-item>
                           </el-col>
@@ -215,7 +215,7 @@
 </template>
 
 
-<script setup lang="ts">
+<script setup lang="ts" name="新建咨询">
 import { ref , reactive } from 'vue'
 
 //基本信息
