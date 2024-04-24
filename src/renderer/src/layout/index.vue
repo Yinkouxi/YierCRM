@@ -181,6 +181,7 @@ const toggle_menuIsCollapse = () => {
     border-right: 1px solid #e6e6e6;
     transition: width 0.3s;
     .adminui-side-top {
+      width: 210px;
       -webkit-app-region: drag;
       border-bottom: 1px solid #ebeef5;
       height: 49px;
