@@ -2,7 +2,7 @@
   <el-container>
     <el-main>
       <div class="toolbar">
-        <el-button type="primary" icon="Plus">新建咨询</el-button>
+        <el-button type="primary" icon="Plus" @click="add">新建咨询</el-button>
         <el-button type="primary" icon="Plus">办理入学</el-button>
       </div>
 
@@ -141,6 +141,8 @@
 <script setup lang="ts">
 import tool from '@utils/tool'
 import { onBeforeMount, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 interface IDate {
   date: Date
   dateStr: String
@@ -249,6 +251,11 @@ const nextDate = () => {
 }
 const calendarDate = ref<Date>(new Date())
 const selectTime = ref<Date[]>([new Date(), new Date()])
+
+//新建咨询
+const add = () => {
+  router.push('/recruit/consult/add')
+}
 </script>
 
 <style lang="less" scoped>

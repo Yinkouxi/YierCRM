@@ -1,0 +1,260 @@
+<template>
+  <el-container style="padding:1rem;">
+      <el-row style="width: 100%;" :gutter="10">
+          <!--基本信息--->
+          <el-col :span="24">
+              <el-card>
+                  <template #header>
+                      <span>基本信息</span>
+                  </template>
+                  <el-form :model="customer" label-width="100px">
+                      <el-row>
+                          <el-col :span="8">
+                              <el-form-item label="学员姓名" prop="name">
+                                  <el-input v-model="customer.name" placeholder="学员姓名"></el-input>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="联系电话" prop="mobile">
+                                  <el-input v-model="customer.mobile" placeholder="联系电话"></el-input>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="学员微信" prop="wechat">
+                                  <el-input v-model="customer.wechat" placeholder="学员微信"></el-input>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="学员性别" prop="gender">
+                                  <el-radio-group v-model="customer.gender">
+                                      <el-radio value="1">男</el-radio>
+                                      <el-radio value="2">女</el-radio>
+                                      <el-radio value="3">未知</el-radio>
+                                  </el-radio-group>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="学员年龄" prop="age">
+                                  <el-input-number v-model="customer.age" :min="18" :max="80" placeholder="学员年龄"/>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="渠道来源" prop="source">
+                                  <el-select v-model="customer.source" placeholder="请选择">
+                                      <el-option></el-option>
+                                  </el-select>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="意向度" prop="purpose">
+                                  <el-rate v-model="customer.purpose"></el-rate>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="意向课程" prop="purposeCourseIds">
+                                  <el-select v-model="customer.purposeCourseIds" placeholder="意向课程">
+                                      <el-option></el-option>
+                                  </el-select>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="意向班级" prop="purposeClassIds">
+                                  <el-select v-model="customer.purposeClassIds" placeholder="意向班级">
+                                      <el-option></el-option>
+                                  </el-select>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="客户级别" prop="level">
+                                  <el-select v-model="customer.level" placeholder="客户级别">
+                                      <el-option></el-option>
+                                  </el-select>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="学校" prop="school">
+                                  <el-input v-model="customer.school" placeholder="学校"></el-input>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="专业" prop="major">
+                                  <el-input v-model="customer.major" placeholder="专业"></el-input>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="学员学历" prop="education">
+                                  <el-select v-model="customer.education" placeholder="学员学历">
+                                      <el-option></el-option>
+                                  </el-select>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="24">
+                              <el-form-item label="所在城市">
+                                  南昌（组件）
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="24">
+                              <el-form-item label="备注">
+                                 <el-input v-model='customer.remark' type="textarea" maxlength="200" show-word-limit placeholder="请输入备注信息"></el-input>
+                              </el-form-item>
+                          </el-col>
+                      </el-row>
+                  </el-form>
+              </el-card>
+          </el-col>
+
+          <!--跟进信息--->
+          <el-col>
+              <el-card>
+                  <template #header>
+                      <span>跟进信息</span>
+                  </template>
+                  <el-form :model="follow" label-width="100px">
+                      <div style="margin-bottom:20px;">
+                          <el-alert title="回访日期为当次跟进时间，下次跟进时间会根据公有池设置的跟进天数自动计算，在规定天数内未打跟进则自动掉入公有池。" type="info" show-icon></el-alert>
+                      </div>
+                      <el-row>
+                          <el-col :span="8">
+                              <el-form-item label="跟进方式" prop="followMethod">
+                                  <el-select v-model="follow.followMethod" placeholder="跟进方式">
+                                      <el-option></el-option>
+                                  </el-select>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="回访日期" prop="followTime">
+                                  <el-date-picker
+                                      v-model="follow.followTime"
+                                      placeholder="回访日期"
+                                      format="YYYY-MM-DD"
+                                      value-format="YYYY-MM-DD HH:mm:ss"
+                                  ></el-date-picker>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="下次回访日期" prop="followNextTime">
+                                  <el-date-picker
+                                      v-model="follow.followNextTime"
+                                      type="datetime"
+                                      placeholder="下次回访日期"
+                                      format="YYYY-MM-DD"
+                                      value-format="YYYY-MM-DD HH:mm:ss"
+                                  ></el-date-picker>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="24">
+                              <el-form-item label="沟通内容" prop="followContent">
+                                  <el-input v-model="follow.followContent" type="textarea" maxlength="200" show-word-limit></el-input>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="24">
+                              <el-form-item label="上传附件">
+                                  <el-upload
+                                      class="upload-demo"
+                                      action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+                                      multiple
+                                      :limit="3"
+                                  >
+                                      <el-button type="primary">上传附件</el-button>
+                                      <template #tip>
+                                          <div class="el-upload__tip">
+                                              可上传图片和音频，支持格式：jpg、jpeg、png、mp3、mp4
+                                          </div>
+                                      </template>
+                                  </el-upload>
+                              </el-form-item>
+                          </el-col>
+                      </el-row>
+                  </el-form>
+              </el-card>
+          </el-col>
+
+          <!--经办人-->
+          <el-col>
+              <el-card>
+                  <template #header>
+                      <span>经办人</span>
+                  </template>
+                  <el-form>
+                      <el-row>
+                          <el-col :span="8">
+                              <el-form-item label="录入时间" label-width="100px">
+                                  <el-input disabled></el-input>
+                              </el-form-item>
+                          </el-col>
+
+                          <el-col :span="8">
+                              <el-form-item label="顾问老师" label-width="100px">
+                                  <el-input disabled></el-input>
+                              </el-form-item>
+                          </el-col>
+                      </el-row>
+                  </el-form>
+              </el-card>
+          </el-col>
+      </el-row>
+  </el-container>
+</template>
+
+
+<script setup lang="ts">
+import { ref , reactive } from 'vue'
+
+//基本信息
+const customer = reactive({
+  "name":"",
+  "mobile":"",
+  "wechat":"",
+  "source":"",
+  "purpose":"",
+  "purposeCourseIds":"",
+  "purposeClassIds":"",
+  "level":"",
+  "dealStatus":"",
+  "dealTime":"",
+  "gender":"",
+  "education":"",
+  "province":"",
+  "city":"",
+  "county":"",
+  "age": 0,
+  "school": "",
+  "major": "",
+  "remark":""
+})
+
+//跟进信息
+const follow = reactive({
+  "followMethod":"",
+  "followTime":"",
+  "followNextTime":'',//下次回访的日期
+  "followContent":"",
+})
+</script>
+
+<style scoped>
+.el-col .el-card{
+  margin-bottom:15px;
+}
+:deep(.el-alert__title){
+  font-size:12px;
+}
+</style>
