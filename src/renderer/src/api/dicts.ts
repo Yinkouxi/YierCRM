@@ -15,6 +15,11 @@ type DictsItem = {
 
 export type Dicts = {
   system_global_status: DictsItem[]
+
+  // 防止使用dict飘红
+  recruit_education_background?: DictsItem[] // 添加缺失的属性
+  system_global_gender?: DictsItem[]
+  recruit_customer_level?: DictsItem[]
 }
 
 interface IDicts {
