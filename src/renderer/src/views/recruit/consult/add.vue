@@ -179,7 +179,13 @@
               <el-col :span="8">
                 <el-form-item label="跟进方式" prop="followMethod">
                   <el-select v-model="follow.followMethod" placeholder="跟进方式">
-                    <el-option></el-option>
+                    <el-option
+                      v-for="item in dicts.recruit_follow_method"
+                      :key="item.k"
+                      :label="item.k"
+                      :value="item.v"
+                    >
+                    </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -221,9 +227,10 @@
               <el-col :span="24">
                 <el-form-item label="上传附件">
                   <el-upload
+                    v-model:file-list="fileList"
                     class="upload-demo"
-                    action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
                     multiple
+                    :http-request="upload"
                   >
                     <el-button type="primary">上传附件</el-button>
                     <template #tip>
@@ -249,13 +256,18 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item label="录入时间" label-width="100px">
-                  <el-input disabled></el-input>
+                  <el-date-picker
+                    v-model="dates"
+                    type="date"
+                    formater="YYYY-MM-DD HH:mm:ss"
+                    disabled
+                  ></el-date-picker>
                 </el-form-item>
               </el-col>
 
               <el-col :span="8">
                 <el-form-item label="顾问老师" label-width="100px">
-                  <el-input disabled></el-input>
+                  <el-input disabled :placeholder="userStore.userInfo.realName"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -267,20 +279,14 @@
 </template>
 
 <script setup lang="ts" name="新建咨询">
-import {
-  ref,
-  reactive,
-  onBeforeMount,
-  getCurrentInstance,
-  ComponentInternalInstance,
-  toRaw
-} from 'vue'
+import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
 import { channelPage, IChannelData } from '@api/mediaChannel'
 import { subjectPage, IsubjectPage } from '@api/teachSubject'
 import { classPage, ClassRecord } from '@api/teachClass'
 import citySelect from '@components/city/citySelect.vue'
 import { ILocation } from '@interface/location'
 import { dicts } from '@mixins/DIctsPlugin'
+import { UploadUserFile } from 'element-plus'
 // import useDicts from '@mixins/DIctsPlugin'
 
 //基本信息
@@ -314,6 +320,18 @@ const follow = reactive({
   followContent: ''
 })
 
+//上传
+const fileList = ref<UploadUserFile[]>([])
+const upload = (options: UploadUserFile) => {
+  console.log(options)
+}
+
+//录入时间
+const dates = new Date()
+//顾问老师
+import { useUserStore } from '@store/useUserStore'
+const userStore = useUserStore()
+
 onBeforeMount(() => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
 
@@ -321,7 +339,8 @@ onBeforeMount(() => {
     ;(proxy as any).getDicts([
       'system_global_gender',
       'recruit_customer_level',
-      'recruit_education_background'
+      'recruit_education_background',
+      'recruit_follow_method'
     ])
   }
   //渠道列表

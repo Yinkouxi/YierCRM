@@ -20,6 +20,7 @@ export type Dicts = {
   recruit_education_background?: DictsItem[] // 添加缺失的属性
   system_global_gender?: DictsItem[]
   recruit_customer_level?: DictsItem[]
+  recruit_follow_method?: DictsItem[]
 }
 
 interface IDicts {
