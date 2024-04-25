@@ -324,6 +324,7 @@ const follow = reactive({
 const fileList = ref<UploadUserFile[]>([])
 const upload = (options: UploadUserFile) => {
   console.log(options)
+  console.log('test alioss git push bug')
 }
 
 //录入时间
