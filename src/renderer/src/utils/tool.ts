@@ -1,5 +1,11 @@
+import { client } from '@config/alioss'
+import { ElMessage } from 'element-plus'
+import { nanoid } from 'nanoid'
 interface Tool {
   dateFormat(date: string | number | Date, fmt?: string): string
+  oss?: {
+    upload(file: File): Promise<void>
+  }
 }
 
 const tool: Tool = {
@@ -26,6 +32,31 @@ const tool: Tool = {
       }
     }
     return fmt
+  },
+  oss: {
+    upload: async (file: File): Promise<void> => {
+      //上传的文件名称
+      const uuid: string = nanoid()
+      //文件的后缀名
+      const index: number = file.name.lastIndexOf('.')
+      const suffix: string = file.name.substring(index + 1)
+      //二级目录名称
+      const currentDate: string = tool.dateFormat(new Date(), 'yyyy-MMMM-dd')
+      //完整的上传路径
+      let fileName: string = 'xiaoluxian-crm/' + currentDate + '/' + uuid + '.' + suffix
+
+      try {
+        const data: any = await client.multipartUpload(fileName, file, {
+          progress: function (p: number) {
+            console.log('上传进度', p)
+          }
+        })
+        console.log(data)
+        ElMessage.success('上传成功')
+      } catch (error) {
+        ElMessage.error('上传失败')
+      }
+    }
   }
 }
 

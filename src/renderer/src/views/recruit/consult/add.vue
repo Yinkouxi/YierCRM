@@ -286,7 +286,8 @@ import { classPage, ClassRecord } from '@api/teachClass'
 import citySelect from '@components/city/citySelect.vue'
 import { ILocation } from '@interface/location'
 import { dicts } from '@mixins/DIctsPlugin'
-import { UploadUserFile } from 'element-plus'
+import tool from '@utils/tool'
+// import { UploadUserFile } from 'element-plus'
 // import useDicts from '@mixins/DIctsPlugin'
 
 //基本信息
@@ -321,10 +322,12 @@ const follow = reactive({
 })
 
 //上传
-const fileList = ref<UploadUserFile[]>([])
-const upload = (options: UploadUserFile) => {
-  console.log(options)
-  console.log('test alioss git push bug')
+const fileList = ref<UploadUserFile[]>([]);
+type UploadUserFile = {
+    file:File
+}
+const upload = ( options:UploadUserFile )=>{
+    tool.oss?.upload( options.file );
 }
 
 //录入时间
