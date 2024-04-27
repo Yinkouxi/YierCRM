@@ -195,6 +195,7 @@
                   <el-date-picker
                     v-model="follow.followTime"
                     placeholder="回访日期"
+                    type="datetime"
                     format="YYYY-MM-DD"
                     value-format="YYYY-MM-DD HH:mm:ss"
                   ></el-date-picker>
@@ -274,6 +275,9 @@
           </el-form>
         </el-card>
       </el-col>
+      <el-col :span="24" align="center" style="height: 80px">
+        <el-button type="primary" @click="onSubmit">保存</el-button>
+      </el-col>
     </el-row>
   </el-container>
 </template>
@@ -287,6 +291,11 @@ import citySelect from '@components/city/citySelect.vue'
 import { ILocation } from '@interface/location'
 import { dicts } from '@mixins/DIctsPlugin'
 import tool from '@utils/tool'
+import { useUserStore } from '@store/useUserStore'
+import { ElMessage } from 'element-plus'
+import { useRouter } from 'vue-router'
+import { FollowFile, consultAdd } from '@api/recruitConsult'
+const router = useRouter()
 // import { UploadUserFile } from 'element-plus'
 // import useDicts from '@mixins/DIctsPlugin'
 
@@ -322,18 +331,26 @@ const follow = reactive({
 })
 
 //上传
-const fileList = ref<UploadUserFile[]>([]);
+const fileList = ref<UploadUserFile[]>([])
+const followFile = ref<FollowFile[]>([])
 type UploadUserFile = {
-    file:File
+  file: File
 }
-const upload = ( options:UploadUserFile )=>{
-    tool.oss?.upload( options.file );
+const upload = async (options: UploadUserFile) => {
+  let res = await tool.oss?.upload(options.file)
+  let temp: FollowFile = {
+    name: '',
+    url: ''
+  }
+  temp.name = res.name
+  temp.url = res.res.requestUrls[0]
+  followFile.value.push(temp)
 }
 
 //录入时间
 const dates = new Date()
 //顾问老师
-import { useUserStore } from '@store/useUserStore'
+
 const userStore = useUserStore()
 
 onBeforeMount(() => {
@@ -383,7 +400,28 @@ const getClassPage = async () => {
   classList.value = records
 }
 //所在城市
-const Location = (data: ILocation) => {}
+const Location = (data: ILocation) => {
+  let { province, city, county } = data
+  customer.province = province
+  customer.city = city
+  customer.county = county
+}
+
+//保存
+const onSubmit = async () => {
+  let res = await consultAdd({
+    customer,
+    follow,
+    followFile: followFile.value
+  })
+  if (res.code != '200') {
+    return ElMessage.error(res.msg)
+  }
+
+  ElMessage.success(res.msg)
+  router.go(-1)
+  return
+}
 </script>
 
 <style scoped>
