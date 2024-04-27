@@ -100,7 +100,7 @@ routers.push(
  * 进入后台管理系统首页
  */
 routers.push(
-  new EventRoute('resize-window', (api, data) => {
+  new EventRoute('resize-window', (api, _data) => {
     //窗口大小
     api.mainWindow.setSize(1200, 720)
     //窗口最小值

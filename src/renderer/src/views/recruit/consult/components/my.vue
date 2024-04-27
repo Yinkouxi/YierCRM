@@ -16,11 +16,12 @@
                   type="date"
                   placeholder="自定义时间"
                   style="width: 200px"
+                  @change="onCalendarDate"
                 />
               </div>
               <div class="time-box-text">{{ currentDate.dateStr }}</div>
-              <div class="time-box-btn">
-                <el-link :underline="false" type="primary" @click="backToday">回到今天</el-link>
+              <div class="time-box-btn" @click="backToday">
+                <el-link :underline="false" type="primary">回到今天</el-link>
               </div>
             </div>
 
@@ -31,19 +32,20 @@
 
               <div
                 v-for="item in weekList"
-                :key="item.dayOfMonth"
+                :key="item.dateStr"
                 :class="
                   item.dateStr == currentDate.dateStr ? 'time-btn-item active' : 'time-btn-item'
                 "
                 @click="currentDay(item)"
               >
-                {{ item.week }}{{ item.month }}.{{ item.dayOfMonth }}
+                周{{ item.week }} {{ item.month }}.{{ item.dayOfMonth }}
               </div>
 
               <div class="time-btn-item icon" @click="nextDate">
                 <el-icon><ArrowRight /></el-icon>
               </div>
             </div>
+
             <div class="time-table" v-if="clientList.length > 0">
               <el-table :data="clientList" border>
                 <el-table-column
@@ -69,7 +71,11 @@
                   </template>
                 </el-table-column>
               </el-table>
-              <pagination></pagination>
+              <pagination
+                :total="totals"
+                @update:current-page="handleCurrentPageUpdate"
+                @update:page-size="handlePageSizeUpdate"
+              ></pagination>
             </div>
             <div class="time-table-else" v-else>
               <el-icon size="100px" color="#F2F5F7">
@@ -82,7 +88,6 @@
         <el-col :span="8">
           <el-card header="我的成交额" shadow="never" class="aside-card">
             <el-date-picker
-              v-model="selectTime"
               type="daterange"
               range-separator="至"
               start-placeholder="开始时间"
@@ -139,19 +144,22 @@
 </template>
 
 <script setup lang="ts">
+import { ref, reactive, onBeforeMount } from 'vue'
+import { consultPage, IConsultList } from '@api/recruitConsult'
 import tool from '@utils/tool'
-import { onBeforeMount, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 const router = useRouter()
+
 interface IDate {
   date: Date
-  dateStr: String
+  dateStr: string
   year: number
   month: number
-  week: String
+  week: string
   dayOfWeek: number
   dayOfMonth: number
 }
+
 const currentDate = reactive<IDate>({
   date: new Date(), //日期对象
   dateStr: '', //年-月-日
@@ -162,27 +170,57 @@ const currentDate = reactive<IDate>({
   dayOfMonth: 0 //当前日期
 })
 
-// 星期数据
-const weekDays = ref([
-  { index: 0, week: '周日' },
-  { index: 1, week: '周一' },
-  { index: 2, week: '周二' },
-  { index: 3, week: '周三' },
-  { index: 4, week: '周四' },
-  { index: 5, week: '周五' },
-  { index: 6, week: '周六' }
+//星期数据
+const weebDays = ref([
+  { index: 0, week: '日' },
+  { index: 1, week: '一' },
+  { index: 2, week: '二' },
+  { index: 3, week: '三' },
+  { index: 4, week: '四' },
+  { index: 5, week: '五' },
+  { index: 6, week: '六' }
 ])
-
-// 星期遍历数据
+//星期遍历数据
 const weekList = ref<IDate[]>([])
-
-// 我的任务
-let clientList = ref([])
+//我的任务
+let clientList = ref<IConsultList[]>([])
+//我的任务时间
+let calendarDate = ref('')
+//修改我的任务时间
+const onCalendarDate = (options: Date) => {
+  changeDate(options)
+}
 
 onBeforeMount(() => {
   changeDate()
 })
 
+//客户列表分页
+const totals = ref(0)
+//分页-页码
+const handleCurrentPageUpdate = (page: number) => {
+  currentForm.page = page
+  getConsultPage()
+}
+//分页-一页显示多少条
+const handlePageSizeUpdate = (size: number) => {
+  currentForm.size = size
+  getConsultPage()
+}
+//客户列表
+let currentForm = reactive({
+  page: 1,
+  size: 5,
+  isSelf: true,
+  startTime: '',
+  endTime: ''
+})
+const getConsultPage = async () => {
+  let res = await consultPage(currentForm)
+  let { records, total } = res.data
+  totals.value = total
+  clientList.value = records
+}
 //时间修改
 const changeDate = (date = new Date()) => {
   const dateStr = tool.dateFormat(date, 'yyyy-MM-dd')
@@ -196,10 +234,16 @@ const changeDate = (date = new Date()) => {
     dayOfMonth: date.getDate()
   })
 
+  //客户列表时间赋值
+  currentForm.startTime = dateStr + ' 00:00:00'
+  currentForm.endTime = dateStr + ' 23:59:59'
+  //客户列表
+  getConsultPage()
+
   //清空数组
   weekList.value = []
 
-  weekDays.value.forEach((item) => {
+  weebDays.value.forEach((item) => {
     const diffDay = currentDate.dayOfWeek - item.index
 
     const targetDate = new Date()
@@ -225,10 +269,14 @@ const changeDate = (date = new Date()) => {
 //选择日期
 const currentDay = (item: IDate) => {
   if (item) {
+    //客户列表时间赋值
+    currentForm.startTime = item.dateStr + ' 00:00:00'
+    currentForm.endTime = item.dateStr + ' 23:59:59'
+    getConsultPage()
+
     Object.assign(currentDate, item)
   }
 }
-
 //回到今天
 const backToday = () => {
   changeDate()
@@ -249,16 +297,13 @@ const nextDate = () => {
   nextWeekDate.setDate(currentDate.dayOfMonth + 7)
   changeDate(nextWeekDate)
 }
-const calendarDate = ref<Date>(new Date())
-const selectTime = ref<Date[]>([new Date(), new Date()])
-
 //新建咨询
 const add = () => {
   router.push('/recruit/consult/add')
 }
 </script>
 
-<style lang="less" scoped>
+<style scoped lang="less">
 .toolbar {
   margin-bottom: 15px;
 }
@@ -304,7 +349,20 @@ const add = () => {
     }
   }
 }
-
+.time-table {
+  margin-top: 20px;
+}
+.time-table-else {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 100px;
+  p {
+    font-size: 16px;
+    color: rgb(168, 180, 181);
+  }
+}
 .aside-card-content {
   margin-top: 10px;
   display: flex;
@@ -320,21 +378,6 @@ const add = () => {
       width: 40px;
       height: 40px;
     }
-  }
-}
-
-.time-table {
-  margin-top: 20px;
-}
-.time-table-else {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-top: 100px;
-  p {
-    font-size: 16px;
-    color: rgb(168, 180, 181);
   }
 }
 </style>

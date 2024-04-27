@@ -46,7 +46,88 @@ interface IConsultAddData {
   data: null
 }
 
-//查询地区（通过上级ID）
+//新建客户
 export const consultAdd = (data: CustomerData): Promise<IConsultAddData> => {
   return http.post<IConsultAddData>('/crm/recruit/consult/add', data)
+}
+
+interface IConsultPage {
+  page: number
+  size: number
+  isSelf: boolean
+  startTime: string
+  endTime: string
+  selectName?: string
+  mobile?: string
+}
+
+export type IConsultList = {
+  id: string
+  name: string
+  namePinyin: string
+  nameAbbr: string
+  mobile: string
+  wechat: string
+  source: string
+  purpose: string
+  purposeCourseIds: string
+  purposeClassIds: string
+  level: string
+  dealStatus: number
+  dealTime: string
+  gender: string
+  education: string
+  province: string
+  city: string
+  county: string
+  age: number
+  school: string
+  major: string
+  enabled: number
+  remark: string
+  createBy: string | null
+  createTime: number
+  createUnits: string
+  updateBy: string | null
+  updateTime: number | null
+  collectBy: string
+  collectTime: number
+  whrId: string
+  whrName: string
+  collectName: string | null
+  channelName: string
+  provinceName: string
+  cityName: string
+  countyName: string
+  followMethod: string
+  followTime: number
+  followContent: string
+  followNextTime: number
+  roles: string | null
+  classes: string | null
+  subjects: string | null
+}
+
+type ResponseData = {
+  records: IConsultList[]
+  total: number
+  size: number
+  current: number
+  orders: any[]
+  optimizeCountSql: boolean
+  searchCount: boolean
+  countId: any
+  maxLimit: any
+  pages: number
+}
+
+interface IConsultPageData {
+  code: string
+  msg: string
+  data: ResponseData
+}
+
+//客户列表
+export const consultPage = (data: IConsultPage): Promise<IConsultPageData> => {
+  return http.get<IConsultPageData>('/crm/recruit/consult/page', data)
 }
