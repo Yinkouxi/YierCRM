@@ -102,7 +102,7 @@ routers.push(
 routers.push(
   new EventRoute('resize-window', (api, _data) => {
     //窗口大小
-    api.mainWindow.setSize(1200, 720)
+    api.mainWindow.setSize(1360, 760)
     //窗口最小值
     api.mainWindow.setMinimumSize(1000, 500)
     //窗口居中

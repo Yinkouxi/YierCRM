@@ -34,7 +34,6 @@
                       v-for="item in dicts.system_global_gender"
                       :key="item.v"
                       :value="item.v"
-                      size="small"
                       >{{ item.k }}</el-radio
                     >
                   </el-radio-group>
