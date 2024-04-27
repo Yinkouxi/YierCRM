@@ -31,7 +31,8 @@ export default defineConfig({
         '@router': resolve('src/renderer/src/router'),
         '@layout': resolve('src/renderer/src/layout'),
         '@mixins': resolve('src/renderer/src/mixins'),
-        '@components':resolve('src/renderer/src/components')
+        '@components':resolve('src/renderer/src/components'),
+        '@config': resolve('src/renderer/src/config')
       }
     },
     server: {
