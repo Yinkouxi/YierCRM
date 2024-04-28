@@ -153,3 +153,19 @@ interface ITransactionData {
 export const transaction = (data: ITransaction): Promise<ITransactionData> => {
   return http.get<ITransactionData>('/crm/recruit/channel/statistic/transaction', data)
 }
+
+export interface IStatisticFunnel {
+  name: string
+  value: string | number
+  labelText: string
+}
+interface IStatisticFunnelData {
+  code: string
+  msg: string
+  data: IStatisticFunnel[]
+}
+
+//漏斗图
+export const statisticFunnel = (data: ITransaction): Promise<IStatisticFunnelData> => {
+  return http.get<IStatisticFunnelData>('/crm/recruit/channel/statistic/funnel', data)
+}

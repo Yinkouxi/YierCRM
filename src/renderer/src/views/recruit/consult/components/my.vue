@@ -86,7 +86,7 @@
           </el-card>
         </el-col>
         <el-col :span="8">
-          <el-card header="我的成交额" shadow="never" class="aside-card">
+          <el-card header="我的成交额" shadow="never" class="aside-card toolbar">
             <el-date-picker
               @change="selectTimeChange"
               v-model="selectTime"
@@ -141,6 +141,41 @@
               </div>
             </div>
           </el-card>
+          <el-card header="我的漏斗" shadow="never" class="aside-card">
+            <el-date-picker
+              @change="funnelTimeChange"
+              v-model="funnelTime"
+              type="datetimerange"
+              range-separator="至"
+              start-placeholder="开始时间"
+              end-placeholder="截止时间"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD hh:mm:ss"
+              style="width: 100%"
+            >
+            </el-date-picker>
+            <div class="charts-box">
+              <div class="charts-box-t">
+                <div style="width: 100%; height: 250px" ref="chart"></div>
+              </div>
+              <div class="charts-box-b" >
+                <div>
+                  <h3>
+                    成功率:
+                    <el-text type="primary">{{ funnelOpt.successData }}</el-text>
+                  </h3>
+                  <span>(已成交/全部咨询)</span>
+                </div>
+                <div>
+                  <h3>
+                    失败率:
+                    <el-text type="primary">{{ funnelOpt.refundData }}</el-text>
+                  </h3>
+                  <span>(已退款/全部咨询)</span>
+                </div>
+              </div>
+            </div>
+          </el-card>
         </el-col>
       </el-row>
     </el-main>
@@ -154,10 +189,12 @@ import {
   IConsultList,
   ITransaction,
   ITransactionApiData,
+  statisticFunnel,
   transaction
 } from '@api/recruitConsult'
 import tool from '@utils/tool'
 import { useRouter } from 'vue-router'
+import * as echarts from 'echarts'
 const router = useRouter()
 
 interface IDate {
@@ -229,6 +266,57 @@ const selectTimeChange = (val: string[]) => {
   }
 }
 
+//我的漏斗
+const funnelTime = ref([])
+const funnelTimeData = reactive<ITransaction>({
+  startDate: '',
+  endDate: ''
+})
+const funnelTimeChange = (val: string[]) => {
+  if (val) {
+    funnelTimeData.startDate = val[0]
+    funnelTimeData.endDate = val[1]
+    funnelData()
+  }
+}
+const chart = ref<null | HTMLDivElement>(null)
+const funnelOpt = reactive<{
+  successData: string
+  refundData: string
+}>({
+  successData: '',
+  refundData: ''
+})
+const funnelData = async () => {
+  let { data } = await statisticFunnel(funnelTimeData)
+  //成功率=已成交/全部咨询
+  const total: number = data.find((item) => item.name == '全部咨询')?.value as number
+  const success: number = data.find((item) => item.name == '已成交')?.value as number
+  const successData: string = total ? Math.round((success / total) * 10000) / 100 + '%' : '0%'
+  //失败率=已退款/全部咨询
+  const refund: number = data.find((item) => item.name == '已退款')?.value as number
+  const refundData: string = total ? Math.round((refund / total) * 10000) / 100 + '%' : '0%'
+  //赋值操作
+  funnelOpt.successData = successData
+  funnelOpt.refundData = refundData
+
+  if (chart.value) {
+    const myChart = echarts.init(chart.value)
+    const option = {
+      tooltip: {
+        trigger: 'item'
+      },
+      series: [
+        {
+          type: 'funnel',
+          data: data
+        }
+      ]
+    }
+    option && myChart.setOption(option)
+  }
+}
+
 //客户列表分页
 const totals = ref(0)
 //分页-页码
@@ -276,6 +364,10 @@ const changeDate = (date = new Date()) => {
   selectTimeData.startDate = dateStr + ' 00:00:00'
   selectTimeData.endDate = dateStr + ' 23:59:59'
   getTransaction()
+  //我的漏斗
+  funnelTimeData.startDate = dateStr + ' 00:00:00'
+  funnelTimeData.endDate = dateStr + ' 23:59:59'
+  funnelData()
 
   //清空数组
   weekList.value = []
@@ -416,5 +508,16 @@ const add = () => {
       height: 40px;
     }
   }
+  .charts-box {
+    .charts-box-t {
+      width: 100%;
+    }
+  }
+
+}
+.charts-box-b{
+  display: flex;
+  justify-content:space-around;
+  font-size: 14px;
 }
 </style>
