@@ -51,7 +51,7 @@ export const consultAdd = (data: CustomerData): Promise<IConsultAddData> => {
   return http.post<IConsultAddData>('/crm/recruit/consult/add', data)
 }
 
-interface IConsultPage {
+export interface IConsultPage {
   page: number
   size: number
   isSelf: boolean

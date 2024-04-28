@@ -21,6 +21,7 @@ export type Dicts = {
   system_global_gender?: DictsItem[]
   recruit_customer_level?: DictsItem[]
   recruit_follow_method?: DictsItem[]
+  recruit_dealStatus?: DictsItem[]
 }
 
 interface IDicts {

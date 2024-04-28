@@ -10,6 +10,7 @@
           <template #label>
               <div class="custom-tabs-label">全部客户</div>
           </template>
+          <Log />
       </el-tab-pane>
       <el-tab-pane label="我的客户" name="myClient">
           <template #label>
@@ -28,6 +29,7 @@
 
 import { ref } from 'vue'
 import My from './components/My.vue'
+import Log from './components/log.vue'
 const activeName = ref('my')
 </script>
 
