@@ -131,3 +131,25 @@ interface IConsultPageData {
 export const consultPage = (data: IConsultPage): Promise<IConsultPageData> => {
   return http.get<IConsultPageData>('/crm/recruit/consult/page', data)
 }
+
+export interface ITransaction {
+  startDate: string
+  endDate: string
+}
+
+export interface ITransactionApiData {
+  peopleNum: number
+  orderNum: number
+  receivableAmount: number | null
+  actualAmount: number | null
+}
+interface ITransactionData {
+  code: string
+  msg: string
+  data: ITransactionApiData
+}
+
+//我的成交额
+export const transaction = (data: ITransaction): Promise<ITransactionData> => {
+  return http.get<ITransactionData>('/crm/recruit/channel/statistic/transaction', data)
+}

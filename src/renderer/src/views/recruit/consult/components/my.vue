@@ -88,10 +88,14 @@
         <el-col :span="8">
           <el-card header="我的成交额" shadow="never" class="aside-card">
             <el-date-picker
-              type="daterange"
+              @change="selectTimeChange"
+              v-model="selectTime"
+              type="datetimerange"
               range-separator="至"
               start-placeholder="开始时间"
               end-placeholder="截止时间"
+              format="YYYY-MM-DD"
+              value-format="YYYY-MM-DD hh:mm:ss"
               style="width: 100%"
             >
             </el-date-picker>
@@ -102,7 +106,7 @@
                 </div>
                 <div style="margin-left: 5px">
                   成交人数(人)
-                  <h2>2</h2>
+                  <h2>{{ transactionData.peopleNum }}</h2>
                 </div>
               </div>
 
@@ -112,7 +116,7 @@
                 </div>
                 <div style="margin-left: 5px">
                   应收成交额(元)
-                  <h2>2</h2>
+                  <h2>{{ transactionData.receivableAmount }}</h2>
                 </div>
               </div>
 
@@ -122,7 +126,7 @@
                 </div>
                 <div style="margin-left: 5px">
                   成交订单(笔)
-                  <h2>2</h2>
+                  <h2>{{ transactionData.orderNum }}</h2>
                 </div>
               </div>
 
@@ -132,7 +136,7 @@
                 </div>
                 <div style="margin-left: 5px">
                   订单实收(元)
-                  <h2>2</h2>
+                  <h2>{{ transactionData.orderNum }}</h2>
                 </div>
               </div>
             </div>
@@ -145,7 +149,13 @@
 
 <script setup lang="ts">
 import { ref, reactive, onBeforeMount } from 'vue'
-import { consultPage, IConsultList } from '@api/recruitConsult'
+import {
+  consultPage,
+  IConsultList,
+  ITransaction,
+  ITransactionApiData,
+  transaction
+} from '@api/recruitConsult'
 import tool from '@utils/tool'
 import { useRouter } from 'vue-router'
 const router = useRouter()
@@ -195,6 +205,30 @@ onBeforeMount(() => {
   changeDate()
 })
 
+//我的成交额
+const selectTime = ref([])
+const selectTimeData = reactive<ITransaction>({
+  startDate: '',
+  endDate: ''
+})
+const transactionData = reactive<ITransactionApiData>({
+  actualAmount: 0,
+  orderNum: 0,
+  peopleNum: 0,
+  receivableAmount: 0
+})
+const getTransaction = async () => {
+  let res = await transaction(selectTimeData)
+  Object.assign(transactionData, res.data)
+}
+const selectTimeChange = (val: string[]) => {
+  if (val) {
+    selectTimeData.startDate = val[0]
+    selectTimeData.endDate = val[1]
+    getTransaction()
+  }
+}
+
 //客户列表分页
 const totals = ref(0)
 //分页-页码
@@ -237,8 +271,11 @@ const changeDate = (date = new Date()) => {
   //客户列表时间赋值
   currentForm.startTime = dateStr + ' 00:00:00'
   currentForm.endTime = dateStr + ' 23:59:59'
-  //客户列表
   getConsultPage()
+  //成交额
+  selectTimeData.startDate = dateStr + ' 00:00:00'
+  selectTimeData.endDate = dateStr + ' 23:59:59'
+  getTransaction()
 
   //清空数组
   weekList.value = []
