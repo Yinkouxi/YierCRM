@@ -52,7 +52,7 @@ export const consultAdd = (data: CustomerData): Promise<IConsultAddData> => {
 }
 
 export interface IConsultPage {
-  page: number
+  current: number
   size: number
   isSelf: boolean
   startTime: string
@@ -168,4 +168,14 @@ interface IStatisticFunnelData {
 //漏斗图
 export const statisticFunnel = (data: ITransaction): Promise<IStatisticFunnelData> => {
   return http.get<IStatisticFunnelData>('/crm/recruit/channel/statistic/funnel', data)
+}
+
+interface IConsultImport {
+  msg: string
+  code: string
+  data: null
+}
+//导入客户
+export const consultImport = (data: FormData): Promise<IConsultImport> => {
+  return http.post<IConsultImport>('/crm/recruit/consult/import', data)
 }

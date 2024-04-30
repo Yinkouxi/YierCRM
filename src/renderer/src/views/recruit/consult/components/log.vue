@@ -50,14 +50,13 @@
                       :closable="false"
                     />
                     <div style="display: flex; justify-content: space-between">
-                      <el-button type="primary" icon="Download">下载模板</el-button>
+                      <el-button type="primary" icon="Download" @click="downloadModel"
+                        >下载模板</el-button
+                      >
                       <el-upload
-                        v-model:file-list="fileList"
                         action
                         :limit="3"
-                        :on-exceed="handleExceed"
                         :show-file-list="false"
-                        :before-upload="beforeUpload"
                         :http-request="upload"
                         :headers="headers"
                         style="margin-right: 5px; display: flex"
@@ -194,13 +193,15 @@
 
 <script setup lang="ts">
 import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
-import { consultPage, IConsultPage, IConsultList } from '@api/recruitConsult'
+import { consultPage, IConsultPage, IConsultList, consultImport } from '@api/recruitConsult'
 import { dicts } from '@mixins/DIctsPlugin'
 import tool from '@utils/tool'
-import type { TableColumnCtx } from 'element-plus'
+import { ElMessage, type TableColumnCtx } from 'element-plus'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 //搜索数据
 const form = reactive<IConsultPage>({
-  page: 1,
+  current: 1,
   size: 10,
   selectName: '',
   mobile: '',
@@ -210,6 +211,10 @@ const form = reactive<IConsultPage>({
 })
 //table数据
 let tableData = ref<IConsultList[]>([])
+//导入文件的headers
+let headers = reactive({ 'Content-Type': 'multipart/form-data' })
+
+const chooseTime = ref<string[]>([])
 
 onBeforeMount(() => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
@@ -229,9 +234,9 @@ onBeforeMount(() => {
 //分页
 const totals = ref(0)
 //分页-页码
-const handleCurrentPageUpdate = (page: number) => {
+const handleCurrentPageUpdate = (current: number) => {
   Object.assign(form, {
-    page
+    current
   })
   getConsultPage()
 }
@@ -258,6 +263,38 @@ const rendererDateTime = (
   timeValue: number
 ) => {
   return tool.dateFormat(timeValue)
+}
+
+//下载模版
+const downloadModel = () => {
+  let modelUrl = 'https://oss.xuexiluxian.cn/xiaoluxian-crm/2023-07-17/1659133900536107008.xlsx'
+  if (modelUrl) {
+    window.electron.ipcRenderer.invoke('renderer-to-main', {
+      name: 'download-http-file',
+      data: {
+        url: modelUrl
+      }
+    })
+  }
+}
+
+//导入
+type UploadUserFile = {
+  file: File
+}
+const upload = async (item: UploadUserFile) => {
+  ElMessage.info('上传中...')
+  let forData = new FormData()
+  forData.append('file', item.file)
+  let res = await consultImport(forData)
+  console.log(res)
+  ElMessage.success(res.msg)
+  getConsultPage()
+}
+
+//新建咨询
+const add = () => {
+  router.push('/recruit/consult/add')
 }
 </script>
 <style scoped>
