@@ -179,3 +179,166 @@ interface IConsultImport {
 export const consultImport = (data: FormData): Promise<IConsultImport> => {
   return http.post<IConsultImport>('/crm/recruit/consult/import', data)
 }
+
+export interface IConsultDetail {
+  id: string
+  name: string
+  namePinyin: string
+  nameAbbr: string
+  mobile: string
+  wechat: string
+  source: string
+  purpose: string
+  purposeCourseIds: string | string[]
+  purposeClassIds: string | string[]
+  level: string
+  dealStatus: number
+  dealTime: string
+  gender: string
+  education: string
+  province: string
+  city: string
+  county: string
+  enabled: number
+  remark: string
+  createBy: string | null
+  createTime: number
+  createUnits: string
+  updateBy: string
+  updateTime: number
+  collectBy: string
+  collectTime: number
+  whrId: string
+  whrName: string
+  collectName: string
+  channelName: string | null
+  provinceName: string
+  cityName: string
+  countyName: string
+  followMethod: string | null
+  followTime: string | null
+  followContent: string | null
+  followNextTime: string | null
+  roles: {
+    id: string
+    customerId: string
+    roleType: string
+    roleManId: string
+    createBy: string
+    createTime: number
+    updateBy: string
+    updateTime: number
+  }[]
+  classes: {
+    id: string
+    className: string
+    teachingMethod: string
+    subjectId: string
+    fullPeople: number
+    mainTeacherId: string
+    assistTeacherId: string
+    manageTeacherId: string
+    classHour: number
+    beginDate: string
+    endDate: string
+    teachingDay: string
+    teachingTime: string
+    status: number
+    createBy: string
+    createTime: number
+    updateBy: string
+    updateTime: number
+  }[]
+  subjects: {
+    id: string
+    subjectName: string
+    amount: null
+    protocol: null
+    enabled: string | number
+    createBy: string | number
+    createTime: string | number
+    updateBy: string | number
+    updateTime: string | number
+  }[]
+  orders: {
+    id: string
+    customerId: string
+    classId: string
+    subjectId: string
+    chargeMode: number
+    termCounter: number
+    receivableAmount: number
+    handleUnit: string
+    handleUnits: string
+    orderNumder: string
+    actualAmount: number
+    remark1: string
+    remark2: string
+    status: number
+    createBy: string
+    createTime: number
+    updateBy: null
+    updateTime: null
+  }[]
+  refunds: {
+    id: string
+    customerId: string
+    sourceOrderId: string
+    refundOrderNumber: string
+    receivableName: string
+    receivableAccount: string
+    refundAmount: null
+    reasonType: null
+    supplementDesc: null
+    voucherImages: null
+    verifyed: number
+    verifyedOpinion: null
+    status: number
+    createBy: null
+    createTime: number
+    updateBy: null
+    updateTime: null
+  }[]
+}
+interface IConsultDetailData {
+  code: string
+  msg: string
+  data: IConsultDetail
+}
+
+//客户详情
+export const consultDetail = (data: string): Promise<IConsultDetailData> => {
+  return http.get<IConsultDetailData>(`/crm/recruit/consult/detail/${data}`)
+}
+
+export interface IConsultUpdate {
+  id: string
+  name?: string
+  mobile?: string
+  wechat: string
+  source: string
+  purpose: string
+  purposeCourseIds: string | string[]
+  purposeClassIds: string | string[]
+  level: string
+  gender: string
+  education: string
+  province: string
+  city: string
+  county: string
+  age: number | string
+  school: string
+  major: string
+  remark: string
+}
+
+interface IConsultUpdateData {
+  code: string
+  msg: string
+  data: null | string
+}
+
+//修改客户
+export const consultUpdate = (data: IConsultUpdate): Promise<IConsultUpdateData> => {
+  return http.post<IConsultUpdateData>('/crm/recruit/consult/update', data)
+}

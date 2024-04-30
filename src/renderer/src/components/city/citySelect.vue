@@ -41,6 +41,22 @@
 import { ref, onBeforeMount, handleError } from 'vue'
 import { getAreaByParentId, IGetAreaByParentId } from '@api/location'
 import { ILocation } from '@interface/location'
+
+const props = defineProps({
+  province: {
+    type: String,
+    default: ''
+  },
+  city: {
+    type: String,
+    default: ''
+  },
+  county: {
+    type: String,
+    default: ''
+  }
+})
+
 const emits = defineEmits()
 //省
 let provinces = ref<IGetAreaByParentId[]>([])
@@ -54,6 +70,20 @@ let currentCounties = ref<string>('')
 
 onBeforeMount(async () => {
   provinces.value = await getAreaByParent('1')
+
+  if (props.province) {
+    city.value = await getAreaByParent(props.province)
+    currentProvinces.value = props.province
+  }
+
+  if (props.city) {
+    counties.value = await getAreaByParent(props.city)
+    currentCity.value = props.city
+  }
+
+  if (props.county) {
+    currentCounties.value = props.county
+  }
 })
 const getAreaByParent = async (id: string): Promise<IGetAreaByParentId[]> => {
   let res = await getAreaByParentId({

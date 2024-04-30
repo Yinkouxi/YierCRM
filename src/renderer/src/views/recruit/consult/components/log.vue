@@ -170,11 +170,13 @@
               </template>
             </el-table-column>
             <el-table-column label="操作" width="120" align="center" fixed="right">
-              <template #default="scope">
+              <template #default="{ row }">
                 <el-link :underline="false" type="primary" icon="List">查看详情</el-link>
                 <el-link :underline="false" type="success" icon="Avatar">办理报名</el-link>
                 <el-link :underline="false" type="danger" icon="Edit">跟进信息</el-link>
-                <el-link :underline="false" type="warning" icon="Edit">编辑信息</el-link>
+                <el-link :underline="false" type="warning" icon="Edit" @click="edit(row.id)"
+                  >编辑信息</el-link
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -188,6 +190,13 @@
         </div>
       </el-card>
     </el-main>
+    <updataDialog
+      v-if="updataVisible"
+      v-model:updataVisible="updataVisible"
+      :updataId="updataId"
+      @change="getConsultPage"
+    >
+    </updataDialog>
   </el-container>
 </template>
 
@@ -198,6 +207,7 @@ import { dicts } from '@mixins/DIctsPlugin'
 import tool from '@utils/tool'
 import { ElMessage, type TableColumnCtx } from 'element-plus'
 import { useRouter } from 'vue-router'
+import updataDialog from './log/updataDialog.vue'
 const router = useRouter()
 //搜索数据
 const form = reactive<IConsultPage>({
@@ -295,6 +305,15 @@ const upload = async (item: UploadUserFile) => {
 //新建咨询
 const add = () => {
   router.push('/recruit/consult/add')
+}
+
+//编辑信息
+const updataVisible = ref<boolean>(false)
+const updataId = ref('')
+const edit = (id: string) => {
+  console.log('edit')
+  updataId.value = id
+  updataVisible.value = true
 }
 </script>
 <style scoped>
