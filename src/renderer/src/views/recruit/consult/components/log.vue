@@ -171,8 +171,10 @@
             </el-table-column>
             <el-table-column label="操作" width="120" align="center" fixed="right">
               <template #default="{ row }">
-                <el-link :underline="false" type="primary" icon="List">查看详情</el-link>
-                <el-link :underline="false" type="success" icon="Avatar">办理报名</el-link>
+                <el-link :underline="false" type="primary" icon="List" @click="detail(row.id)"
+                  >查看详情</el-link
+                >
+                <el-link :underline="false" type="success" icon="Avatar" @click="transact(row.id)">办理报名</el-link>
                 <el-link :underline="false" type="danger" icon="Edit" @click="showAdd(row.id)"
                   >跟进信息</el-link
                 >
@@ -332,6 +334,26 @@ const followId = ref('')
 const showAdd = (id: string) => {
   followId.value = id
   followVisible.value = true
+}
+
+//查看详情
+const detail = (id: string) => {
+  router.push({
+    path: '/recruit/consult/detail',
+    query: {
+      id
+    }
+  })
+}
+
+//办理报名
+const transact = (id: string) => {
+  router.push({
+    path: '/process/payment',
+    query: {
+      id
+    }
+  })
 }
 </script>
 <style scoped>
