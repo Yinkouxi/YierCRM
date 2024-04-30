@@ -342,3 +342,83 @@ interface IConsultUpdateData {
 export const consultUpdate = (data: IConsultUpdate): Promise<IConsultUpdateData> => {
   return http.post<IConsultUpdateData>('/crm/recruit/consult/update', data)
 }
+
+interface IFollowPage {
+  page: number
+  size: number
+  customerId: string
+}
+
+export interface IFollowPageRecords {
+  id: string
+  customerId: string
+  followMethod: string
+  followTime: string
+  followNextTime: string
+  followContent: string
+  createTime: string | number
+  createBy: null
+  updateBy: null
+  updateTime: null
+  files: {
+    id: string | null
+    followId: string | null
+    name: string | null
+    url: string | null
+    fileType: string | null
+    fileSize: number | null
+    createBy: null
+    createTime: null
+    updateBy: null
+    updateTime: null
+  }[]
+  roleManName: string
+}
+interface IFollowPageData {
+  msg: string
+  code: string
+  data: {
+    total: number | string
+    size: number | string
+    current: number | string
+    orders: []
+    optimizeCountSql: boolean
+    searchCount: boolean
+    countId: null
+    maxLimit: null
+    pages: number | string
+    records: IFollowPageRecords[]
+  }
+}
+
+//跟进列表
+export const followPage = (data: IFollowPage): Promise<IFollowPageData> => {
+  return http.get<IFollowPageData>('/crm/recruit/consult/follow/page', data)
+}
+
+export interface IFollowAddParams {
+  customerId: string
+  followMethod: string
+  followTime: string
+  followContent: string,
+  followNextTime: string
+}
+export interface IFollowAddFiles {
+  name: string
+  url: string
+  fileType: string
+  fileSize: number
+}
+interface IFollowAdd {
+  follow: IFollowAddParams
+  followFiles: IFollowAddFiles[]
+}
+interface IFollowAddData {
+  code: string
+  msg: string
+  data: null
+}
+//增加跟进
+export const followAdd = (data: IFollowAdd): Promise<IFollowAddData> => {
+  return http.post<IFollowAddData>('/crm/recruit/consult/follow/add', data)
+}

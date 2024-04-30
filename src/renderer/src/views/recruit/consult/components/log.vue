@@ -173,7 +173,9 @@
               <template #default="{ row }">
                 <el-link :underline="false" type="primary" icon="List">查看详情</el-link>
                 <el-link :underline="false" type="success" icon="Avatar">办理报名</el-link>
-                <el-link :underline="false" type="danger" icon="Edit">跟进信息</el-link>
+                <el-link :underline="false" type="danger" icon="Edit" @click="showAdd(row.id)"
+                  >跟进信息</el-link
+                >
                 <el-link :underline="false" type="warning" icon="Edit" @click="edit(row.id)"
                   >编辑信息</el-link
                 >
@@ -197,6 +199,13 @@
       @change="getConsultPage"
     >
     </updataDialog>
+
+    <followDialog
+      v-if="followVisible"
+      v-model:followVisible="followVisible"
+      :followId="followId"
+      @change="getConsultPage"
+    ></followDialog>
   </el-container>
 </template>
 
@@ -208,6 +217,7 @@ import tool from '@utils/tool'
 import { ElMessage, type TableColumnCtx } from 'element-plus'
 import { useRouter } from 'vue-router'
 import updataDialog from './log/updataDialog.vue'
+import followDialog from './log/followDialog.vue'
 const router = useRouter()
 //搜索数据
 const form = reactive<IConsultPage>({
@@ -314,6 +324,14 @@ const edit = (id: string) => {
   console.log('edit')
   updataId.value = id
   updataVisible.value = true
+}
+
+//跟进信息
+const followVisible = ref<boolean>(false)
+const followId = ref('')
+const showAdd = (id: string) => {
+  followId.value = id
+  followVisible.value = true
 }
 </script>
 <style scoped>
