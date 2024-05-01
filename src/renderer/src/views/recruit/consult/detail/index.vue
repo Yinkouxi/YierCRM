@@ -56,19 +56,29 @@
         </div>
       </el-card>
 
-      <el-card shadow="never" class="card-container"> 下 </el-card>
+      <el-tabs type="border-card" style="margin-top: 20px">
+        <el-tab-pane label="沟通互动">
+          <follow></follow>
+        </el-tab-pane>
+        <el-tab-pane label="Config">Config</el-tab-pane>
+        <el-tab-pane label="Role">Role</el-tab-pane>
+        <el-tab-pane label="Task">Task</el-tab-pane>
+      </el-tabs>
     </el-main>
   </el-container>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
+import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance, provide } from 'vue'
 import { consultDetail, IConsultDetail } from '@api/recruitConsult'
 import { useRoute } from 'vue-router'
 import { dicts } from '@mixins/DIctsPlugin'
+import follow from './components/follow.vue'
 //路由传值
 const route = useRoute()
 const id = route.query.id as string
+//依赖注入
+provide('id',id);
 //用户详情
 let info = reactive<Partial<IConsultDetail>>({})
 
@@ -79,7 +89,7 @@ onBeforeMount(() => {
   }
   //客户详情
   getConsultDetail()
-  console.log(info,'----info')
+  console.log(info, '----info')
 })
 
 //获取客户详情

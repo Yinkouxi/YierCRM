@@ -349,6 +349,19 @@ interface IFollowPage {
   customerId: string
 }
 
+export interface IFiles {
+  id: string | null
+  followId: string | null
+  name: string | null
+  url: string | null
+  fileType: string | null
+  fileSize: number | null
+  createBy: null
+  createTime: null
+  updateBy: null
+  updateTime: null
+}
+
 export interface IFollowPageRecords {
   id: string
   customerId: string
@@ -360,18 +373,7 @@ export interface IFollowPageRecords {
   createBy: null
   updateBy: null
   updateTime: null
-  files: {
-    id: string | null
-    followId: string | null
-    name: string | null
-    url: string | null
-    fileType: string | null
-    fileSize: number | null
-    createBy: null
-    createTime: null
-    updateBy: null
-    updateTime: null
-  }[]
+  files: IFiles[]
   roleManName: string
 }
 interface IFollowPageData {
@@ -400,7 +402,7 @@ export interface IFollowAddParams {
   customerId: string
   followMethod: string
   followTime: string
-  followContent: string,
+  followContent: string
   followNextTime: string
 }
 export interface IFollowAddFiles {
