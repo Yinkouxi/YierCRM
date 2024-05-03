@@ -111,6 +111,7 @@ import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInst
 import teachDialog from '@components/teach/teachDialog.vue'
 import { subjectPage, IsubjectPage } from '@api/teachSubject'
 import { classAdd, classGet, classUpdate } from '@api/teachClass'
+import { dicts } from '@mixins/DIctsPlugin'
 
 const props = defineProps({
   classVisible: {
@@ -275,7 +276,6 @@ const onSubmit = async () => {
   if (classUpdateId.value != '') {
     await updateClass()
   } else {
-    console.log(form)
     await addClass()
   }
   emit('change')

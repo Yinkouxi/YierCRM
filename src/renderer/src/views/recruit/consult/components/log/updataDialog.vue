@@ -194,7 +194,6 @@ onBeforeMount(async () => {
   }
   //详情数据
   let { data } = await consultDetail(props.updataId)
-  console.log(data, 'sss')
   data.purposeCourseIds = (data.purposeCourseIds as string).split(',')
   data.purposeClassIds = (data.purposeClassIds as string).split(',')
   Object.assign(form, data)

@@ -309,7 +309,6 @@ const upload = async (item: UploadUserFile) => {
   let forData = new FormData()
   forData.append('file', item.file)
   let res = await consultImport(forData)
-  console.log(res)
   ElMessage.success(res.msg)
   getConsultPage()
 }
@@ -323,7 +322,6 @@ const add = () => {
 const updataVisible = ref<boolean>(false)
 const updataId = ref('')
 const edit = (id: string) => {
-  console.log('edit')
   updataId.value = id
   updataVisible.value = true
 }

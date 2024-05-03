@@ -176,6 +176,7 @@ import {
 import subjectDialog from './components/subjectDialog.vue'
 import gradeDialog from './components/gradeDialog.vue'
 import contractDialog from './components/contractDialog.vue'
+import { dicts } from '@mixins/DIctsPlugin'
 
 //搜索
 const searchForm = reactive<IsubjectList>({
@@ -220,7 +221,6 @@ const dialogVisible = ref<boolean>(false)
 const subjectUpdateId = ref('')
 //添加科目 & 编辑科目
 const btnSubjectDialog = (id: string) => {
-  console.log('id:', id)
   if (typeof id == 'string') {
     subjectUpdateId.value = id
   } else {

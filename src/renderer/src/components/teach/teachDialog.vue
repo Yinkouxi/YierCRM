@@ -97,12 +97,10 @@ let userForm = reactive<IUsersList>({
   phone: ''
 })
 const getUserPage = async () => {
-  console.log(userForm, 'userPageData')
   let res = await userPage(userForm)
   let { records, total } = res.data
   totals.value = total
   userData.value = records
-  console.log(res.data, 'ereeee')
 }
 onBeforeMount(() => {
   getUserPage()

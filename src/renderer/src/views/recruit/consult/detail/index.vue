@@ -89,7 +89,6 @@ onBeforeMount(() => {
   }
   //客户详情
   getConsultDetail()
-  console.log(info, '----info')
 })
 
 //获取客户详情
@@ -98,7 +97,6 @@ const getConsultDetail = async () => {
   data.purposeCourseIds = (data.purposeCourseIds as string).split(',')
   data.purposeClassIds = (data.purposeClassIds as string).split(',')
   Object.assign(info, data)
-  console.log(data)
 }
 </script>
 

@@ -68,7 +68,6 @@ const getFollowPage = async () => {
     customerId: id as string
   })
   let { records } = res.data
-  console.log(records,'---')
   tableData.value = records
 }
 
