@@ -54,9 +54,9 @@ export const consultAdd = (data: CustomerData): Promise<IConsultAddData> => {
 export interface IConsultPage {
   current: number
   size: number
-  isSelf: boolean
-  startTime: string
-  endTime: string
+  isSelf?: boolean
+  startTime?: string
+  endTime?: string
   selectName?: string
   mobile?: string
 }
