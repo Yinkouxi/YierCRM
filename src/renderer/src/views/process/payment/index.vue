@@ -74,21 +74,122 @@
             </el-form>
           </el-card>
         </el-col>
+
+        <el-col :span="24" style="margin-top: 15px">
+          <el-card shadow="never">
+            <template #header>
+              <div class="card-header">
+                <span style="color: #409eff">报名信息</span>
+              </div>
+            </template>
+            <div class="enroll">
+              <div class="choices">
+                <el-button type="primary" @click="chooseSubject">选择科目</el-button>
+                <el-button type="primary" @click="chooseClass">选择班级</el-button>
+              </div>
+              <div class="option">
+                <div class="left">
+                  <el-tag v-if="clientInfo.orders && clientInfo.orders.length > 0" type="warning"
+                    >老学员</el-tag
+                  >
+                  <el-tag v-else type="success">新报名</el-tag>
+                  <span style="font-size: 16px; font-weight: bold">
+                    <template v-if="enrollInfo.subjectName && enrollInfo.gradeName"
+                      >{{ enrollInfo.subjectName }}（{{
+                        enrollInfo.gradeName
+                      }}）&nbsp;/&nbsp;</template
+                    >
+                    <template v-if="enrollInfo.className">{{ enrollInfo.className }}</template>
+                  </span>
+                </div>
+                <div class="right">
+                  <span>共：</span>
+                  <span>{{ enrollInfo.classHour }}</span>
+                  <span>课时</span>
+                </div>
+              </div>
+              <div class="discount">
+                <div class="title">
+                  <h3>活动优惠</h3>
+                  <el-button
+                    type="primary"
+                    size="small"
+                    style="margin-left: 12px"
+                    @click="addCoupon"
+                    >新增优惠</el-button
+                  >
+                </div>
+                <div class="content">
+                  <el-row>
+                    <el-col :span="6">
+                      <el-select
+                        placeholder="请选择优惠券"
+                        v-model="orderCouponId"
+                        @change="handleCoupon"
+                        clearable
+                      >
+                        <el-option
+                          v-for="item in couponList"
+                          :key="item.id"
+                          :label="item.name"
+                          :value="item.id"
+                        />
+                      </el-select>
+                    </el-col>
+                  </el-row>
+                  <div class="fee">
+                    <span>应收总计：{{ enrollInfo.amount }} 元 = </span>
+                    <span>课程价格：{{ enrollInfo.amount }} 元 + </span>
+                    <span
+                      >优惠券信息：{{ enrollInfo.coupon ? enrollInfo.coupon : '(暂无优惠)' }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
       </el-row>
     </el-main>
   </el-container>
+
+  <subjectDialog
+    v-if="subjectVisible"
+    v-model:subjectVisible="subjectVisible"
+    @chooseSubject="handleChooseSubject"
+  ></subjectDialog>
+
+  <classDialog
+    v-if="classVisible"
+    v-model:classVisible="classVisible"
+    @chooseClass="handleChooseClass"
+  ></classDialog>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
+import subjectDialog from './components/subjectDialog.vue'
+import classDialog from './components/classDialog.vue'
 import { consultPage, IConsultList, consultDetail, IConsultDetail } from '@api/recruitConsult'
-import { dicts } from '@mixins/DIctsPlugin';
+import { IGradeListItem } from '@api/teachSubjectGrade'
+import { classGet } from '@api/teachClass'
 import { useRouter } from 'vue-router'
+import { dicts } from '@mixins/DIctsPlugin'
 const router = useRouter()
 //选择到的用户名称
 let searchName = ref('')
 //选择到的用户数据
 let clientInfo = reactive<Partial<IConsultDetail>>({})
+
+// 优惠券数据
+let orderCouponId = ref('')
+interface ICouponList{
+  id: string,
+  name: string,
+  amount: number,
+
+}
+const couponList = ref<ICouponList[]>([])
 //生命周期
 onBeforeMount(() => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
@@ -118,6 +219,47 @@ const handleSelect = async (item: IConsultList) => {
 //新建咨询
 const add = () => {
   router.push('/recruit/consult/add')
+}
+
+//报名信息
+let enrollInfo = reactive({
+  subjectName: '', //选择科目
+  className: '', //选择班级
+  gradeName: '', //科目等级
+  classHour: '', //班级课时
+  amount: '', //应收金额
+  coupon: ''
+})
+
+//选择科目
+let subjectVisible = ref<boolean>(false)
+const chooseSubject = () => {
+  subjectVisible.value = true
+}
+//选择某一个科目
+const handleChooseSubject = (val: IGradeListItem) => {
+  Object.assign(enrollInfo, val)
+  console.log(val)
+}
+
+//选择班级
+let classVisible = ref<boolean>(false)
+const chooseClass = () => {
+  classVisible.value = true
+}
+//选择某一个班级
+const handleChooseClass = async (id: string) => {
+  let res = await classGet(id)
+  Object.assign(enrollInfo, res.data)
+}
+
+// 新增优惠
+const addCoupon = () => {
+  console.log('新增优惠')
+}
+
+const handleCoupon = () => {
+  console.log('优惠券')
 }
 </script>
 
@@ -241,20 +383,19 @@ const add = () => {
       align-items: center;
     }
 
-    .content,
-    .fee {
+    .content {
       margin: 0 15px;
-    }
-
-    .fee {
-      color: var(--el-text-color-regular);
-      font-size: 14px;
-      font-weight: bold;
-      padding-bottom: 15px;
     }
   }
 }
 
+.fee {
+  color: var(--el-text-color-regular);
+  font-size: 14px;
+  font-weight: bold;
+  padding-bottom: 15px;
+  margin: 15px 0;
+}
 .account {
   border-top: 3px solid var(--el-color-primary);
   border-top-left-radius: 5px;

@@ -22,7 +22,8 @@ export type Dicts = {
   recruit_customer_level?: DictsItem[]
   recruit_follow_method?: DictsItem[]
   recruit_dealStatus?: DictsItem[]
-  crm_teaching_method?:DictsItem[]
+  crm_teaching_method?: DictsItem[]
+  crm_class_status?: DictsItem[]
 }
 
 interface IDicts {

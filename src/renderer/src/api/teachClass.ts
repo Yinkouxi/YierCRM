@@ -1,6 +1,6 @@
 import http from '@utils/request'
 
-interface IClassPage {
+export interface IClassPage {
   current: number
   size: number
   className?: string
