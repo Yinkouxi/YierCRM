@@ -424,3 +424,11 @@ interface IFollowAddData {
 export const followAdd = (data: IFollowAdd): Promise<IFollowAddData> => {
   return http.post<IFollowAddData>('/crm/recruit/consult/follow/add', data)
 }
+
+//转移客户
+export const consultTransfer = (data: {
+  customerIds: string[]
+  userId: string
+}): Promise<IFollowAddData> => {
+  return http.post<IFollowAddData>('/crm/recruit/consult/transfer', data)
+}

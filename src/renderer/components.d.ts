@@ -27,6 +27,7 @@ declare module 'vue' {
     ElDA: typeof import('element-plus/es')['ElDA']
     ElDate: typeof import('element-plus/es')['ElDate']
     ElDatePicker: typeof import('element-plus/es')['ElDatePicker']
+    ElDateTimePicker: typeof import('element-plus/es')['ElDateTimePicker']
     ElDescriptions: typeof import('element-plus/es')['ElDescriptions']
     ElDescriptionsItem: typeof import('element-plus/es')['ElDescriptionsItem']
     ElDialog: typeof import('element-plus/es')['ElDialog']
