@@ -149,6 +149,127 @@
             </div>
           </el-card>
         </el-col>
+
+        <el-col :span="24" style="margin-top: 15px">
+          <el-card shadow="never">
+            <template #header>
+              <div class="card-header">
+                <span style="color: #409eff">支付信息</span>
+              </div>
+            </template>
+            <div class="discount">
+              <el-form-item label="收费模式" label-width="100px" style="margin: 15px">
+                <div style="display: flex; align-items: center">
+                  <el-select
+                    v-model="order.chargeMode"
+                    placeholder="选择收费模式"
+                    style="width: 150px"
+                    @change="choosePayType"
+                  >
+                    <el-option
+                      v-for="item in dicts.recruit_charge_type"
+                      :key="item.k"
+                      :label="item.k"
+                      :value="item.v"
+                    />
+                  </el-select>
+                  <span v-if="order.chargeMode == '2'" style="margin: 0 10px"> * </span>
+                  <el-select
+                    v-if="order.chargeMode == '2'"
+                    v-model="order.termCounter"
+                    placeholder="选择分期数"
+                    style="width: 150px"
+                    @change="choosePayNum"
+                  >
+                    <el-option
+                      v-for="item in dicts.installment_count"
+                      :key="item.k"
+                      :label="item.k"
+                      :value="item.v"
+                    />
+                  </el-select>
+                </div>
+              </el-form-item>
+            </div>
+            <div class="account" v-for="item in orderTerms" :key="item.termNumber">
+              <table class="payment-table" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td colspan="4">
+                    <div class="header">
+                      <div class="term-title">第{{ item.termNumber }}期</div>
+                      <div class="installment">本期应收{{ item.installment }}元</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>账户名称</th>
+                  <th>对方账户</th>
+                  <th>流水/支付单号</th>
+                  <th>实收</th>
+                </tr>
+                <tr v-for="(payment, index) in item.orderPayments" :key="index">
+                  <td>
+                    <el-input
+                      placeholder="请输入账户名称"
+                      v-model="payment.payAccountName"
+                    ></el-input>
+                  </td>
+                  <td>
+                    <el-input
+                      placeholder="请输入对方账号"
+                      v-model="payment.payAccountNo"
+                    ></el-input>
+                  </td>
+                  <td>
+                    <el-input
+                      placeholder="请输入流水单号"
+                      v-model="payment.paySerialNumber"
+                    ></el-input>
+                  </td>
+                  <td>
+                    <el-input placeholder="实收金额" v-model="payment.payAmount"></el-input>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4" align="center">
+                    <el-button type="default" icon="CirclePlus" @click="addPayment(item)"
+                      >新增账户</el-button
+                    >
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="content">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="对内备注" label-width="100px">
+                    <el-input
+                      v-model="order.remark1"
+                      type="textarea"
+                      maxlength="200"
+                      show-word-limit
+                      placeholder="该备注只有内部操作人员可见"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="对外备注" label-width="100px">
+                    <el-input
+                      v-model="order.remark2"
+                      type="textarea"
+                      maxlength="200"
+                      show-word-limit
+                      placeholder="该备注将会打印"
+                    ></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </div>
+            <div class="gather">
+              <span>实收总计:{{ enrollInfo.amount }}元</span>
+            </div>
+          </el-card>
+        </el-col>
       </el-row>
     </el-main>
   </el-container>
@@ -183,18 +304,46 @@ let clientInfo = reactive<Partial<IConsultDetail>>({})
 
 // 优惠券数据
 let orderCouponId = ref('')
-interface ICouponList{
-  id: string,
-  name: string,
-  amount: number,
-
+interface ICouponList {
+  id: string
+  name: string
+  amount: number
 }
+
+//支付信息
+const order = reactive({
+  customerId: '', //学员id
+  classId: '', //班级id
+  gradeId: '', //等级id
+  chargeMode: '', //收费模式（1：全款；2：分期）
+  termCounter: '', //期数 全款就是1期
+  subjectId: '', //课程id
+  remark1: '', //对内备注1
+  remark2: '' //对内备注2
+})
+
+//全款/分期数据
+let orderTerms = ref([
+  {
+    termNumber: 1, //期数
+    installment: 0, //
+    orderPayments: [
+      {
+        payAccountName: '', //支付账号名称
+        payAccountNo: '', //支付账号
+        paySerialNumber: '', //流水号
+        payAmount: '' //支付金额
+      }
+    ]
+  }
+])
+
 const couponList = ref<ICouponList[]>([])
 //生命周期
 onBeforeMount(() => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
   if (proxy) {
-    ;(proxy as any).getDicts(['system_global_gender'])
+    ;(proxy as any).getDicts(['system_global_gender', 'recruit_charge_type', 'installment_count'])
   }
 })
 //搜索用户
@@ -260,6 +409,35 @@ const addCoupon = () => {
 
 const handleCoupon = () => {
   console.log('优惠券')
+}
+
+//选择支付模式
+const choosePayType = () => {}
+//选择分期
+const choosePayNum = (val: number) => {
+  const basePayment = {
+    payAccountName: '', //支付账号名称
+    payAccountNo: '', //支付账号
+    paySerialNumber: '', //流水号
+    payAmount: '' //支付金额
+  }
+  orderTerms.value = Array.from({ length: val }, (item, index) => {
+    return {
+      termNumber: index + 1,
+      installment: 0,
+      orderPayments: [Object.assign({}, basePayment)]
+    }
+  })
+}
+
+//新增账号
+const addPayment = (item) => {
+  item.orderPayments.push({
+    payAccountName: '', //支付账号名称
+    payAccountNo: '', //支付账号
+    paySerialNumber: '', //流水号
+    payAmount: '' //支付金额
+  })
 }
 </script>
 
