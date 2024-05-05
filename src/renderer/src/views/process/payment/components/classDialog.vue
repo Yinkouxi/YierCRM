@@ -67,7 +67,7 @@ let radio = ref('')
 onBeforeMount(async () => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
   if (proxy) {
-    ;(proxy as any).getDicts(['crm_class_status'])
+    ;(proxy as any).getDicts(['crm_class_status','system_global_gender', 'recruit_charge_type', 'installment_count'])
   }
   //班级列表
   getClassPage()

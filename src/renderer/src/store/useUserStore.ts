@@ -1,18 +1,21 @@
 import { defineStore } from 'pinia'
 import { getInfo } from '@api/user'
-import { Role, IUserInfo } from '@interface/user'
+import { Role, IUserInfo, Unit } from '@interface/user'
 export const useUserStore = defineStore('userId', {
   state: (): {
     roles: Role[]
     rolePerm: string
     userInfo: Partial<IUserInfo>
-    permissions: any
+    permissions: any,
+    units:Partial<Unit>;
+
   } => {
     return {
       roles: [],
       rolePerm: '',
       userInfo: {},
-      permissions: []
+      permissions: [],
+      units: {}
     }
   },
   getters: {},
@@ -30,6 +33,9 @@ export const useUserStore = defineStore('userId', {
 
       //用户信息
       this.userInfo = userInfo
+
+      //机构信息
+      this.units = units;
     }
   },
   persist: {
@@ -37,7 +43,7 @@ export const useUserStore = defineStore('userId', {
     strategies: [
       {
         storage: localStorage, //默认走session
-        paths: ['rolePerm', 'userInfo', 'permissions']
+        paths: ['rolePerm', 'userInfo', 'permissions', 'units']
       }
     ]
   }

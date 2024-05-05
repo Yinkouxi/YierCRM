@@ -41,6 +41,7 @@ export interface Role {
     id: string;
     roleName: string;
     rolePerm: string;
+    
 }
 
 export interface IUserData{
@@ -62,7 +63,7 @@ export interface Meta {
     noCache: boolean;
     link: string | null;
 }
-  
+
 export interface Child {
     id: string;
     name: string;
@@ -71,7 +72,7 @@ export interface Child {
     component: string;
     meta: Meta;
 }
-  
+
 export interface Parent {
     id?: string;
     name?: string;
@@ -84,7 +85,7 @@ export interface Parent {
     meta?: Meta;
     children?: Child[];
 }
-  
+
 export interface IMenuData {
     code: string;
     msg: string;

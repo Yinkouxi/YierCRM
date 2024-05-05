@@ -3,7 +3,7 @@ import http from '@utils/request'
 interface ITagData {
   msg: string
   code: string
-  data: null | string
+  data: string
 }
 
 export interface ITagPage {

@@ -2,6 +2,7 @@
   <el-container>
     <el-main>
       <el-row :gutter="15">
+        <!-- 学员信息 -->
         <el-col :span="24">
           <el-card shadow="never">
             <template #header>
@@ -75,6 +76,7 @@
           </el-card>
         </el-col>
 
+        <!-- 班级信息 -->
         <el-col :span="24" style="margin-top: 15px">
           <el-card shadow="never">
             <template #header>
@@ -150,6 +152,7 @@
           </el-card>
         </el-col>
 
+        <!-- 优惠券 -->
         <el-col :span="24" style="margin-top: 15px">
           <el-card shadow="never">
             <template #header>
@@ -291,7 +294,7 @@
                 @close="handleClose(tag)"
                 class="tag"
               >
-                {{ tag }}
+                {{ tag.name }}
               </el-tag>
               <el-input
                 v-if="inputVisible"
@@ -324,6 +327,53 @@
                 >更多标签</el-tag
               >
             </div>
+          </el-card>
+        </el-col>
+
+        <!-- 经办信息 -->
+        <el-col :span="24" style="margin-top: 15px">
+          <el-card shadow="never">
+            <template #header>
+              <div class="card-header">
+                <span style="color: #409eff">经办信息</span>
+              </div>
+            </template>
+            <div class="operator">
+              <el-form label-width="100px">
+                <el-row :gutter="15">
+                  <el-col :span="8">
+                    <el-form-item label="经办校区">
+                      <el-input v-model="processinfo.area" placeholder="经办人" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="经办人">
+                      <el-input
+                        v-model="processinfo.oprator"
+                        placeholder="经办人"
+                        disabled
+                      ></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="经办日期">
+                      <el-date-picker
+                        v-model="processinfo.date"
+                        style="width: 100%"
+                        disabled
+                      ></el-date-picker>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>
+          </el-card>
+        </el-col>
+
+        <el-col :span="24" style="margin-top: 15px">
+          <el-card shadow="never" class="btn">
+            <el-button type="primary" @click="submit">保存</el-button>
+            <el-button @click="cancel">取消</el-button>
           </el-card>
         </el-col>
       </el-row>
@@ -399,10 +449,15 @@ let orderTerms = ref([
 const couponList = ref<ICouponList[]>([])
 //生命周期
 onBeforeMount(() => {
+  console.log(dicts, '--')
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
   if (proxy) {
     ;(proxy as any).getDicts(['system_global_gender', 'recruit_charge_type', 'installment_count'])
   }
+  //获取标签
+  getTags()
+  // 经办信息
+  getCurrentUser()
 })
 //搜索用户
 const querySearch = async (queryString: string, cb: any) => {
@@ -421,6 +476,9 @@ const handleSelect = async (item: IConsultList) => {
   searchName.value = item.name
   let res = await consultDetail(item.id)
   Object.assign(clientInfo, res.data)
+
+  //赋值学员id
+  order.customerId = item.id
 }
 
 //新建咨询
@@ -446,7 +504,9 @@ const chooseSubject = () => {
 //选择某一个科目
 const handleChooseSubject = (val: IGradeListItem) => {
   Object.assign(enrollInfo, val)
-  console.log(val)
+  //赋值等级id和科目id
+  order.gradeId = val.id
+  order.subjectId = val.subjectId
 }
 
 //选择班级
@@ -458,6 +518,8 @@ const chooseClass = () => {
 const handleChooseClass = async (id: string) => {
   let res = await classGet(id)
   Object.assign(enrollInfo, res.data)
+  //赋值班级id
+  order.classId = id
 }
 
 // 新增优惠
@@ -470,7 +532,26 @@ const handleCoupon = () => {
 }
 
 //选择支付模式
-const choosePayType = () => {}
+const choosePayType = (val: string) => {
+  //选择全款
+  if (val == '1') {
+    order.termCounter = '1'
+    orderTerms.value = [
+      {
+        termNumber: 1, //期数
+        installment: 0, //
+        orderPayments: [
+          {
+            payAccountName: '', //支付账号名称
+            payAccountNo: '', //支付账号
+            paySerialNumber: '', //流水号
+            payAmount: '' //支付金额
+          }
+        ]
+      }
+    ]
+  }
+}
 //选择分期
 const choosePayNum = (val: number) => {
   const basePayment = {
@@ -501,22 +582,28 @@ const addPayment = (item) => {
 // 订单标签
 let inputVisible = ref<boolean>(false)
 let inputValue = ref<string>('')
-let orderTags = ref<string[]>([])
+let orderTags = ref<{ id: string; name: string }[]>([])
 //新建标签
 const showInput = () => {
   inputVisible.value = true
 }
 //输入标签确认
 const handleInputConfirm = async () => {
-  if (inputValue.value.trim() !== '' && !orderTags.value.includes(inputValue.value)) {
-    await tagAdd({ name: inputValue.value })
-    orderTags.value.push(inputValue.value)
+  if (
+    inputValue.value.trim() !== '' &&
+    !orderTags.value.some((item) => item.name == inputValue.value)
+  ) {
+    let { data } = await tagAdd({ name: inputValue.value })
+    orderTags.value.push({
+      id: data,
+      name: inputValue.value
+    })
     inputValue.value = ''
   }
   inputVisible.value = false
 }
 //删除当前标签
-const handleClose = (tag: string) => {
+const handleClose = (tag: { id: string; name: string }) => {
   orderTags.value = orderTags.value.filter((item) => item != tag)
 }
 
@@ -541,9 +628,44 @@ const moreTag = () => {
 }
 //点击更多标签
 const clickTag = (tag: ITagPageItem) => {
-  if (!orderTags.value.includes(tag.name)) {
-    orderTags.value.push(tag.name)
+  if (!orderTags.value.some((item) => item.name === tag.name)) {
+    orderTags.value.push(tag)
   }
+}
+
+//经办信息
+const processinfo = reactive<{
+  area: string
+  oprator: string
+  date: Date
+}>({
+  area: '',
+  oprator: '',
+  date: new Date()
+})
+import { useUserStore } from '@store/useUserStore'
+import { orderAdd } from '@api/recruitOrder'
+const userStore = useUserStore()
+const getCurrentUser = () => {
+  processinfo.area = userStore.units.name as string
+  processinfo.oprator = userStore.userInfo.username as string
+}
+
+//取消
+const cancel = () => {
+  router.go(-1)
+}
+
+//保存
+const submit = async () => {
+  let form = {
+    order: order,
+    orderTerms: orderTerms.value,
+    orderTags: orderTags.value.map((item) => item.id), // 标签id
+    orderBooks: {}, //教材id
+    orderCouponId: '' //优惠卷id
+  }
+  let res = await orderAdd(form)
 }
 </script>
 
