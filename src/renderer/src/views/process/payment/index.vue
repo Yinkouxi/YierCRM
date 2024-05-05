@@ -270,6 +270,62 @@
             </div>
           </el-card>
         </el-col>
+
+        <!-- 订单标签 -->
+        <el-col :span="24" style="margin-top: 15px">
+          <el-card shadow="never">
+            <template #header>
+              <div class="card-header">
+                <span style="color: #409eff">订单标签</span>
+              </div>
+            </template>
+            <div class="choosenLabel">
+              <span style="width: 60px">已选标签：</span>
+              <el-tag
+                v-for="(tag, index) in orderTags"
+                :key="index"
+                type="success"
+                :disable-transitions="false"
+                closable
+                style="margin-right: 15px"
+                @close="handleClose(tag)"
+                class="tag"
+              >
+                {{ tag }}
+              </el-tag>
+              <el-input
+                v-if="inputVisible"
+                ref="InputRef"
+                v-model="inputValue"
+                size="default"
+                class="tag"
+                @keyup.enter="handleInputConfirm"
+                style="width: 200px"
+              />
+              <el-button v-else class="button-new-tag ml-1" size="small" @click="showInput"
+                >+ 新建标签</el-button
+              >
+            </div>
+            <div class="label">
+              <el-tag
+                v-for="tag in tags"
+                :key="tag.id"
+                :disable-transitions="false"
+                style="margin-right: 10px"
+                class="tag"
+                @click="clickTag(tag)"
+                >{{ tag.name }}</el-tag
+              >
+              <el-tag
+                type="success"
+                :disable-transitions="false"
+                style="margin-right: 15px; cursor: pointer"
+                @click="moreTag"
+                >更多标签</el-tag
+              >
+            </div>
+          </el-card>
+        </el-col>
       </el-row>
     </el-main>
   </el-container>
@@ -296,6 +352,8 @@ import { IGradeListItem } from '@api/teachSubjectGrade'
 import { classGet } from '@api/teachClass'
 import { useRouter } from 'vue-router'
 import { dicts } from '@mixins/DIctsPlugin'
+import { tagPage, ITagPage, ITagPageItem, tagAdd } from '@api/recruitTag'
+import { ElMessage } from 'element-plus'
 const router = useRouter()
 //选择到的用户名称
 let searchName = ref('')
@@ -438,6 +496,54 @@ const addPayment = (item) => {
     paySerialNumber: '', //流水号
     payAmount: '' //支付金额
   })
+}
+
+// 订单标签
+let inputVisible = ref<boolean>(false)
+let inputValue = ref<string>('')
+let orderTags = ref<string[]>([])
+//新建标签
+const showInput = () => {
+  inputVisible.value = true
+}
+//输入标签确认
+const handleInputConfirm = async () => {
+  if (inputValue.value.trim() !== '' && !orderTags.value.includes(inputValue.value)) {
+    await tagAdd({ name: inputValue.value })
+    orderTags.value.push(inputValue.value)
+    inputValue.value = ''
+  }
+  inputVisible.value = false
+}
+//删除当前标签
+const handleClose = (tag: string) => {
+  orderTags.value = orderTags.value.filter((item) => item != tag)
+}
+
+//获取更多标签
+const tagForm = reactive<ITagPage>({
+  current: 0,
+  size: 5
+})
+const getTags = async () => {
+  let res = await tagPage(tagForm)
+  let { records, total } = res.data
+  tags.value = tags.value.concat(records)
+  if (total === tags.value.length) {
+    ElMessage.warning('没有更多标签了')
+  }
+}
+//更多标签
+let tags = ref<ITagPageItem[]>([])
+const moreTag = () => {
+  tagForm.current += 1
+  getTags()
+}
+//点击更多标签
+const clickTag = (tag: ITagPageItem) => {
+  if (!orderTags.value.includes(tag.name)) {
+    orderTags.value.push(tag.name)
+  }
 }
 </script>
 
