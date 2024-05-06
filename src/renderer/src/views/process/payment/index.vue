@@ -110,49 +110,17 @@
                   <span>课时</span>
                 </div>
               </div>
-              <div class="discount">
-                <div class="title">
-                  <h3>活动优惠</h3>
-                  <el-button
-                    type="primary"
-                    size="small"
-                    style="margin-left: 12px"
-                    @click="addCoupon"
-                    >新增优惠</el-button
-                  >
-                </div>
-                <div class="content">
-                  <el-row>
-                    <el-col :span="6">
-                      <el-select
-                        placeholder="请选择优惠券"
-                        v-model="orderCouponId"
-                        @change="handleCoupon"
-                        clearable
-                      >
-                        <el-option
-                          v-for="item in couponList"
-                          :key="item.id"
-                          :label="item.name"
-                          :value="item.id"
-                        />
-                      </el-select>
-                    </el-col>
-                  </el-row>
-                  <div class="fee">
-                    <span>应收总计：{{ enrollInfo.amount }} 元 = </span>
-                    <span>课程价格：{{ enrollInfo.amount }} 元 + </span>
-                    <span
-                      >优惠券信息：{{ enrollInfo.coupon ? enrollInfo.coupon : '(暂无优惠)' }}</span
-                    >
-                  </div>
+              <div class="content">
+                <div class="fee">
+                  <span>课程价格：{{ enrollInfo.amount }} 元 </span>
+                  <span>应收总计：{{ enrollInfo.amount }} 元 </span>
                 </div>
               </div>
             </div>
           </el-card>
         </el-col>
 
-        <!-- 优惠券 -->
+        <!-- 收费模式 -->
         <el-col :span="24" style="margin-top: 15px">
           <el-card shadow="never">
             <template #header>
@@ -449,7 +417,6 @@ let orderTerms = ref([
 const couponList = ref<ICouponList[]>([])
 //生命周期
 onBeforeMount(() => {
-  console.log(dicts, '--')
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
   if (proxy) {
     ;(proxy as any).getDicts(['system_global_gender', 'recruit_charge_type', 'installment_count'])
@@ -492,7 +459,7 @@ let enrollInfo = reactive({
   className: '', //选择班级
   gradeName: '', //科目等级
   classHour: '', //班级课时
-  amount: '', //应收金额
+  amount: 0, //应收金额
   coupon: ''
 })
 
@@ -507,6 +474,8 @@ const handleChooseSubject = (val: IGradeListItem) => {
   //赋值等级id和科目id
   order.gradeId = val.id
   order.subjectId = val.subjectId
+  //默认全款方式
+  choosePayType('1')
 }
 
 //选择班级
@@ -539,7 +508,7 @@ const choosePayType = (val: string) => {
     orderTerms.value = [
       {
         termNumber: 1, //期数
-        installment: 0, //
+        installment: enrollInfo.amount, //
         orderPayments: [
           {
             payAccountName: '', //支付账号名称
@@ -563,7 +532,7 @@ const choosePayNum = (val: number) => {
   orderTerms.value = Array.from({ length: val }, (item, index) => {
     return {
       termNumber: index + 1,
-      installment: 0,
+      installment: enrollInfo.amount / val,
       orderPayments: [Object.assign({}, basePayment)]
     }
   })
@@ -666,6 +635,12 @@ const submit = async () => {
     orderCouponId: '' //优惠卷id
   }
   let res = await orderAdd(form)
+  if (res.code == '200') {
+    ElMessage.success('保存成功')
+    router.go(-1)
+  } else {
+    ElMessage.error(res.msg)
+  }
 }
 </script>
 
@@ -788,20 +763,25 @@ const submit = async () => {
       justify-content: flex-start;
       align-items: center;
     }
+  }
+}
+.content {
+  margin: 0 15px;
 
-    .content {
-      margin: 0 15px;
-    }
+  // 最后一个span
+  span:nth-child(2) {
+    margin-left: 15px;
+  }
+
+  .fee {
+    color: var(--el-text-color-regular);
+    font-size: 14px;
+    font-weight: bold;
+    padding-bottom: 15px;
+    margin-top: 15px;
   }
 }
 
-.fee {
-  color: var(--el-text-color-regular);
-  font-size: 14px;
-  font-weight: bold;
-  padding-bottom: 15px;
-  margin: 15px 0;
-}
 .account {
   border-top: 3px solid var(--el-color-primary);
   border-top-left-radius: 5px;
