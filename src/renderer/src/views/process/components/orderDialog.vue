@@ -15,7 +15,9 @@
       </el-table-column>
       <el-table-column label="订单号" prop="orderNumber" width="200">
         <template #default="{ row }">
-          <el-link type="primary" :underline="false">{{ row.orderNumber }}</el-link>
+          <el-link type="primary" :underline="false" @click="detailOrder(row.id)">{{
+            row.orderNumber
+          }}</el-link>
         </template>
       </el-table-column>
       <el-table-column label="购买课程" prop="subjectName" />
@@ -74,6 +76,8 @@ import { orderPage, IOrderPageItem, IOrderPage } from '@api/recruitOrder'
 import { ElMessage, type TableColumnCtx } from 'element-plus'
 import tool from '@utils/tool'
 import { dicts } from '@mixins/DIctsPlugin'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const props = defineProps({
   orderVisible: {
     type: Boolean,
@@ -141,6 +145,16 @@ const signment = async (row: IOrderPageItem) => {
       ElMessage.error('复制失败!')
     }
   }
+}
+
+//进入订单详情
+const detailOrder = (id: string) => {
+  router.push({
+    path: '/recruit/hiddenComponent/orderDetail',
+    query: {
+      id
+    }
+  })
 }
 
 //关闭dialog
