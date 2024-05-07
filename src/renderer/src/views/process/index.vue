@@ -7,7 +7,7 @@
             <img src="../../assets/images/idcard.png" />
             <el-text>报名</el-text>
           </div>
-          <div class="quick-menu-item">
+          <div class="quick-menu-item" @click="goRefund">
             <img src="../../assets/images/rocket.png" />
             <el-text>退费</el-text>
           </div>
@@ -118,7 +118,9 @@
             <el-table-column label="招生老师" prop="whrName"></el-table-column>
             <el-table-column label="操作" width="100" fixed="right">
               <template #default="{ row }">
-                <el-link :underline="false" type="primary">订单详情</el-link>
+                <el-link :underline="false" type="primary" @click="orderDetail(row)"
+                  >订单详情</el-link
+                >
               </template>
             </el-table-column>
           </el-table>
@@ -133,6 +135,12 @@
       </el-card>
     </el-main>
   </el-container>
+  <orderDialog
+    v-if="orderVisible"
+    v-model:orderVisible="orderVisible"
+    :orderName="orderName"
+    :orderId="orderId"
+  ></orderDialog>
 </template>
 
 <script setup lang="ts">
@@ -141,6 +149,7 @@ import { transactPage, ITransactPage, ITransactPageItem } from '@api/recruitTran
 import { dicts } from '@mixins/DIctsPlugin'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import orderDialog from './components/orderDialog.vue'
 const router = useRouter()
 
 //表单数据
@@ -184,7 +193,7 @@ onBeforeMount(() => {
       'recruit_dealStatus'
     ])
   }
-
+  // 获取列表
   getTransactPage()
 })
 //办理列表
@@ -250,24 +259,49 @@ const chooseStudent = (val: ITransactPageItem[]) => {
 
 // 去报名
 const goEnroll = () => {
-  if (currentObj.id && chooseNum.value==1) {
+  if (currentObj.id && chooseNum.value == 1) {
     router.push({
       path: '/process/payment',
       query: {
         id: currentObj.id
       }
     })
-  }else if(chooseNum.value>1){
+  } else if (chooseNum.value > 1) {
     ElMessage.warning('只能选择一个学员')
-  }else {
+  } else {
     router.push({
       path: '/process/payment'
     })
   }
 }
+
+//去退费
+const goRefund = () => {
+  if (currentObj.id) {
+    orderName.value = currentObj.name as string
+    orderId.value = currentObj.id as string
+    orderVisible.value = true
+  } else {
+    ElMessage.error('请选择学员')
+  }
+}
+
+//订单详情
+let orderVisible = ref(false)
+let orderName = ref('')
+let orderId = ref('')
+const orderDetail = (row: ITransactPageItem) => {
+  const { name, id } = row
+  orderName.value = name
+  orderId.value = id
+  orderVisible.value = true
+}
 </script>
 
 <style scoped lang="less">
+.el-table {
+  font-size: 12px;
+}
 .pagi {
   width: 98%;
   display: flex;
