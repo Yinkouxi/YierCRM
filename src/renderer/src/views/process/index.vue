@@ -3,7 +3,7 @@
     <el-main>
       <el-card shadow="never" style="margin-bottom: 15px">
         <div class="header">
-          <div class="quick-menu-item">
+          <div class="quick-menu-item" @click="goEnroll">
             <img src="../../assets/images/idcard.png" />
             <el-text>报名</el-text>
           </div>
@@ -75,6 +75,7 @@
             stripe
             :header-cell-style="{ 'text-align': 'center' }"
             :cell-style="{ 'text-align': 'center' }"
+            @selection-change="chooseStudent"
           >
             <el-table-column type="selection"></el-table-column>
             <el-table-column label="学员姓名" prop="name"></el-table-column>
@@ -138,6 +139,10 @@
 import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
 import { transactPage, ITransactPage, ITransactPageItem } from '@api/recruitTransact'
 import { dicts } from '@mixins/DIctsPlugin'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+const router = useRouter()
+
 //表单数据
 const searchForm = reactive<ITransactPage>({
   current: 1,
@@ -227,6 +232,38 @@ const reset = () => {
   })
   chooseTime.value = []
   getTransactPage()
+}
+
+// 当前选择的用户
+let currentObj = reactive<Partial<ITransactPageItem>>({})
+// 被选中学员数
+let chooseNum = ref(0)
+// 选择学员
+const chooseStudent = (val: ITransactPageItem[]) => {
+  chooseNum.value = val.length
+  if (val.length > 1) {
+    ElMessage.warning('只能选择一个学员')
+  }
+  let row = val[0]
+  Object.assign(currentObj, row)
+}
+
+// 去报名
+const goEnroll = () => {
+  if (currentObj.id && chooseNum.value==1) {
+    router.push({
+      path: '/process/payment',
+      query: {
+        id: currentObj.id
+      }
+    })
+  }else if(chooseNum.value>1){
+    ElMessage.warning('只能选择一个学员')
+  }else {
+    router.push({
+      path: '/process/payment'
+    })
+  }
 }
 </script>
 

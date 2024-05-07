@@ -368,23 +368,16 @@ import classDialog from './components/classDialog.vue'
 import { consultPage, IConsultList, consultDetail, IConsultDetail } from '@api/recruitConsult'
 import { IGradeListItem } from '@api/teachSubjectGrade'
 import { classGet } from '@api/teachClass'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { dicts } from '@mixins/DIctsPlugin'
 import { tagPage, ITagPage, ITagPageItem, tagAdd } from '@api/recruitTag'
 import { ElMessage } from 'element-plus'
 const router = useRouter()
+const route = useRoute()
 //选择到的用户名称
 let searchName = ref('')
 //选择到的用户数据
 let clientInfo = reactive<Partial<IConsultDetail>>({})
-
-// 优惠券数据
-let orderCouponId = ref('')
-interface ICouponList {
-  id: string
-  name: string
-  amount: number
-}
 
 //支付信息
 const order = reactive({
@@ -414,12 +407,16 @@ let orderTerms = ref([
   }
 ])
 
-const couponList = ref<ICouponList[]>([])
 //生命周期
 onBeforeMount(() => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
   if (proxy) {
     ;(proxy as any).getDicts(['system_global_gender', 'recruit_charge_type', 'installment_count'])
+  }
+  //获取选择的用户
+  let id = route.query?.id as string
+  if (id) {
+    getConsultDetail(id)
   }
   //获取标签
   getTags()
@@ -438,12 +435,17 @@ const querySearch = async (queryString: string, cb: any) => {
     cb(records)
   }
 }
+// 获取用户
+const getConsultDetail = async (id: string) => {
+  let res = await consultDetail(id)
+  Object.assign(clientInfo, res.data)
+  //赋值学员id
+  order.customerId = id
+}
 //选择用户
 const handleSelect = async (item: IConsultList) => {
   searchName.value = item.name
-  let res = await consultDetail(item.id)
-  Object.assign(clientInfo, res.data)
-
+  getConsultDetail(item.id)
   //赋值学员id
   order.customerId = item.id
 }
@@ -489,15 +491,6 @@ const handleChooseClass = async (id: string) => {
   Object.assign(enrollInfo, res.data)
   //赋值班级id
   order.classId = id
-}
-
-// 新增优惠
-const addCoupon = () => {
-  console.log('新增优惠')
-}
-
-const handleCoupon = () => {
-  console.log('优惠券')
 }
 
 //选择支付模式
