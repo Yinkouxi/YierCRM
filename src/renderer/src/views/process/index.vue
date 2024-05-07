@@ -11,7 +11,7 @@
             <img src="../../assets/images/rocket.png" />
             <el-text>退费</el-text>
           </div>
-          <div class="quick-menu-item">
+          <div class="quick-menu-item" @click="goInstallment">
             <img src="../../assets/images/creditcard.png" />
             <el-text>还款</el-text>
           </div>
@@ -277,6 +277,17 @@ const goEnroll = () => {
 
 //去退费
 const goRefund = () => {
+  if (currentObj.id) {
+    orderName.value = currentObj.name as string
+    orderId.value = currentObj.id as string
+    orderVisible.value = true
+  } else {
+    ElMessage.error('请选择学员')
+  }
+}
+
+//还款
+const goInstallment = () => {
   if (currentObj.id) {
     orderName.value = currentObj.name as string
     orderId.value = currentObj.id as string

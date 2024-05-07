@@ -46,3 +46,13 @@ export const tagPage = (data: ITagPage): Promise<ITagPageData> => {
 export const tagAdd = (data: { name: string }): Promise<ITagData> => {
   return http.post<ITagData>('/crm/recruit/tag/add', data)
 }
+
+interface ITagDelete {
+  msg: string
+  code: string
+  data: null | string
+}
+//删除标签
+export const tagDelete = (data: string): Promise<ITagDelete> => {
+  return http.get<ITagDelete>(`/crm/recruit/tag/delete/${data}`)
+}
