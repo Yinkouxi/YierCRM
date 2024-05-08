@@ -60,9 +60,13 @@
         <el-tab-pane label="沟通互动">
           <follow></follow>
         </el-tab-pane>
-        <el-tab-pane label="Config">Config</el-tab-pane>
-        <el-tab-pane label="Role">Role</el-tab-pane>
-        <el-tab-pane label="Task">Task</el-tab-pane>
+        <!-- <el-tab-pane label="订单">订单</el-tab-pane> -->
+        <el-tab-pane label="课程">课程</el-tab-pane>
+        <!-- <el-tab-pane label="课程表">课程表</el-tab-pane> -->
+        <!-- <el-tab-pane label="上课记录">上课记录</el-tab-pane> -->
+        <!-- <el-tab-pane label="成绩">成绩</el-tab-pane> -->
+        <!-- <el-tab-pane label="文件夹">文件夹</el-tab-pane> -->
+        <!-- <el-tab-pane label="操作日志">操作日志</el-tab-pane> -->
       </el-tabs>
     </el-main>
   </el-container>

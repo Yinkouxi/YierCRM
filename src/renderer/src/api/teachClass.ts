@@ -158,3 +158,80 @@ export const recruitWorkGet = (data: { classId: string }): Promise<IRecruitWorkG
 export const recruitWorkSave = (data: IRecruitWorkGet[]): Promise<IclassGetData> => {
   return http.post<IclassGetData>('/crm/recruit/work/save', data)
 }
+
+export interface IStudentList {
+  name?: string
+  mobile?: string
+  companyName?: string
+  classId?: string
+  current?: number
+  size?: number
+}
+
+export interface IStudentListItem {
+  id: string
+  name: string
+  namePinyin: string
+  nameAbbr: string
+  mobile: string
+  wechat: string
+  source: string
+  purpose: string
+  purposeCourseIds: string
+  purposeClassIds: string
+  age: number
+  school: string | null
+  major: string | null
+  level: string
+  dealStatus: number
+  dealTime: string
+  gender: string
+  education: string
+  province: string
+  city: string
+  county: string
+  enabled: number
+  remark: string
+  createBy: string
+  createTime: number
+  createUnits: string
+  updateBy: string
+  updateTime: number
+  collectBy: string
+  collectTime: number
+  provinceName: string
+  cityName: string
+  countyName: string
+  whrId: string
+  whrName: string
+  subjectId: string
+  subjectName: string
+  gradeId: string
+  gradeName: string
+  amount: number
+  classId: string
+  className: string
+  unitName: string | null
+}
+
+interface IStudentListData {
+  code: string
+  msg: string
+  data: {
+    records: IStudentListItem[]
+    total: number
+    size: number
+    current: number
+    orders: any[]
+    optimizeCountSql: boolean
+    searchCount: boolean
+    countId: any
+    maxLimit: any
+    pages: number
+  }
+}
+
+// 学生列表
+export const studentList = (data: IStudentList): Promise<IStudentListData> => {
+  return http.get<IStudentListData>('/crm/teach/class/student/list', data)
+}

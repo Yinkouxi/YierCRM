@@ -202,7 +202,7 @@ let manageTeacher = ref({
 onBeforeMount(() => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
   if (proxy) {
-    ;(proxy as any).getDicts(['crm_teaching_method'])
+    ;(proxy as any).getDicts(['crm_teaching_method','crm_class_status'])
   }
   getSubjectPage()
 

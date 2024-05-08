@@ -140,7 +140,12 @@
                       </template>
                     </template>
                   </el-table-column>
-                  <el-table-column label="上课时间每周)" prop="teachingDay" width="200" :formatter="transDay"/>
+                  <el-table-column
+                    label="上课时间每周)"
+                    prop="teachingDay"
+                    width="200"
+                    :formatter="transDay"
+                  />
                   <!--操作-->
                   <el-table-column label="操作" width="100" fixed="right" align="left">
                     <template #default="{ row }">
@@ -153,7 +158,13 @@
                           @click="setLesson(row.id)"
                           >排课</el-link
                         >
-                        <el-link :underline="false" type="primary" icon="List">学员</el-link>
+                        <el-link
+                          :underline="false"
+                          type="primary"
+                          icon="List"
+                          @click="member(row.id)"
+                          >学员</el-link
+                        >
                         <el-link
                           :underline="false"
                           type="primary"
@@ -202,6 +213,13 @@
       @change="getClassPage"
     >
     </arrangmentDialog>
+    <!-- 学员列表 -->
+    <memberDialog
+      v-if="memberVisible"
+      v-model:memberVisible="memberVisible"
+      :classId="classId"
+      @change="getClassPage"
+    ></memberDialog>
   </div>
 </template>
 
@@ -213,11 +231,12 @@ import { ComponentInternalInstance, getCurrentInstance, onBeforeMount } from 'vu
 import { reactive, ref } from 'vue'
 import classDialog from './components/classDialog.vue'
 import arrangmentDialog from './components/arrangmentDialog.vue'
+import memberDialog from './components/memberDialog.vue'
 
 // 搜索
 let searchForm = reactive({
   current: 1,
-  size: 10,
+  size: 100,
   className: '',
   subjectName: '',
   mainTeacherUsername: '',
@@ -366,6 +385,14 @@ const setLesson = (id: string) => {
     lessonId.value = ''
   }
   lessonVisible.value = true
+}
+
+// 学员
+const memberVisible = ref<boolean>(false)
+const classId = ref('')
+const member = (id: string) => {
+  classId.value = id
+  memberVisible.value = true
 }
 </script>
 <style scoped lang="less">
