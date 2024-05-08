@@ -6,7 +6,7 @@
         placeholder="输入班级名称"
         style="width: 300px"
       ></el-input>
-      <el-button type="primary" style="margin-left: 15px">搜索</el-button>
+      <el-button type="primary" style="margin-left: 15px" @click="searchClass">搜索</el-button>
     </div>
 
     <el-table :data="tableData" border style="margin-top: 15px">
@@ -38,6 +38,11 @@
         <el-button type="primary" @click="onSubmit">保存</el-button>
       </span>
     </template>
+    <pagination
+      :total="totals"
+      @update:current-page="handleCurrentPageUpdate"
+      @update:page-size="handlePageSizeUpdate"
+    ></pagination>
   </el-dialog>
 </template>
 
@@ -67,7 +72,12 @@ let radio = ref('')
 onBeforeMount(async () => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
   if (proxy) {
-    ;(proxy as any).getDicts(['crm_class_status','system_global_gender', 'recruit_charge_type', 'installment_count'])
+    ;(proxy as any).getDicts([
+      'crm_class_status',
+      'system_global_gender',
+      'recruit_charge_type',
+      'installment_count'
+    ])
   }
   //班级列表
   getClassPage()
@@ -76,7 +86,8 @@ onBeforeMount(async () => {
 //获取班级列表
 const getClassPage = async () => {
   let res = await classPage(searchForm)
-  let { records } = res.data
+  let { records,total } = res.data
+  totals.value = total
   tableData.value = records
 }
 //上课时间
@@ -110,6 +121,29 @@ const transDay = (row: ClassRecord, column: TableColumnCtx<ClassRecord>) => {
   })
   return arr.toString() + row.teachingTime
 }
+
+//分页
+const totals = ref(0)
+//分页-页码
+const handleCurrentPageUpdate = (current: number) => {
+  Object.assign(searchForm, {
+    current
+  })
+  getClassPage()
+}
+//分页-一页显示多少条
+const handlePageSizeUpdate = (size: number) => {
+  Object.assign(searchForm, {
+    size
+  })
+  getClassPage()
+}
+
+// 搜索
+const searchClass = () => {
+  getClassPage()
+}
+
 //关闭dialog
 const emit = defineEmits()
 const close = () => {

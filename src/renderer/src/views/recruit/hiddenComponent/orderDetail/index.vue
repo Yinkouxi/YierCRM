@@ -195,7 +195,6 @@ onBeforeMount(async () => {
 
   let { data } = await orderDetail(route.query?.id as string)
   Object.assign(orderData, data)
-  console.log(orderData, '---')
   Object.assign(unit, data.unit)
   orderTerms.value = data.orderTerms
   tags.value = data.tags

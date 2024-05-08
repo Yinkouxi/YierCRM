@@ -292,7 +292,6 @@ const handlePageSizeUpdate = (size: number) => {
 const getConsultPage = async () => {
   let res = await consultPage(form)
   let { records, total } = res.data
-  console.log(res.data)
   totals.value = total
   tableData.value = records
 }
@@ -329,7 +328,6 @@ const upload = async (item: UploadUserFile) => {
   let forData = new FormData()
   forData.append('file', item.file)
   let res = await consultImport(forData)
-  console.log(res)
   ElMessage.success(res.msg)
   getConsultPage()
 }
@@ -395,7 +393,6 @@ const detail = (id: string) => {
 
 // 搜索
 const search = () => {
-  console.log(form, '---')
   Object.assign(form, {
     current: 1,
     startTime: chooseTime.value[0],

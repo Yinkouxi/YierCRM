@@ -497,7 +497,6 @@ const showAdd = (id: string) => {
 const updataVisible = ref<boolean>(false)
 const updataId = ref('')
 const edit = (id: string) => {
-  console.log(id)
   updataId.value = id
   updataVisible.value = true
 }
