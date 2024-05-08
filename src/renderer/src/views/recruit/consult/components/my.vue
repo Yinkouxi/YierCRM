@@ -64,10 +64,22 @@
                 </el-table-column>
                 <el-table-column label="操作" width="140" fixed="right" align="center">
                   <template #default="{ row }">
-                    <el-link :underline="false" icon="List" type="primary">查询详情</el-link>
-                    <el-link :underline="false" icon="Avatar" type="success">办理报名</el-link>
-                    <el-link :underline="false" icon="Edit" type="danger">跟进信息</el-link>
-                    <el-link :underline="false" icon="Edit" type="warning">编辑信息</el-link>
+                    <el-link :underline="false" icon="List" type="primary" @click="detail(row.id)"
+                      >查看详情</el-link
+                    >
+                    <el-link
+                      :underline="false"
+                      icon="Avatar"
+                      type="success"
+                      @click="transact(row.id)"
+                      >办理报名</el-link
+                    >
+                    <el-link :underline="false" icon="Edit" type="danger" @click="showAdd(row.id)"
+                      >跟进信息</el-link
+                    >
+                    <el-link :underline="false" icon="Edit" type="warning" @click="edit(row.id)"
+                      >编辑信息</el-link
+                    >
                   </template>
                 </el-table-column>
               </el-table>
@@ -158,7 +170,7 @@
               <div class="charts-box-t">
                 <div style="width: 100%; height: 250px" ref="chart"></div>
               </div>
-              <div class="charts-box-b" >
+              <div class="charts-box-b">
                 <div>
                   <h3>
                     成功率:
@@ -179,11 +191,26 @@
         </el-col>
       </el-row>
     </el-main>
+    <!-- 跟进信息 -->
+    <followDialog
+      v-if="followVisible"
+      v-model:followVisible="followVisible"
+      :followId="followId"
+      @change="getConsultPage"
+    ></followDialog>
+    <!-- 编辑信息 -->
+    <updataDialog
+      v-if="updataVisible"
+      v-model:updataVisible="updataVisible"
+      :updataId="updataId"
+      @change="getConsultPage"
+    >
+    </updataDialog>
   </el-container>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onBeforeMount } from 'vue'
+import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
 import {
   consultPage,
   IConsultList,
@@ -195,6 +222,8 @@ import {
 import tool from '@utils/tool'
 import { useRouter } from 'vue-router'
 import * as echarts from 'echarts'
+import followDialog from './log/followDialog.vue'
+import updataDialog from './log/updataDialog.vue'
 const router = useRouter()
 
 interface IDate {
@@ -239,6 +268,10 @@ const onCalendarDate = (options: Date) => {
 }
 
 onBeforeMount(() => {
+  const { proxy } = getCurrentInstance() as ComponentInternalInstance
+  if (proxy) {
+    ;(proxy as any).getDicts(['system_global_gender', 'recruit_dealStatus'])
+  }
   changeDate()
 })
 
@@ -335,7 +368,8 @@ let currentForm = reactive({
   size: 5,
   isSelf: true,
   startTime: '',
-  endTime: ''
+  endTime: '',
+  current: 1
 })
 const getConsultPage = async () => {
   let res = await consultPage(currentForm)
@@ -430,6 +464,43 @@ const nextDate = () => {
 const add = () => {
   router.push('/recruit/consult/add')
 }
+
+//查看详情
+const detail = (id: string) => {
+  router.push({
+    path: '/recruit/consult/detail',
+    query: {
+      id
+    }
+  })
+}
+
+//办理报名
+const transact = (id: string) => {
+  router.push({
+    path: '/process/payment',
+    query: {
+      id
+    }
+  })
+}
+
+//跟进信息
+const followVisible = ref<boolean>(false)
+const followId = ref('')
+const showAdd = (id: string) => {
+  followId.value = id
+  followVisible.value = true
+}
+
+//编辑信息
+const updataVisible = ref<boolean>(false)
+const updataId = ref('')
+const edit = (id: string) => {
+  console.log(id)
+  updataId.value = id
+  updataVisible.value = true
+}
 </script>
 
 <style scoped lang="less">
@@ -513,11 +584,10 @@ const add = () => {
       width: 100%;
     }
   }
-
 }
-.charts-box-b{
+.charts-box-b {
   display: flex;
-  justify-content:space-around;
+  justify-content: space-around;
   font-size: 14px;
 }
 </style>

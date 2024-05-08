@@ -177,7 +177,7 @@
             </el-table-column>
             <el-table-column label="操作" width="120" align="center" fixed="right">
               <template #default="{ row }">
-                <el-link :underline="false" type="primary" icon="List" @click="detail(row.id)"
+                <el-link :underline="false" type="primary" icon="List" @click="detail(row.id) "
                   >查看详情</el-link
                 >
                 <el-link :underline="false" type="success" icon="Avatar" @click="transact(row.id)"
