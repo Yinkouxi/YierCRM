@@ -8,9 +8,9 @@
   >
     <el-table :data="tableData" width="100%" border stripe>
       <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
-      <el-table-column prop="name" label="姓名" align="center">
+      <el-table-column prop="name" label="姓名" align="center" class="name">
         <template #default="{ row }">
-          <el-link type="primary">{{ row.name }}</el-link>
+          <el-text type="primary" @click="openDetail(row.id,row.classId)">{{ row.name }}</el-text>
         </template>
       </el-table-column>
       <el-table-column prop="mobile" label="手机号" width="150" align="center"></el-table-column>
@@ -61,13 +61,19 @@
       @update:page-size="handlePageSizeUpdate"
     ></pagination>
   </el-dialog>
+  <studentDetail
+    v-if="detailVisible"
+    v-model="detailVisible"
+    :detailCustomerId = "detailCustomerId"
+    :detailClassId = "detailClassId"
+  ></studentDetail>
 </template>
 
 <script lang="ts" setup>
 import { ref, reactive, onBeforeMount, getCurrentInstance, ComponentInternalInstance } from 'vue'
 import { IStudentList, IStudentListItem, studentList } from '@api/teachClass'
 import { dicts } from '@mixins/DIctsPlugin'
-
+import studentDetail from './studentDetail.vue';
 const props = defineProps({
   memberVisible: {
     type: Boolean,
@@ -95,6 +101,7 @@ const getStudentList = async () => {
   tableData.value = records
   totals.value = total
 }
+
 //生命周期
 onBeforeMount(() => {
   const { proxy } = getCurrentInstance() as ComponentInternalInstance
@@ -106,7 +113,6 @@ onBeforeMount(() => {
       'recruit_dealStatus',
       'crm_class_status',
       'crm_teaching_method'
-
     ])
   }
   getStudentList()
@@ -128,6 +134,18 @@ const handlePageSizeUpdate = (size: number) => {
   })
   getStudentList()
 }
+
+// 学员详情
+const detailVisible = ref(false)
+let detailCustomerId = ref('')
+let detailClassId = ref('')
+const openDetail = (customerId: string, classId: string) => {
+  console.log('学员详情')
+  detailVisible.value = true
+  detailCustomerId.value = customerId
+  detailClassId.value = classId
+}
+
 //关闭dialog
 const emit = defineEmits()
 const close = () => {
@@ -141,25 +159,8 @@ const onSubmit = async () => {
 }
 </script>
 
-<style>
-.update-time {
-  text-align: center;
-  font-size: 12px;
-  line-height: 30px;
-}
-.protocol {
-  overflow: scroll;
-}
-.protocol img {
-  font-size: 14px;
-  line-height: 20px;
-  max-width: 100% !important;
-}
-</style>
-
 <style scoped>
-.inline {
-  vertical-align: middle;
-  width: 40%;
+.name {
+  cursor: pointer;
 }
 </style>

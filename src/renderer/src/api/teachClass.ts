@@ -235,3 +235,90 @@ interface IStudentListData {
 export const studentList = (data: IStudentList): Promise<IStudentListData> => {
   return http.get<IStudentListData>('/crm/teach/class/student/list', data)
 }
+
+export interface IStudentGetInfo {
+  id: string
+  name: string
+  namePinyin: string
+  nameAbbr: string
+  mobile: string
+  wechat: string
+  source: string
+  purpose: string
+  purposeCourseIds: string
+  purposeClassIds: string
+  age: number
+  school: string | null
+  major: string | null
+  level: string
+  dealStatus: number
+  dealTime: string
+  gender: string
+  education: string
+  province: string
+  city: string
+  county: string
+  enabled: number
+  remark: string
+  createBy: string | null
+  createTime: number
+  createUnits: string
+  updateBy: string
+  updateTime: number
+  collectBy: string
+  collectTime: number
+  provinceName: string
+  cityName: string
+  countyName: string
+  channelName: string | null
+  whrId: string
+  whrName: string
+  subjectId: string
+  subjectName: string
+  classId: string | null
+  className: string | null
+  unitName: string
+}
+
+ interface IStudentGetData {
+  code: string
+  msg: string
+  data: IStudentGetInfo
+}
+// 学生详情
+export const studentGet = (data: string): Promise<IStudentGetData> => {
+  return http.get<IStudentGetData>(`/crm/teach/class/student/get/${data}`)
+}
+
+
+export interface ISuccessClassGetItem{
+  id: string;
+  className: string;
+  teachingMethod: string;
+  subjectId: string;
+  fullPeople: number;
+  mainTeacherId: string;
+  assistTeacherId: string;
+  manageTeacherId: string;
+  classHour: number;
+  beginDate: string;
+  endDate: string;
+  teachingDay: string;
+  teachingTime: string;
+  arranged: number;
+  status: number;
+  createBy?: any; // 如果createBy可以是null，可以用any或更具体的类型
+  createTime: number;
+  updateBy: string;
+  updateTime: number;
+  subjectName: string;
+}
+interface ISuccessClassGetData {
+  code: string
+  msg: string
+  data: ISuccessClassGetItem[]
+}
+//报读课程
+export const successClassGet = (data: string): Promise<ISuccessClassGetData> => {
+  return http.get<ISuccessClassGetData>(`/crm/recruit/consult/course/successClass/${data}`)
+}

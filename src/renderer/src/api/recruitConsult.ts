@@ -432,3 +432,4 @@ export const consultTransfer = (data: {
 }): Promise<IFollowAddData> => {
   return http.post<IFollowAddData>('/crm/recruit/consult/transfer', data)
 }
+
