@@ -19,7 +19,7 @@
       </div>
     </div>
     <el-tabs class="tab" v-model="activeName">
-      <el-tab-pane label="报读课程" name="class" >
+      <el-tab-pane label="报读课程" name="class">
         <el-table
           row-key="id"
           :data="classData"
@@ -102,25 +102,7 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="试听记录" name="auditionRecord" lazy>
-        <el-table
-          :data="audioRecord"
-          width="100%"
-          border
-          stripe
-          :header-cell-style="{ 'text-align': 'center' }"
-          :cell-style="{ 'text-align': 'center' }"
-        >
-          <el-table-column type="index" width="60" />
-          <el-table-column label="姓名" prop="name" />
-          <el-table-column label="开始时间" prop="startDate" />
-          <el-table-column label="结束时间" prop="endDate" />
-          <el-table-column label="试听天数" prop="days" />
-          <el-table-column label="主讲老师" prop="mainTeacherName" />
-          <el-table-column label="助教老师" prop="assistTeacherName" />
-          <el-table-column label="学管老师" prop="manageTeacherName" />
-        </el-table>
-      </el-tab-pane>
+
       <el-tab-pane label="跟进记录" name="followRecord" lazy>
         <el-table
           row-key="id"
@@ -153,7 +135,18 @@
 </template>
 
 <script setup lang="ts">
-import { IStudentGetInfo, ISuccessClassGetItem, studentGet,successClassGet } from '@api/teachClass'
+import {
+  IClassRecordGet,
+  IClassRecordGetDataItem,
+  IFollowPage,
+  IFollowPageRecords,
+  ISignatureItem,
+  ISignatureRecordGet,
+  classRecordGet,
+  followPage,
+  signatureRecordGet
+} from '@api/recruitConsult'
+import { IStudentGetInfo, ISuccessClassGetItem, studentGet, successClassGet } from '@api/teachClass'
 import { dicts } from '@mixins/DIctsPlugin'
 import { ComponentInternalInstance, getCurrentInstance, onBeforeMount, reactive, ref } from 'vue'
 
@@ -192,6 +185,12 @@ onBeforeMount(() => {
   getStudentGet()
   // 课程信息
   getSuccessClassGet()
+  // 上课记录
+  getClassRecord()
+  // 协议记录
+  getSignatureRecord()
+  // 跟进记录
+  getFollowPage()
 })
 
 // 学员信息
@@ -204,28 +203,50 @@ const getStudentGet = async () => {
 // 报课课程
 let classData = ref<ISuccessClassGetItem[]>([])
 const getSuccessClassGet = async () => {
-  let {data} = await successClassGet(props.detailCustomerId)
+  let { data } = await successClassGet(props.detailCustomerId)
   classData.value = data
 }
 
 // 上课记录
-const classRecord= ref([])
+const classRecord = ref<IClassRecordGetDataItem[]>([])
+let classRecordParams = reactive<Partial<IClassRecordGet>>({
+  customerId: props.detailCustomerId,
+  classId: props.detailClassId
+})
+const getClassRecord = async () => {
+  let res = await classRecordGet(classRecordParams as IClassRecordGet)
+  let { records } = res.data
+  classRecord.value = records
+}
+
 // 协议记录
-const signatureRecord = ref([])
-// 试听记录
-const audioRecord = ref([])
+const signatureRecord = ref<Partial<ISignatureItem[]>>([])
+let signatureRecordParams = reactive<Partial<ISignatureRecordGet>>({
+  customerId: props.detailCustomerId,
+  classId: props.detailClassId
+})
+const getSignatureRecord = async () => {
+  let res = await signatureRecordGet(signatureRecordParams as ISignatureRecordGet)
+  let { records } = res.data
+  signatureRecord.value = records
+}
+
 // 跟进记录
-const flowRecord = ref([])
+const flowRecord = ref<IFollowPageRecords[]>([])
+const followRecordParams = reactive<Partial<IFollowPage>>({
+  customerId: props.detailCustomerId,
+  page: 1,
+  size: 100
+})
+const getFollowPage = async () => {
+  let res = await followPage(followRecordParams as IFollowPage)
+  let { records } = res.data
+  flowRecord.value = records
+}
 //关闭dialog
 const emit = defineEmits()
 const close = () => {
   emit('update:detailVisible', false)
-}
-
-//保存
-const onSubmit = async () => {
-  emit('change')
-  close()
 }
 </script>
 

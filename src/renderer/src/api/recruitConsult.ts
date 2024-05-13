@@ -343,7 +343,7 @@ export const consultUpdate = (data: IConsultUpdate): Promise<IConsultUpdateData>
   return http.post<IConsultUpdateData>('/crm/recruit/consult/update', data)
 }
 
-interface IFollowPage {
+export interface IFollowPage {
   page: number
   size: number
   customerId: string
@@ -433,3 +433,95 @@ export const consultTransfer = (data: {
   return http.post<IFollowAddData>('/crm/recruit/consult/transfer', data)
 }
 
+export interface IClassRecordGet {
+  customerId: string
+  classId: string
+  startDate?: string
+  endDate?: string
+  current?: string
+  size?: string
+}
+export interface IClassRecordGetDataItem {
+  id: string
+  customerId: string
+  workId: string
+  type: number // '类型（1：到课；2：旷课；3：请假）'
+  remark: string
+  createBy?: any // 如果createBy可以是null，可以用any或更具体的类型
+  createTime?: any // 如果createTime可以是null，可以用any或更具体的类型
+  updateBy?: any // 如果updateBy可以是null，可以用any或更具体的类型
+  updateTime?: any // 如果updateTime可以是null，可以用any或更具体的类型
+  className: string
+  subjectName: string
+}
+interface IClassRecordGetData {
+  code: string
+  msg: string
+  data: {
+    records: IClassRecordGetDataItem[]
+  }
+  total: number
+  size: number
+  current: number
+  orders: any[]
+  optimizeCountSql: boolean
+  searchCount: boolean
+  countId?: any // 如果countId可以是null，可以用any或更具体的类型
+  maxLimit?: any // 如果maxLimit可以是null，可以用any或更具体的类型
+  pages: number
+}
+
+// 上课记录
+export const classRecordGet = (data: IClassRecordGet): Promise<IClassRecordGetData> => {
+  return http.get<IClassRecordGetData>('crm/recruit/consult/classRecord', data)
+}
+
+export interface ISignatureRecordGet {
+  customerId: string
+  classId: string
+  startDate?: string
+  endDate?: string
+  current?: string
+  size?: string
+}
+export interface ISignatureItem {
+  id: string
+  subjectId: string
+  classId: string
+  customerId: string
+  name: string
+  mobile: string
+  idcard: string
+  orderNumber: string
+  protocol: string
+  signature: string
+  status: number
+  createBy: string
+  createTime: number
+  updateBy?: any // 如果updateBy可以是null，可以用any或更具体的类型
+  updateTime?: any // 如果updateTime可以是null，可以用any或更具体的类型
+  subjectName: string
+  className: string
+}
+
+export interface ISignatureRecordGetData {
+  code: string
+  msg: string
+  data: {
+    records: ISignatureItem[]
+    total: number
+    size: number
+    current: number
+    orders: any[]
+    optimizeCountSql: boolean
+    searchCount: boolean
+    countId?: any // 如果countId可以是null，可以用any或更具体的类型
+    maxLimit?: any // 如果maxLimit可以是null，可以用any或更具体的类型
+    pages: number
+  }
+}
+
+// 协议记录
+export const signatureRecordGet = (data: IClassRecordGet): Promise<ISignatureRecordGetData> => {
+  return http.get<ISignatureRecordGetData>('/crm/recruit/consult/signatureRecord', data)
+}
