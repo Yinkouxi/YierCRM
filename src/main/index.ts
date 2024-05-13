@@ -23,12 +23,12 @@ app.whenReady().then(() => {
   eventRouter.addRouters(routers)
 
   //渲染进程 向 主进程通信 : 主窗口
-  ipcMain.handle('renderer-to-main', (e, data) => {
+  ipcMain.handle('renderer-to-main', (_e, data) => {
     eventRouter.router(data)
   })
 
   //渲染进程 向 主进程通信 : 异步下载窗口
-  ipcMain.handle('renderer-to-task', (e, data) => {
+  ipcMain.handle('renderer-to-task', (_e, data) => {
     eventRouter.router(data)
   })
 

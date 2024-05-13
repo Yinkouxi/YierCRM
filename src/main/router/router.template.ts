@@ -9,7 +9,7 @@ let taskWindow: TaskFrame | null = null
  * 关闭软件
  */
 routers.push(
-  new EventRoute('close-login', (api, data) => {
+  new EventRoute('close-login', (api, _data) => {
     api.mainWindow.close()
   })
 )
@@ -55,7 +55,7 @@ routers.push(
  * 最小化
  */
 routers.push(
-  new EventRoute('min-win', (api, data) => {
+  new EventRoute('min-win', (api, _data) => {
     api.mainWindow.minimize()
   })
 )
@@ -64,7 +64,7 @@ routers.push(
  * 最大化
  */
 routers.push(
-  new EventRoute('max-win', (api, data) => {
+  new EventRoute('max-win', (api, _data) => {
     if (api.mainWindow.isFullScreen()) {
       api.mainWindow.setFullScreen(false)
     } else {
@@ -77,7 +77,7 @@ routers.push(
  * 退出软件
  */
 routers.push(
-  new EventRoute('win-close', (api, data) => {
+  new EventRoute('win-close', (api, _data) => {
     api.app.exit()
   })
 )
@@ -86,7 +86,7 @@ routers.push(
  * 退出登录
  */
 routers.push(
-  new EventRoute('out-login', (api, data) => {
+  new EventRoute('out-login', (api, _data) => {
     //窗口大小
     api.mainWindow.setSize(900, 670)
     //窗口居中
@@ -116,7 +116,7 @@ routers.push(
  * 打开窗口
  */
 routers.push(
-  new EventRoute('open-window-frame', (api, { data }) => {
+  new EventRoute('open-window-frame', (_api, { data }) => {
     //下载任务
     if (data.url == '/tasklist') {
       //窗口不存在或者被销毁时创建窗口
@@ -135,7 +135,7 @@ routers.push(
  * 异步下载 ： 关闭窗口
  */
 routers.push(
-  new EventRoute('task-close', (api, { data }) => {
+  new EventRoute('task-close', (_api, { }) => {
     taskWindow?.destroy()
     taskWindow = null
   })
