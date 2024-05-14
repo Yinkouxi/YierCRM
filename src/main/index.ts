@@ -1,6 +1,7 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 
+import LoadingFrame from './frame/LoadingFrame'
 import MainFrame from './frame/MainFrame'
 import routers from './router/router.template'
 import EventRouter from './router/EventRouter'
@@ -13,6 +14,8 @@ app.whenReady().then(() => {
   })
 
   const eventRouter = new EventRouter()
+  let loadingWindow = new LoadingFrame()
+  loadingWindow.create()
 
   let mainWindow = new MainFrame()
   mainWindow.create()
