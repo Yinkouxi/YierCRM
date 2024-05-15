@@ -180,4 +180,19 @@ routers.push(
   })
 )
 
+/*
+ * 自动更新 ： 无需更新
+ */
+
+routers.push(
+  new EventRoute('update-not-available',(api,data)=>{
+    console.log(data)
+    // 关闭更新窗口
+
+    api.loadingFrame.destroy()
+    // 打开登录窗口
+    api.mainWindow.show()
+  })
+)
+
 export default routers

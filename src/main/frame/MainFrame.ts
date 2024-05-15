@@ -22,9 +22,9 @@ export default class MainFrame{
             }
           })
 
-        this.#frame.on('ready-to-show', () => {
-            this.#frame.show()
-        })
+        // this.#frame.on('ready-to-show', () => {
+        //     this.#frame.show()
+        // })
 
         this.#frame.webContents.setWindowOpenHandler((details) => {
             shell.openExternal(details.url)
@@ -79,5 +79,9 @@ export default class MainFrame{
     //窗口最小值
     setMinimumSize( w , h  ){
         this.#frame.setMinimumSize( w, h );
+    }
+    // 展示
+    show(){
+        this.#frame.show();
     }
 }

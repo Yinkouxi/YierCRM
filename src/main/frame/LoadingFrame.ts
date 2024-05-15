@@ -1,5 +1,6 @@
 import { BrowserWindow } from 'electron'
 import { join } from 'path'
+import AppUpdater from '../updater/AppUpdater'
 
 export default class LoadingFrame {
   #frame
@@ -28,8 +29,8 @@ export default class LoadingFrame {
 
     // 窗口准备好后，创建一个新的AppUpdater实例并显示窗口
     this.#frame.on('ready-to-show', () => {
-      // this.#frame.webContents.session.clearStorageData()
-      // new AppUpdater(this.#frame)
+      this.#frame.webContents.session.clearStorageData()
+      new AppUpdater(this.#frame)
       this.#frame.show()
     })
 

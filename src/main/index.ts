@@ -14,14 +14,17 @@ app.whenReady().then(() => {
   })
 
   const eventRouter = new EventRouter()
-  let loadingWindow = new LoadingFrame()
-  loadingWindow.create()
+
+  let loadingFrame = new LoadingFrame()
+  loadingFrame.create()
 
   let mainWindow = new MainFrame()
   mainWindow.create()
 
+
   eventRouter.addApi('mainWindow', mainWindow)
-  eventRouter.addApi('dialog',dialog)
+  eventRouter.addApi('loadingFrame', loadingFrame)
+  eventRouter.addApi('dialog', dialog)
   eventRouter.addApi('app', app)
   eventRouter.addRouters(routers)
 
