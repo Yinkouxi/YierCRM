@@ -1,4 +1,4 @@
-import { app, webContents } from 'electron'
+import { app, dialog } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import { is } from '@electron-toolkit/utils'
 import path from 'path'
@@ -62,6 +62,17 @@ export default class AppUpdater {
         msg: '下载完成，准备安装',
         data: null
       })
+      dialog
+        .showMessageBox(window, {
+          title: '安装新版本',
+          message: '新版本已下载完成，是否立即安装？',
+          type: 'info',
+          buttons: ['是，立即安装']
+        })
+        .then(() => {
+          // 退出开始直接安装
+          autoUpdater.quitAndInstall()
+        })
     })
     // error
     // autoUpdater.on('error', (e) => {console.log('error::::::',e)})
@@ -71,29 +82,3 @@ export default class AppUpdater {
     autoUpdater.checkForUpdatesAndNotify()
   }
 }
-
-// import { autoUpdater } from 'electron-updater'
-// import { is } from '@electron-toolkit/utils'
-// import { app } from 'electron'
-// export default class AppUpdater {
-//   constructor() {
-//     // console.log('test')
-
-//     if(is.dev){
-//       // 开发环境
-//       console.log('dev-----')
-//       Object.defineProperty(app, 'isPackaged', {
-//         get() {
-//           return true
-//         }
-//       })
-//     }
-//     // console.log(app.isPackaged,'---')
-//     autoUpdater.on('checking-for-update', () => {
-//       console.log('CHECKING UPDATE')
-//     })
-
-//     autoUpdater.checkForUpdatesAndNotify()
-//   }
-
-// }
