@@ -4,13 +4,14 @@
       <div class="title">聊天窗口</div>
       <!-- 关闭 -->
       <div>
-        <el-icon class="close" size="large" @click="closeWin">
+        <el-icon class="close" size="large" @click="closeChat">
           <el-icon-close />
         </el-icon>
       </div>
     </el-header>
-    <el-container>      <!--    左-->
-      <!-- <el-aside width="240px">
+    <el-container>
+      <!--    左-->
+      <el-aside width="240px">
         <el-input
           prefix-icon="el-icon-search"
           v-model="input"
@@ -44,7 +45,7 @@
             </el-tree>
           </el-tab-pane>
           <el-tab-pane label="会话列表">
-            <div class="session-list">
+            <!-- <div class="session-list">
               <div
                 class="session-list-item"
                 v-for="item in sessionList"
@@ -82,30 +83,20 @@
                   </el-icon>
                 </div>
               </div>
-            </div>
+            </div> -->
             <div v-if="sessionList.length == 0">
               <h3 style="text-align: center">暂无聊天会话</h3>
             </div>
           </el-tab-pane>
         </el-tabs>
-      </el-aside> -->
-
-      <!--    中间聊天框-->
-      <!-- <el-main class="nopadding" v-if="currentSession">
-        <div id="app">
-          <div class="chat-room"> -->
-      <!--聊天头-->
-
-      <!-- <el-main v-else>
-        <h3 style="text-align: center; margin-top: 20px">请选择一个联系人来开始聊天</h3>
-      </el-main> -->
-      <!--          右-->
-      <!-- <el-aside width="260px">
+      </el-aside>
+      <!-- 右侧 -->
+      <el-aside width="260px">
         <el-card :body-style="{ padding: '0px' }" style="height: 100%">
           <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px">
             <el-avatar size="large" :src="userInfo.avatar" />
             <h2 style="margin-top: 10px">{{ userInfo.username }}</h2>
-            <p style="margin-top: 5px">{{ userInfo.unit?.name }}</p>
+            <p style="margin-top: 5px">{{ userInfo.realName }}</p>
           </div>
           <div style="margin: 20px">
             <el-text class="mx-1" type="info">
@@ -118,7 +109,7 @@
               <el-icon>
                 <el-icon-iphone />
               </el-icon>
-              <span class="textUser">{{ userInfo.unit?.mobile }}</span>
+              <span class="textUser">{{ userInfo.phone }}</span>
             </el-text>
             <el-text class="mx-1" type="info">
               <el-icon>
@@ -128,12 +119,53 @@
             </el-text>
           </div>
         </el-card>
-      </el-aside> -->
+      </el-aside>
     </el-container>
   </el-container>
 </template>
 
-<script setup></script>
+<script setup lang="ts">
+import { contacts, sessions } from '@api/chat'
+import { useUserStore } from '@store/useUserStore'
+import { onBeforeMount, reactive, ref } from 'vue'
+
+const getContacts = async () => {
+  let res = await contacts({})
+  treeList.value = res.data
+}
+
+// 左侧
+// 搜索联系人
+const input = ref('')
+// 联系人数组
+let treeList = ref([])
+let treeProps = reactive({ label: 'name', children: 'children' })
+
+const onTreeFilter = () => {}
+const onNodeClick = () => {}
+// 联系人是否在线
+const isOnline = (id) => {
+  return true
+}
+//会话列表数据
+const sessionList = ref([])
+// 获取会话列表
+const getSessions = async () => {
+  let {data} = await sessions({})
+  console.log(data)
+  sessionList.value = data.records
+}
+onBeforeMount(() => {
+  getContacts()
+  getSessions()
+})
+// 右侧个人信息
+const userStore = useUserStore()
+const userInfo = userStore.userInfo
+
+// 关闭窗口
+const closeChat = () => {}
+</script>
 
 <style lang="less" scoped>
 .titleBar {
