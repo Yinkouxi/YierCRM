@@ -45,16 +45,15 @@
             </el-tree>
           </el-tab-pane>
           <el-tab-pane label="会话列表">
-            <!-- <div class="session-list">
+            <div class="session-list">
               <div
                 class="session-list-item"
                 v-for="item in sessionList"
                 :key="item.id"
                 style="margin-bottom: 10px"
-                @click="goChat(item)"
                 :id="item.id"
               >
-                <template v-if="item.promoter == -1">
+                <template v-if="item.promoter == '-1'">
                   <el-avatar circle src="/images/logo.png" />
                   <div class="info">
                     <h4>系统消息</h4>
@@ -73,23 +72,80 @@
                           ? item.partakerUsername
                           : item.promoterUsername
                       }}
+                      <!-- {{ item.promoter }} -->
+                      <!-- {{ userInfo.id }} -->
                     </h4>
                     <span class="info-text">{{ item.messages[0]?.messageBodyContent }}</span>
                   </div>
                 </template>
-                <div class="close-btn" text @click="deleteSession(item.id)">
+                <div class="close-btn" text>
                   <el-icon>
                     <el-icon-close />
                   </el-icon>
                 </div>
               </div>
-            </div> -->
+            </div>
             <div v-if="sessionList.length == 0">
               <h3 style="text-align: center">暂无聊天会话</h3>
             </div>
           </el-tab-pane>
         </el-tabs>
       </el-aside>
+      <!--    中间聊天框-->
+      <el-main class="nopadding" v-if="currentSession">
+        <div id="app">
+          <div class="chat-room">
+            <!--聊天头-->
+            <div class="chat-header" v-if="(currentSession.promoter as unknown as number) == -1">
+              <el-avatar src="/images/logo.png" size="default" circle />
+              <h3>系统消息</h3>
+            </div>
+            <div class="chat-header" v-else>
+              <el-avatar
+                size="default"
+                circle
+                :src="
+                  currentSession.promoter === userInfo.id
+                    ? currentSession.partakerAvatar
+                    : currentSession.promoterAvatar
+                "
+              />
+              <h3>
+                正在与
+                {{
+                  currentSession.promoter === userInfo.id
+                    ? currentSession.partakerUsername
+                    : currentSession.promoterUsername
+                }}
+                对话...
+              </h3>
+            </div>
+            <!--            聊天内容-->
+            <div class="chat-body" ref="chatBody">
+              <div class="chat-message">
+                <ul class="chat-message-ul">
+                  <li
+                    :id="message.id"
+                    v-for="(message, i) in currentSession.messages"
+                    :key="i"
+                    :class="message.toUserId === userInfo.id ? 'left_word' : 'right_word'"
+                  >
+                    <span>{{ message.messageBodyContent }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <!--            发送框-->
+            <div class="chat-footer">
+              <el-input type="textarea" placeholder="说点什么..."></el-input>
+              <el-button type="primary">发送</el-button>
+            </div>
+          </div>
+        </div>
+      </el-main>
+      <el-main v-else>
+        <h3 style="text-align: center; margin-top: 20px">请选择一个联系人来开始聊天</h3>
+      </el-main>
       <!-- 右侧 -->
       <el-aside width="260px">
         <el-card :body-style="{ padding: '0px' }" style="height: 100%">
@@ -125,10 +181,20 @@
 </template>
 
 <script setup lang="ts">
-import { contacts, sessions } from '@api/chat'
+import {
+  IChatSessionsItem,
+  IContactsUnit,
+  ISessions,
+  chatSession,
+  contacts,
+  sessions
+} from '@api/chat'
 import { useUserStore } from '@store/useUserStore'
 import { onBeforeMount, reactive, ref } from 'vue'
 
+// 右侧个人信息
+const userStore = useUserStore()
+const userInfo = userStore.userInfo
 const getContacts = async () => {
   let res = await contacts({})
   treeList.value = res.data
@@ -138,30 +204,37 @@ const getContacts = async () => {
 // 搜索联系人
 const input = ref('')
 // 联系人数组
-let treeList = ref([])
+let treeList = ref<IContactsUnit[]>([])
 let treeProps = reactive({ label: 'name', children: 'children' })
 
 const onTreeFilter = () => {}
-const onNodeClick = () => {}
+
+// 点击联系人
+const onNodeClick = async (node: IContactsUnit) => {
+  let res = await chatSession(node.id, userInfo.id as string)
+  console.log(res)
+  Object.assign(currentSession, res.data)
+}
 // 联系人是否在线
 const isOnline = (id) => {
   return true
 }
 //会话列表数据
-const sessionList = ref([])
+const sessionList = ref<ISessions[]>([])
 // 获取会话列表
 const getSessions = async () => {
-  let {data} = await sessions({})
+  let { data } = await sessions({})
   console.log(data)
   sessionList.value = data.records
+  console.log(sessionList.value)
 }
+
+// 聊天内容
+let currentSession = reactive<Partial<IChatSessionsItem>>({})
 onBeforeMount(() => {
   getContacts()
   getSessions()
 })
-// 右侧个人信息
-const userStore = useUserStore()
-const userInfo = userStore.userInfo
 
 // 关闭窗口
 const closeChat = () => {}
