@@ -140,7 +140,6 @@ const detailVisible = ref(false)
 let detailCustomerId = ref('')
 let detailClassId = ref('')
 const openDetail = (customerId: string, classId: string) => {
-  console.log('学员详情')
   detailVisible.value = true
   detailCustomerId.value = customerId
   detailClassId.value = classId

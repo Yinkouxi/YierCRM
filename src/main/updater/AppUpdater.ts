@@ -17,7 +17,6 @@ export default class AppUpdater {
     autoUpdater.updateConfigPath = path.join(__dirname, '../../dev-app-update.yml')
     // 检查是否有新版本
     autoUpdater.on('checking-for-update', () => {
-      console.log('== is or no new ==')
       window.webContents.send('main-to-renderer', {
         name: 'checking-for-update',
         event: 'event',
@@ -27,7 +26,6 @@ export default class AppUpdater {
     })
     // 发现新版本
     autoUpdater.on('update-available', () => {
-      console.log('== find new==')
       window.webContents.send('main-to-renderer', {
         name: 'update-available',
         event: 'event',
@@ -55,7 +53,6 @@ export default class AppUpdater {
     })
     // 下载完成
     autoUpdater.on('update-downloaded', () => {
-      console.log('==over update==')
       window.webContents.send('main-to-renderer', {
         name: 'update-downloaded',
         event: 'event',

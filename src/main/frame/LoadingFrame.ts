@@ -29,7 +29,7 @@ export default class LoadingFrame {
 
     // 窗口准备好后，创建一个新的AppUpdater实例并显示窗口
     this.#frame.on('ready-to-show', () => {
-      this.#frame.webContents.session.clearStorageData()
+      // this.#frame.webContents.session.clearStorageData()
       new AppUpdater(this.#frame)
       this.#frame.show()
     })

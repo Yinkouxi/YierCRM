@@ -14,7 +14,7 @@
     </el-dropdown>
 
     <!--消息-->
-    <div class="panel-item">
+    <div class="panel-item" @click="goChat">
       <el-icon><ChatDotRound /></el-icon>
     </div>
 
@@ -49,6 +49,7 @@ const { userInfo } = storeToRefs(userStore)
 //退出登录
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useRouter } from 'vue-router'
+import { url } from 'inspector';
 const router = useRouter()
 const outLogin = () => {
   ElMessageBox.confirm('确认', '是否退出登录', {
@@ -72,6 +73,16 @@ const outLogin = () => {
         message: '取消退出'
       })
     })
+}
+
+// 聊天
+const goChat = () => {
+  window.electron.ipcRenderer.invoke('renderer-to-main', {
+    name: 'open-window-frame',
+    data:{
+      url:'/chat'
+    }
+  })
 }
 
 //退出应用

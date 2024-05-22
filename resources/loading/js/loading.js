@@ -1,5 +1,4 @@
 window.electron.ipcRenderer.on('main-to-renderer', (e, data) => {
-  console.log(data)
   let text = document.getElementsByClassName('text')[0]
   if (data.name == 'checking-for-update') {
     text.innerText = data.data ? data.msg + data.data : data.msg

@@ -15,5 +15,10 @@ export const AppRoutes = [
     path: '/tasklist',
     name: '下载',
     component: () => import('@views/home/task.vue')
+  },
+  {
+    path:'/chat',
+    name:'聊天',
+    component:()=>import('@views/home/chat.vue')
   }
 ]

@@ -5,6 +5,9 @@ const routers = new Array()
 
 import TaskFrame from '../frame/TaskFrame'
 let taskWindow: TaskFrame | null = null
+
+import ChatFrame from '../frame/ChatFrame'
+let chatWindow: ChatFrame | null = null
 /*
  * 关闭软件
  */
@@ -127,6 +130,14 @@ routers.push(
         //窗口存在时显示窗口
         taskWindow.show()
       }
+    }else if(data.url=='/chat'){
+      //窗口不存在或者被销毁时创建窗口
+      if(chatWindow==null || chatWindow.isDestroyed()){
+        chatWindow = new ChatFrame(data.url)
+        chatWindow.create()
+      }else{
+        chatWindow.show()
+      }
     }
   })
 )
@@ -185,10 +196,8 @@ routers.push(
  */
 
 routers.push(
-  new EventRoute('update-not-available',(api,data)=>{
-    console.log(data)
+  new EventRoute('update-not-available',(api,_data)=>{
     // 关闭更新窗口
-
     api.loadingFrame.destroy()
     // 打开登录窗口
     api.mainWindow.show()
